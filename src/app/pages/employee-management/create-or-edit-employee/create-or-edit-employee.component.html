@@ -1,0 +1,264 @@
+<div bsModal #modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal"
+  aria-hidden="true" style="margin-top: 3%;">
+  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 *ngIf="employee.userId" class="modal-title" style="color: #056ec9;">{{'Edit' | translate }} {{ 'UserInformation' | translate }}</h5>
+        <h5 *ngIf="!employee.userId" class="modal-title" style="color: #056ec9;">{{'Add' | translate }} {{ 'UserInformation' | translate }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="hide()"></button>
+      </div>
+      <div class="modal-body">
+
+          <form
+            name="form"
+            #f="ngForm"
+            (ngSubmit)="f.form.valid && onSubmit()"
+            novalidate
+            [appMatchPassword]="['password', 'confirmPassword']"
+            [validateBirthday]="['birthDay']"
+          >
+
+          <!-- Role -->
+          <div class="row mt-2">
+            <div class="col-md-3 pl-3">
+              <label>{{'Role' | translate}}</label> <label style="color: red; padding-left: 3px">*</label>
+            </div>
+            <div class="d-flex col-md-9">
+              <div class="form-check">
+                <input type="radio" name="role" class="form-check-input" id="radio1"  value="1" [(ngModel)]="form.role" #role="ngModel">Admin
+                <label class="form-check-label" for="radio1"></label>
+              </div>
+              <div class="form-check ml-4">
+                <input type="radio" name="role" class="form-check-input" id="radio2"  value="2" [(ngModel)]="form.role" #role="ngModel">User
+                <label class="form-check-label" for="radio2"></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- UserName -->
+          <div class="row mt-2">
+            <div class="col-md-3 mt-2 pl-3"><label>{{'UserName' | translate}}</label> <label style="color: red; padding-left: 3px">*</label></div>
+            <div class="form-group col-md-9">
+              <input
+                type="text"
+                class="form-control"
+                name="userName"
+                [(ngModel)]="form.userName"
+                required
+                maxlength="50"
+                #userName="ngModel"
+                [ngClass]="{ 'is-invalid': f.submitted && userName.errors }"
+                [disabled]="employee.userId"
+                placeholder="{{'Type' | translate}} {{'UserName' | translate | lowercase}}"
+                (keypress)="keypress($event)"
+              />
+              <div *ngIf="f.submitted && userName.errors" class="invalid-feedback">
+                <div *ngIf="userName.errors['required']"> {{'UserName' | translate}} {{'IsRequired' | translate}} </div>
+                <div *ngIf="userName.errors['maxlength']">
+                  {{'UserName' | translate}} {{'MustNotExceed' | translate}} 50 {{'Characters' | translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FullName -->
+          <div class="row mt-2">
+            <div class="col-md-3 mt-2 pl-3"><label>{{ 'FullName' | translate}}</label> <label style="color: red; padding-left: 3px">*</label></div>
+            <div class="form-group col-md-9">
+              <input
+                type="text"
+                class="form-control"
+                name="fullName"
+                [(ngModel)]="form.fullName"
+                required
+                maxlength="200"
+                #fullName="ngModel"
+                placeholder="{{'Type' | translate}} {{'FullName' | translate | lowercase}}"
+                [ngClass]="{ 'is-invalid': f.submitted && fullName.errors }"
+              />
+              <div *ngIf="f.submitted && fullName.errors" class="invalid-feedback">
+                <div *ngIf="fullName.errors['required']">{{'FullName' | translate}} {{'IsRequired' | translate}} </div>
+                <div *ngIf="fullName.errors['maxlength']">
+                  {{'FullName' | translate}} {{'MustNotExceed' | translate}} 200 {{'Characters' | translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--BirthDay-->
+          <div class="row mt-2">
+            <div class="col-md-3 mt-2 pl-3">
+              <label>{{'BirthDay' | translate}}</label>
+              <label style="color: red; padding-left: 3px">*</label>
+            </div>
+            <div class="col-md-4"> 
+              <datepicker 
+                type="text" 
+                class="form-control"
+                name="birthDay"
+                [(ngModel)]="form.birthDay"
+                #birthDay="ngModel"
+                [ngClass]="{ 'is-invalid': f.submitted && birthDay.errors }" 
+                class="datepicker"
+                required
+                [validate]="f.submitted && birthDay.errors"
+              >
+              </datepicker>
+              <div *ngIf="f.submitted && birthDay.errors" class="invalid-feedback">
+                <div *ngIf="birthDay.errors['required']">{{'BirthDay' | translate}} {{'IsRequired' | translate}}</div>
+                <div *ngIf="birthDay.errors['invalidDate']">{{'BirthDay' | translate}} {{'IsInValid' | translate}}</div>
+                <div *ngIf="birthDay.errors['invalidDateMoreThan18']">{{'NotEnough18YearsOld' | translate}}</div>
+              </div>
+            </div>
+
+            <!-- Gender -->
+            <div class="col-md-2 mt-2 pl-3">
+              <label>{{'Gender' | translate}}</label>
+              <label style="color: red; padding-left: 3px">*</label>
+            </div>
+            <div class="col-md-3"> 
+              <select 
+              class="form-control minimal" 
+              name="gender"
+              [(ngModel)]="form.gender"
+              required
+              style="max-width: 100%; min-width: fit-content; padding-right: 30px;"
+              #gender="ngModel"
+              [ngClass]="{ 'is-invalid': f.submitted && gender.errors }" 
+              >
+                <option [ngValue]="">{{'' | translate}}</option>
+                <option [ngValue]="1">{{'Male' | translate}}</option>
+                <option [ngValue]="2">{{'Female' | translate}}</option>
+                <option [ngValue]="3">{{'Other' | translate}}</option>
+              </select>
+              <div *ngIf="f.submitted && gender.errors" class="invalid-feedback">
+                <div *ngIf="gender.errors['required']">{{'Gender' | translate}} {{'IsRequired' | translate}}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PhoneNumber -->
+          <div class="row mt-2">
+            <div class="col-md-3 mt-2 pl-3"><label>{{'PhoneNumber' | translate}}</label> <label style="color: red; padding-left: 3px">*</label></div>
+            <div class="form-group col-md-9">
+              <input
+              type="text"
+              class="form-control"
+              name="phoneNumber"
+              [(ngModel)]="form.phoneNumber"
+              required
+              maxlength="10"
+              #phoneNumber="ngModel"
+              placeholder="{{'Type' | translate}} {{'PhoneNumber' | translate | lowercase}}"
+              (keypress)="keypressNumber($event)"
+              [ngClass]="{ 'is-invalid': f.submitted && phoneNumber.errors }"
+              />
+              <div *ngIf="f.submitted && phoneNumber.errors" class="invalid-feedback">
+                <div *ngIf="phoneNumber.errors['required']">{{'PhoneNumber' | translate}} {{'IsRequired' | translate}}</div>
+                <div *ngIf="phoneNumber.errors['maxlength']">{{'PhoneNumber' | translate}} {{'MustNotExceed' | translate}} 10 {{'Characters' | translate}}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="row mt-2">
+            <div class="col-md-3 mt-2 pl-3"><label>{{'Email'}}</label> <label style="color: red; padding-left: 3px">*</label></div>
+            <div class="form-group col-md-9">
+              <input
+                type="email"
+                class="form-control"
+                name="email"
+                [(ngModel)]="form.email"
+                required
+                email
+                #email="ngModel"
+                [ngClass]="{ 'is-invalid': f.submitted && email.errors }"
+                (keypress)="keypressEmail($event)"
+              />
+              <div *ngIf="f.submitted && email.errors" class="invalid-feedback">
+                <div *ngIf="email.errors['required']">{{'Email' | translate}} {{'IsRequired' | translate}}</div>
+                <div *ngIf="email.errors['email']">{{'Email' | translate}} {{'IsInValid' | translate}}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="row mt-2" *ngIf="!employee.userId">
+            <div class="col-md-3 mt-2 pl-3"><label>{{'Password' | translate}}</label> <label style="color: red; padding-left: 3px">*</label></div>
+            <div class="form-group input-group  col-md-9 ">
+              <input
+                #passwordField
+                type="password"
+                class="form-control"
+                name="password"
+                [(ngModel)]="form.password"
+                required
+                minlength="6"
+                maxlength="100"
+                #password="ngModel"
+                [ngClass]="{ 'is-invalid': f.submitted && password.errors }"
+              />
+              <span 
+                class="input-group-text right-text"
+                [ngClass]="(passwordField.type=='password')?' bi bi-eye-slash-fill':' bi bi-eye-fill'"
+                [style]="f.submitted && password.errors ? 'border-color: #dc3545; color: #cd3545 ; border-radius: 0rem 0.375rem 0.375rem 0rem' : ''"
+                (click)="passwordField.type=passwordField.type=='password'?'text':'password'" 
+                >
+              </span>
+              <div *ngIf="f.submitted && password.errors" class="invalid-feedback">
+                <div *ngIf="password.errors['required']">{{'Password' | translate}} {{'IsRequired' | translate}}</div>
+                <div *ngIf="password.errors['minlength']">
+                  {{'Password' | translate}} {{'MustBeAtLeast' | translate}} 6 {{'Characters' | translate}}
+                </div>
+                <div *ngIf="password.errors['maxlength']">
+                  {{'Password' | translate}} {{'MustNotExceed' | translate}} 100 {{'Characters' | translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Confirm Password -->
+          <div class="row mt-2" *ngIf="!employee.userId">
+            <div class="col-md-3 mt-2 pl-3"><label>{{'ConfirmPassword' | translate}}</label></div>
+              <div class="form-group input-group  col-md-9">
+                <input
+                  #confirmPasswordField
+                  type="password"
+                  class="form-control"
+                  name="confirmPassword"
+                  [(ngModel)]="form.confirmPassword"
+                  required
+                  #confirmPassword="ngModel"
+                  [ngClass]="{ 'is-invalid': f.submitted && confirmPassword.errors }"
+                />
+                <span 
+                    class="input-group-text right-text"
+                    [ngClass]="(confirmPasswordField.type=='password')?' bi bi-eye-slash-fill':' bi bi-eye-fill'"
+                    [style]="f.submitted && confirmPassword.errors ? 'border-color: #dc3545; color: #cd3545; border-radius: 0rem 0.375rem 0.375rem 0rem' : ''"
+                    (click)="confirmPasswordField.type=confirmPasswordField.type=='password'?'text':'password'" 
+                    >
+                </span>
+                <div
+                  *ngIf="f.submitted && confirmPassword.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="confirmPassword.errors['required']">
+                    {{'ConfirmPassword' | translate}} {{'IsRequired' | translate}}
+                  </div>
+                  <div *ngIf="confirmPassword.errors['matching']">
+                    {{'ConfirmPassword' | translate}} {{'NotMatch' | translate}}
+                  </div>
+                </div>
+            </div>
+          </div>
+
+          <!-- Button Save, Cancel -->
+          <div class="form-group mt-4" style="float: right;">
+            <button type="submit" class="btn btn-primary"> <i class="bi bi-save mr-1"></i> {{'Save' | translate}} </button>
+            <button type="button" class="btn btn-secondary ml-2" (click)="hide()"><i class="bi bi-x-lg mr-1"></i> {{'Cancel' | translate}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

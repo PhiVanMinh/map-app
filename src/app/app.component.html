@@ -1,0 +1,83 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="http://localhost:4200/">
+      <img [src]="'assets/img/logo_BA.png'" class="img-fluid logo-navbar ml-4">
+    </a>
+    <button 
+      class="navbar-toggler" 
+      type="button" 
+      data-bs-toggle="collapse" 
+      data-bs-target="#navbarSupportedContent" 
+      aria-controls="navbarSupportedContent" 
+      aria-expanded="false" 
+      aria-label="Toggle navigation"
+    >
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      <!-- Navbar center -->
+      <ul class="navbar-nav me-auto mb-lg-0  d-flex  justify-content-center">
+        <li class="nav-item ">
+          <a class="nav-link active nav-link-header " aria-current="page" href="https://bagps.vn/" target="_blank">{{'Home' | translate }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link-header nav-link " href="https://bagps.vn/san-pham-va-giai-phap" target="_blank"> {{'Product' | translate }} </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-header" href="//bagps.vn/tin-tuc-c10" target="_blank">{{'News' | translate }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-header" href="https://bagps.vn/mang-luoi" target="_blank">{{'Office' | translate }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-header" href="https://bagps.vn/huong-dan-dong-phi-dich-vu-ba-gps-d610" target="_blank">{{'Price' | translate }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-header" href="https://badoc.bagroup.vn/display/GPS/1.+HDSD+WEB+GPS" target="_blank">{{'UserManual' | translate }}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-header" href="https://bagps.vn/gioi-thieu/" target="_blank">{{'AboutUs' | translate }}</a>
+        </li>
+      </ul>
+      
+      <!-- Navbar right -->
+      <div class="nav-group">
+
+        <div class="nav-group" >
+            <button type="button" class="btn-outline-primary ag-in-cell-button tel-header ml-2 mt-1" >
+              <a href="tel:19006464"><i class="bi bi-telephone-fill ml-2 mr-2" style="color: rgb(3 200 245);"> 1900 6464 </i></a> 
+            </button>
+          <div class="language mt-1">
+            <span class="d-flex form-inline ml-2" >
+              <img src="{{flagImage}}" class="img-fluid flag">
+              <select 
+                class="form-control tmss-form-control text-dropdown text-translate ml-1" 
+                #selectedLang 
+                (change)="switchLang(selectedLang.value)"
+              >
+                <option *ngFor="let language of languages" 
+                  [value]="language.value"
+                  [selected]="language.value === translate.currentLang">
+                    {{ language.name }}
+                </option>
+              </select>
+            </span>
+          </div>
+        </div>
+
+        <div *ngIf="userIsAuthenticated" class="logout mt-1">
+          <a  class=" d-flex text-logout pl-0" (click)="logout()">
+            <span class="nav-text ml-2 mr-1"> {{'Logout' | translate}}  </span>
+            <i class="bi bi-box-arrow-right"></i>
+          </a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</nav>
+<router-outlet></router-outlet>
+<app-spinner></app-spinner>
+
+

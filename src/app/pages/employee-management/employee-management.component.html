@@ -1,0 +1,177 @@
+<div *ngIf="'user.view' | permission: roles" id="container" style="height: 650px; ">
+  <fieldset class="fieldset-border ph-0 mt-4">
+    <div class="header">
+      <h6 class="card-header mt-3 ml-2" style="color: #056ec9;">
+        {{ "USERLIST" | translate | uppercase }}
+      </h6>
+      <div class="container-fluid">
+        <div class="row mt-1 ">
+
+          <!-- Giá trị lọc và loại lọc -->
+          <div class="col-md-4 m-w-4 ml-2 ">
+            <div class="input-group " >
+                <input class="form-control tmss-form-control hiden-border-right mt-1"
+                  type="text"
+                  name="valueFilter"
+                  [(ngModel)]="valueFilter"
+                  placeholder="{{'EnterValueFilter' | translate}}"
+                >
+                <span
+                  class="input-group-text right-text mt-1"
+                  [ngClass]="'bi bi-search'"
+                >
+                </span>
+                <select class="form-control minimal mt-1" style="min-width: fit-content; padding-right: 30px;"  [(ngModel)]="typeFilter">
+                  <option [ngValue]="1">{{'UserName' | translate}}</option>
+                  <option [ngValue]="2">{{'FullName' | translate}}</option>
+                  <option [ngValue]="3">Email</option>
+                  <option [ngValue]="4">{{'PhoneNumber' | translate}}</option>
+                </select>
+            </div>
+          </div>
+
+          <!-- Giới tính -->
+          <div class="col-md-2 m-w-2 ml-2">
+            <div class="input-group">
+              <span class="input-group-text left-text border-0 mt-1" style="min-width: 94px;" >
+                {{ 'Gender' | translate }}
+              </span>
+              <select class="form-control minimal mt-1" style="min-width: fit-content; padding-right: 30px;" [(ngModel)]="gender">
+                <option [ngValue]="0">{{'' | translate}}</option>
+                <option [ngValue]="1">{{'Male' | translate}}</option>
+                <option [ngValue]="2">{{'Female' | translate}}</option>
+                <option [ngValue]="3">{{'Other' | translate}}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Từ ngày và đến ngày -->
+          <div class="col-md-2 m-w-2 mt-1 ml-2">
+            <datepicker [text]="'FromDate'" [(ngModel)]="fromDate" (ngModelChange)="changeDate('fromDate')"></datepicker>
+          </div>
+          <div class="col-md-2 m-w-2 mt-1 ml-2">
+            <datepicker [text]="'ToDate'" [(ngModel)]="toDate" [minDate]="minDate" [maxDate]="maxDate"></datepicker>
+          </div>
+
+          <!-- Button tìm kiếm -->
+          <div class="col-md-1 ml-2">
+            <button class="btn btn-sm btn-primary btn-block mr-2 mt-1" style="font-size: small; min-width: 96px; height: 38px;" (click)="search()">
+              <i class="bi bi-search"></i>
+              <span class="ml-1">{{'Search' | translate}}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Button thêm và xóa -->
+        <div class="row mt-1" >
+          <div class="ui-g-12 mt-2 ml-2">
+              <button *ngIf="'user.create' | permission: roles" class="btn btn-outline-primary btn-block mr-2 mt-1" style="font-size: small; min-width: 96px" (click)="edit()">
+                <i class="bi bi-plus"></i>
+                <span class="ml-1">{{'Add' | translate}}</span>
+              </button>
+              <button *ngIf="'user.delete' | permission: roles" class="btn btn-outline-danger btn-block mr-2 mt-1" style="font-size: small; min-width: 96px" (click)="deleteRange()">
+                <i class="bi bi-trash3-fill"></i>
+                <span class="ml-1">{{'Delete' | translate}}</span>
+              </button>
+              <button *ngIf="'user.createOrEdit' | permission: roles" class="btn btn-outline-success btn-block mr-2 mt-1" style="font-size: small; min-width: 96px" (click)="exportExcel()">
+                <i class="bi bi-printer-fill"></i>
+                <span class="ml-1">{{'Export' | translate}}</span>
+              </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="main mt-4 mb-4">
+      <div class="row mt-4">
+        <div class="col-12 ">
+
+          <!-- Bảng thông tin nhân viên -->
+          <div class="table-responsive table-scroll ml-2 mr-2">
+            <table class="table table-striped">
+              <thead>
+                <tr style="vertical-align: middle;">
+                  <th scope="col" style="width: 50px;">{{'STT' | translate}}</th>
+                  <th scope="col" style="width: 70px;">{{'Selected' | translate}}</th>
+                  <th scope="col">{{'FullName' | translate}}</th>
+                  <th scope="col">{{'UserName' | translate}}</th>
+                  <th scope="col">{{'BirthDay' | translate}}</th>
+                  <th scope="col">{{'Gender' | translate}}</th>
+                  <th scope="col">{{'PhoneNumber' | translate}}</th>
+                  <th scope="col">Email</th>
+                  <th scope="col" *ngIf="'user.update' | permission: roles">{{'Edit' | translate}}</th>
+                  <th scope="col" *ngIf="'user.delete' | permission: roles">{{'Delete' | translate}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let dataItem of rowData; let i = index" [attr.data-index]="i">
+                  <td class="text-center" style="width: 50px;">{{ fromRecord + i }}</td>
+                  <td class="text-center" style="width: 70px;">
+                    <input type="checkbox" [checked]="dataItem.selected" [(ngModel)]="dataItem.selected"/>
+                  </td>
+                  <td class="text-left">
+                    {{ dataItem.empName }}
+                  </td>
+                  <td class="text-center">{{ dataItem.userName }}</td>
+                  <td class="text-center">{{dataItem.birthDay | date: 'dd/MM/yyyy'}}</td>
+                  <td class="text-center">{{ dataItem.gender == 1 ? ('Male' | translate) :(dataItem.gender == 2 ? ('Female' | translate): ('Other' | translate)) }}</td>
+                  <td class="text-center">{{ dataItem.phoneNumber }}</td>
+                  <td class="text-left">{{ dataItem.email }}</td>
+                  <td class="text-center" *ngIf="'user.update' | permission: roles">
+                    <i class="bi bi-pencil-square" style="color: green;" (click)="edit(dataItem)"></i>
+                  </td>
+                  <td class="text-center" *ngIf="'user.delete' | permission: roles">
+                    <i class="bi bi-trash3-fill" style="color: red;" (click)="delete(dataItem)"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Phân trang -->
+          <div class="pagination-table clearfix ml-2 mr-2 ">
+            <div class="pagination-left ml-1" style="overflow: auto;">
+              <ngb-pagination
+                style="float: left;"
+                [collectionSize]="collectionSize"
+                [(page)]="page"
+                [pageSize]="pageSize"
+                (pageChange)="search()"
+                [boundaryLinks]="true"
+                [maxSize]="5"
+                [rotate]="true"
+                [ellipses]="false"
+                size="sm"
+              >
+              </ngb-pagination>
+
+              <!-- Số lượng bản ghi trên 1 trang -->
+              <div class="d-flex page-size" style="float: right;">
+                <select class="form-control tmss-form-control text-dropdown ml-2" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="search()">
+                  <option [ngValue]="5">5</option>
+                  <option [ngValue]="10">10</option>
+                  <option [ngValue]="20">20</option>
+                </select>
+                <span class="ml-1">
+                  {{'LinePerPage' | translate}}
+                </span>
+              </div>
+            </div>
+
+            <div class=" pagination-right mt-1 mr-1">
+              <span>
+                {{ fromRecord }} - {{ toRecord }} {{'OutOf' | translate}} {{ collectionSize }} {{'Lines' | translate }}
+              </span>
+              <i class="bi bi-arrow-clockwise ml-1"></i>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+<create-or-edit-employee #createOrEditEmployee (modalSave)="modalSave($event)"></create-or-edit-employee>
+<confirm-modal #confirmModal (modalAccept)="acceptDelete($event)"></confirm-modal>

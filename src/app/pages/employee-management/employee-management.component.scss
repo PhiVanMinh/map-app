@@ -1,0 +1,121 @@
+:host ::ng-deep {
+  .input-group-text.left-text {
+     min-width: 94px;
+  }
+}
+
+.pagination-table {
+    background-color: #dee2e69e;
+}
+
+.clearfix {
+    overflow: auto;
+}
+
+.pagination-left {
+    float: left;
+    padding: 4px 0;
+}
+
+.pagination-right {
+    float: right;
+}
+
+thead, tbody, tfoot, tr, td, th {
+    border-width: 1px;
+}
+
+th {
+    background-color: #049ce5;
+    color: white;
+    text-align: center;
+    font-weight: 600;
+
+}
+
+tr {
+  line-height: 20px;
+}
+
+table {
+    margin-bottom: 0;
+}
+
+.bi:hover {
+    cursor: pointer
+}
+
+.hiden-border-left {
+    border-left: hidden;
+  }
+
+  .hiden-border-right {
+    border-right: hidden;
+  }
+  
+  ::-webkit-scrollbar{
+    height: 4px;
+    width: 4px;
+    background: none;
+  }
+  ::-webkit-scrollbar-thumb{
+    background: gray;
+    border-radius: 10px;
+  }
+
+  .row {
+    --bs-gutter-x: 0;
+  }
+
+  .width-input-group {
+    width: 66.6666667%;
+  }
+
+  tr, th {
+    word-wrap: break-word;
+    font-size: medium;
+  }
+
+  .table-scroll {
+    overflow: auto;
+    height: 410px;
+    border: solid 1px;
+    border-color: rgba(222, 226, 230, 0.6196078431)
+  }
+
+  fieldset {
+    margin: 0.6rem;
+  }
+
+  .m-w-2 {
+    min-width: 220px;
+  }
+
+  .m-w-4 {
+    min-width: 324px;
+  }
+
+  .table-scroll thead th { position: sticky; top: 0; z-index: 1; }
+
+  @media screen and (max-width: 770px) {
+    .width-input-group {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 588px) {
+    .pagination-right {
+      width: 98%;
+    }
+    
+  }
+
+  @media screen and (max-width: 365px) {
+    .page-size {
+      width: 100%;
+    }
+    .m-w-2, .m-w-4 {
+      min-width: unset;
+    }
+  }
+  

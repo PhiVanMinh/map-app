@@ -1,0 +1,184 @@
+<div style="position: relative ;">
+  <div id="demo" class="carousel slide pl-0 pr-0" data-bs-ride="carousel">
+
+    <!-- Indicators/dots -->
+    <ol class="carousel-indicators">
+      <li  data-bs-target="#demo" data-bs-slide-to="0" class="active"></li>
+      <li  data-bs-target="#demo" data-bs-slide-to="1"></li>
+      <li  data-bs-target="#demo" data-bs-slide-to="2"></li>
+      <li  data-bs-target="#demo" data-bs-slide-to="3"></li>
+      <li  data-bs-target="#demo" data-bs-slide-to="4"></li>
+    </ol>
+
+    <!-- Banner -->
+    <div class="carousel-inner" >
+      <div 
+        *ngFor=" let value of news; let isFirst = first" [ngClass]="{active:isFirst}"
+        class="carousel-item h-100 w-100"
+      >
+        <img 
+          src="{{value.img}}" 
+          class="d-block w-slide  h-100"
+        >
+
+         <!-- News Headlines -->
+        <div 
+          *ngIf="value.link"
+          class="card caption"
+        >
+          <div class="row" style="width: 100%;">
+            <div class="col-md-10 mt-2" >
+              <h6 class="title-detail ml-2">{{value.title}}</h6>
+              <p class="short-content ml-2">{{ ( value.shortContent.length > 200)? (value.shortContent | slice: 0 : 200)+'...':( value.shortContent) }}</p>
+            </div>
+            <a href="{{value.link}}"  class="col-md-2" style="align-self: center; min-width: 120px;" target="_blank">
+              <button type="button" class="btn btn-primary btn-detail">
+                  {{'Detail' | translate}} 
+                  <i class="bi bi-arrow-right ml-1"></i>
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Form -->
+  <div class="login">
+    <div class="container-fluid ">
+      <div class="card card-0 border-0">
+        <form class="login-form">
+          <div class="logo-login mt-5">
+            <img
+              src="assets/img/logo_BA.png"
+              style="height: auto; width: 38%;"
+              class="img-fluid"
+              alt="..."
+            >
+          </div>
+
+          <!-- Input UserName -->
+          <div class="row px-3 mt-4"> 
+            <div class="input-group">
+              <span class="input-group-text left-text mb-2" [ngClass]="'bi bi-person-circle'"></span>
+              <input 
+                class="form-control tmss-form-control hiden-border-left mb-2" 
+                type="text" 
+                [(ngModel)]="userName" 
+                name="userName"
+                placeholder="{{'UserName' | translate}}"
+                maxlength="50"
+                (keypress)="keypressUserName($event)"
+              >
+            </div>
+          </div> 
+
+          <!-- Input Password -->
+          <div class="row px-3"> 
+              <div class="input-group">
+                <span class="input-group-text left-text mb-2" [ngClass]="'bi bi-lock-fill'"></span>
+                <input
+                  #passwordField
+                  class="form-control tmss-form-control hiden-border mb-2"
+                  type="password"
+                  name="password"
+                  [(ngModel)]="password"
+                  placeholder="{{'Password' | translate}}"
+                  maxlength="200"
+                >
+                <span 
+                  class="input-group-text right-text mb-2"
+                  [ngClass]="(passwordField.type=='password')?' bi bi-eye-slash-fill':' bi bi-eye-fill'"
+                  (click)="passwordField.type=passwordField.type=='password'?'text':'password'" 
+                >
+                </span>
+              </div> 
+          </div>
+
+          <!-- 2 column grid layout for inline styling -->
+          <div class="row px-3 mt-1 mb-2">
+            <div class="input-group">
+              <div class="col-6 pl-0">
+
+                <!-- Checkbox -->
+                <input
+                  class="check-box"
+                  type="checkbox"
+                  id="check1"
+                  name="option1"
+                  [(ngModel)]="rememberMe"
+                >
+                <label>{{'RememberMe' | translate}}</label>
+              </div>
+          
+              <div class="col-6 d-flex justify-content-end ">
+
+                <!-- Simple link -->
+                <a href="#!">{{'ForgotPassword' | translate}}</a>
+              </div>
+            </div>
+          </div>
+        
+          <!-- login button -->
+          <button
+            type="button"
+            class="btn btn-primary btn-block mb-4"
+            (click)="onSubmit()"
+          >
+          {{'SignIn' | translate}}
+        </button>
+        
+          <div class="logo-login mt-2">
+            <img src="assets/img/QR_img.png"  class="qr-img">
+          </div>
+        </form>
+        <div class="bg-blue py-4">
+          <div class="row px-3"> <small class="qr-footer"> {{'ScanQrToInstallApp' | translate}}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Offices Information -->
+<div class="footer">
+  <div  class="scrollmenu col-10 ml-2">
+    <div id="office" class="row" (wheel)="onWheel($event)">
+      <div class="card-footer" *ngFor=" let value of offices;">
+        <div class="card-body">
+          <h5 class="card-title">{{value.name}}</h5>
+          <p class="card-text">{{ value.address }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Link Social Network -->
+  <div class="pl-2 mt-3" style="width: 100%; min-width: 90px;" >
+    <div class="item-center">
+      <a  href="https://play.google.com/store/apps/details?id=vn.bagps.gpsmobile" target="_blank">
+        <img src="assets/img/gg_play_store.png" class="img-ch">
+      </a>
+    </div>
+    <div class=" item-center mt-1">
+      <a  href="https://apps.apple.com/us/app/ba-gps/id1466206178?ls=1" target="_blank">
+        <img src="assets/img/apple_store.png"  class="img-app" >
+      </a>
+    </div>
+    <div class="d-flex item-center mt-2">
+      <a  href="https://www.facebook.com/giamsathanhtrinhbinhanh/" target="_blank">
+        <img src="assets/img/facebook.png"  class="img-logo" >
+      </a>
+      <a class="ml-2" href="https://zalo.me/1958838581480438876" target="_blank">
+        <img src="assets/img/zalo.png"  class="img-logo" >
+      </a>
+      <a class="ml-2" href="https://www.youtube.com/@BAGPS" target="_blank" >
+        <img src="assets/img/youtube.png"  class="img-logo">
+      </a>
+    </div>
+  </div>
+</div>
+
+
+

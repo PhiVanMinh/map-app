@@ -1,0 +1,161 @@
+<div  id="container" style="height: 650px; ">
+  <fieldset class="fieldset-border ph-0 mt-4">
+    <div class="header">
+      <h6 class="card-header mt-3 ml-1" style="color: #056ec9;">
+        {{ "SpeedViolationReport" | translate | uppercase }}
+      </h6>
+        <div class="row mt-1"  style="flex-shrink: 0;">
+
+          <!-- Từ ngày -->
+          <div class="col-md-3 m-w-2 ml-1 mb-1">
+            <span> {{'FromDate' | translate}}</span>
+            <div class="input-group ph-0">
+              <input type="time" class="form-control st-time mr-1 mt-1" [(ngModel)]="timeFromDate"/>
+              <datepicker  class="col-md-7 f-datepicker pr-1 mt-1" [(ngModel)]="fromDate" (ngModelChange)="changeDate('fromDate')"></datepicker>
+            </div>
+          </div>
+
+          <!-- Đến ngày -->
+          <div class="col-md-3 m-w-2 ml-1 mb-1 ">
+            <span> {{'ToDate' | translate}}</span>
+            <div class="input-group ph-0">
+              <input type="time" class="form-control st-time mr-1 mt-1" [(ngModel)]="timeToDate" />
+              <datepicker class="col-md-7 f-datepicker pr-1 mt-1" [(ngModel)]="toDate" [minDate]="minDate" [maxDate]="maxDate"></datepicker>
+            </div>
+          </div>
+
+          <!-- Chọn phương tiện -->
+          <div class="col-md-4 ml-1 pr-1 mb-1">
+            <span> {{"Vehicle" | translate}}</span>
+            <ng-multiselect-dropdown
+              class="mt-1"
+              [placeholder]="'Chọn phương tiện'"
+              [settings]="dropdownSettings"
+              [data]="dropdownList"
+              [(ngModel)]="selectedItems"
+            >
+            </ng-multiselect-dropdown>
+          </div>
+
+          <!-- Button xem báo cáo -->
+            <button 
+              class="btn btn-sm btn-primary btn-block ml-1 mb-1" 
+              (click)="search()">
+              <i class="bi bi-search"></i>
+              <span class="ml-1">{{'ViewReport' | translate}}</span>
+            </button>
+
+            <button *ngIf="'user.createOrEdit' | permission: roles" 
+              class="btn btn-outline-success btn-block mr-2 ml-1 mb-1"
+              (click)="exportExcel()">
+              <i class="bi bi-printer-fill"></i>
+              <span class="ml-1">{{'ExportReport' | translate}}</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="main mt-4 mb-4">
+      <div class="row mt-4">
+        <div class="col-12 ">
+
+          <!-- Bảng thông tin vi phạm -->
+          <div class="table-responsive table-scroll ml-1 mr-1">
+            <table class="table table-striped">
+              <thead>
+
+                <tr style="vertical-align: middle;">
+                  <th rowspan="2" style="min-width: 50px;">{{'STT' | translate}}</th>
+                  <th rowspan="2" style="min-width: 110px;">{{'PlateNo' | translate}}</th>
+                  <th rowspan="2">{{'Vehicle' | translate}}</th>
+                  <th rowspan="2" style="min-width: 175px;">{{'TransportType' | translate}}</th>
+                  <th scope="col" colspan="6">{{'TimesSpeedViolation' | translate}}</th>
+                  <th scope="col" colspan="3">{{'Distance' | translate}}</th>
+                  <th scope="col" colspan="3">{{'Time' | translate}}</th>
+                </tr>
+
+                <tr style="vertical-align: middle;">
+                  <th class="child-header-1">{{'5km/h - 10km/h' | translate}}</th> 
+                  <th class="child-header-1">{{'10km/h - 20km/h' | translate}}</th> 
+                  <th class="child-header-1">{{'20km/h - 35km/h' | translate}}</th> 
+                  <th class="child-header-1">{{'Over' | translate}} 35km/h</th> 
+                  <th>{{'Total' | translate}}</th> 
+                  <th style="width: 145px; min-width: 120px;">{{'TimesViolation' | translate}}/ 1000 Km {{'OfDriving' | translate}}</th> 
+
+                  <th class="child-header-2">{{'KmOfViolation' | translate}}</th>
+                  <th class="child-header-2">{{'Sum' | translate}} Km {{'OfDriving' | translate}}</th>
+                  <th style=" min-width: 65px;">{{'Ratio' | translate}} %</th>
+
+                  <th class="child-header-2">{{'TimeOfViolation' | translate}}</th>
+                  <th class="child-header-2">{{'Sum' | translate}} {{'Time' | translate | lowercase}} {{'OfDriving' | translate}}</th>
+                  <th style=" min-width: 65px;">{{'Ratio' | translate}} %</th>
+                </tr>
+
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let dataItem of rowData; let i = index" [attr.data-index]="i" style="vertical-align: middle;">
+                  <td class="text-center" style="width: 50px;">{{ fromRecord + i }}</td>
+                  <td class="text-left">
+                    {{ dataItem.vehiclePlate }}
+                  </td>
+                  <td class="text-center">{{ dataItem.privateCode }}</td>
+                  <td class="text-left">{{dataItem.transportType}}</td>
+                  <td class="text-center">{{ dataItem.speedVioLevel1 }}</td>
+                  <td class="text-center">{{ dataItem.speedVioLevel2 }}</td>
+                  <td class="text-center">{{ dataItem.speedVioLevel3 }}</td>
+                  <td class="text-center">{{ dataItem.speedVioLevel4 }}</td>
+                  <td class="text-center">{{ dataItem.totalSpeedVio }}</td>
+                  <td class="text-center">{{ dataItem.ratioSpeedVio ? dataItem.ratioSpeedVio.toFixed(2) : null }}</td>
+                  <td class="text-right">{{ formatValueKm(dataItem.totalKmVio)}}</td>
+                  <td class="text-right">{{ formatValueKm(dataItem.totalKm)}}</td>
+                  <td class="text-center">{{ dataItem.ratioKmVio }}</td>
+                  <td class="text-center">{{dataItem.totalTimeVio}}</td>
+                  <td class="text-center">{{dataItem.totalTime}}</td>
+                  <td class="text-center">{{ dataItem.ratioTimeVio}}</td> 
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Phân trang -->
+          <div class="pagination-table clearfix ml-1 mr-1 ">
+            <div class="pagination-left ml-1" style="overflow: auto;">
+              <ngb-pagination
+                style="float: left;"
+                [collectionSize]="collectionSize"
+                [(page)]="page"
+                [pageSize]="pageSize"
+                (pageChange)="search()"
+                [boundaryLinks]="true"
+                [maxSize]="5"
+                [rotate]="true"
+                [ellipses]="false"
+                size="sm"
+              >
+              </ngb-pagination>
+
+              <!-- Số lượng bản ghi trên 1 trang -->
+              <div class="d-flex page-size" style="float: right;">
+                <select class="form-control tmss-form-control text-dropdown ml-2" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="search(true)">
+                  <option [ngValue]="10">10</option>
+                  <option [ngValue]="20">20</option>
+                  <option [ngValue]="50">50</option>
+                </select>
+                <span class="ml-1">
+                  {{'LinePerPage' | translate}}
+                </span>
+              </div>
+            </div>
+
+            <div class=" pagination-right mt-1 mr-1 ml-1">
+              <span>
+                {{ fromRecord }} - {{ toRecord }} {{'OutOf' | translate}} {{ collectionSize }} {{'Lines' | translate }}
+              </span>
+              <i class="bi bi-arrow-clockwise ml-1"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>

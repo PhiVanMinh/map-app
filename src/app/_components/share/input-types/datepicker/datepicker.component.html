@@ -1,0 +1,9 @@
+
+<div class="input-group remove-border-right-radius" [ngClass]="className ? className : ''" style="position: relative;">
+  <span *ngIf="text" class="input-group-text left-text" style="border: none;">{{ text | translate }}</span>
+  <input type="text" #datepicker="bsDatepicker" mask="00/00/0000" name="datePicker" class="form-control tmss-form-control" [class.required]="isRequired" [minDate]="minDate" [maxDate]="maxDate" [disabled]="isDisabled ? true : false" bsDatepicker datePickerMomentModifier [(bsValue)]="value"
+      autocomplete="off" [ngClass]="validate ? 'datepicker-validate' : ''" (bsValueChange)="onValueChange($event)" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY', containerClass: 'theme-dark-blue', }" (keypress)="keypress($event)"  (keydown)="keydown($event)" />
+  <span class="input-group-text right-text" [ngClass]="validate ? 'datepicker-validate' : ''" (click)="!isDisabled ? openDatepicker(): undefined" [attr.aria-expanded]="datepicker.isOpen">
+  <i class="bi bi-calendar3" style="color: darkblue;"></i>
+</span>
+</div>
