@@ -63,4 +63,10 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authenticationService.logout();
     this.router.navigate(['/login']);
   }
+
+   // Mở chức năng
+   showLink(link: string) {
+    this.authenticationService.logout();
+    this.router.navigate([`/${link}`]);
+  }
 }

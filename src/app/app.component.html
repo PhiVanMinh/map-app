@@ -18,26 +18,11 @@
 
       <!-- Navbar center -->
       <ul class="navbar-nav me-auto mb-lg-0  d-flex  justify-content-center">
-        <li class="nav-item ">
-          <a class="nav-link active nav-link-header " aria-current="page" href="https://bagps.vn/" target="_blank">{{'Home' | translate }}</a>
+        <li class="nav-item">
+          <a class="nav-link-header nav-link " target="_blank" (click)="showLink('online')"> {{'Giám sát' | translate }} </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link-header nav-link " href="https://bagps.vn/san-pham-va-giai-phap" target="_blank"> {{'Product' | translate }} </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link nav-link-header" href="//bagps.vn/tin-tuc-c10" target="_blank">{{'News' | translate }}</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link nav-link-header" href="https://bagps.vn/mang-luoi" target="_blank">{{'Office' | translate }}</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link nav-link-header" href="https://bagps.vn/huong-dan-dong-phi-dich-vu-ba-gps-d610" target="_blank">{{'Price' | translate }}</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link nav-link-header" href="https://badoc.bagroup.vn/display/GPS/1.+HDSD+WEB+GPS" target="_blank">{{'UserManual' | translate }}</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link nav-link-header" href="https://bagps.vn/gioi-thieu/" target="_blank">{{'AboutUs' | translate }}</a>
+          <a class="nav-link nav-link-header" target="_blank" (click)="showLink('route')">{{'Lộ trình' | translate }}</a>
         </li>
       </ul>
       

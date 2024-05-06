@@ -32,6 +32,9 @@ import { EmployeeManagementComponent } from './pages/employee-management/employe
 import { LoginComponent } from './pages/login/login.component';
 import { ReportSpeedViolationComponent } from './pages/report-speed-violation/report-speed-violation.component';
 import { routing } from './routes';
+import { OnlineComponent } from './pages/online/online.component';
+import { RouteComponent } from './pages/route/route.component';
+import { LeftPanelComponent } from './pages/left-panel/left-panel.component';
 
 defineLocale('vi', viLocale);
 
@@ -56,7 +59,10 @@ const maskConfig: Partial<IConfig> = {
     ValidateBirthdayDirective,
     MatchPasswordDirective,
 
-    ReportSpeedViolationComponent
+    ReportSpeedViolationComponent,
+    // OnlineComponent,
+    // RouteComponent,
+    LeftPanelComponent
   ],
   imports: [
     CommonModule,

@@ -25,6 +25,10 @@
               "src/polyfills.ts"
             ],
             "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "leaflet",
+              "leaflet.markercluster"
+            ],
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
@@ -37,11 +41,14 @@
               "node_modules/alertifyjs/build/css/themes/bootstrap.min.css",
               "src/styles.scss",
               "node_modules/ngx-toastr/toastr.css",
-              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css"
+              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
+              "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "node_modules/alertifyjs/build/alertify.min.js"
+              "node_modules/alertifyjs/build/alertify.min.js",
+              "node_modules/leaflet/dist/leaflet.js",
+              "node_modules/leaflet.browser.print/dist/leaflet.browser.print.min.js"
             ]
           },
           "configurations": {

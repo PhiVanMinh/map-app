@@ -1,0 +1,111 @@
+<div id="left-panel-container" setFullHeight>
+  <div id="left-panel" class="box-shadow" [ngClass]="{'left-panel-show':isShowLeftPanel}" [style.width.px]="leftPanelWidth">
+    <!-- Nút ẩn panel -->
+    <button id="btnHidePanel" class="btn btn-link bg-primary text-decoration-none" (click)="isShowLeftPanel=!isShowLeftPanel"
+      [title]="isShowLeftPanel?'Ẩn panel':'Hiển thị panel'">
+      <i class="fas fa-caret-up"></i>
+    </button>
+    <!-- Khu vực lọc dữ liệu -->
+    <div id="filter">
+      <div class="row tim-kiem flex-nowrap">
+        <div class="col-auto p-0">
+          <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="{{ listSearchTypes[currentSearchType].iconUrl }}" />
+          </button>
+          <div class="dropdown-menu">
+            <a *ngFor="let type of listSearchTypes; let i = index" class="dropdown-item" (click)="changeSearchType(i)"><img src="{{ type.iconUrl }}" class="pr-1" />{{ type.dropdownText |
+              translate }}</a>
+          </div>
+        </div>
+        <div class="col p-0">
+          <!-- Tìm xe -->
+          <!-- <ng-container *ngIf="currentSearchType === 0; else FindLandmark">
+            <app-combobox #comboboxSearchRef [items]="listCommon|vehicleSort" [bindValue]="VEHICLE_FIELDS.id" [bindLabel]="VEHICLE_FIELDS.privateCode"
+              [enableCopySelected]="true" [placeholder]="LanguageKeys.CommonKeys.EnterVehicle" (selectedItemsChange)="onDropdownVehicleSelected($event)"
+              iconUrl="/assets/images/common/search-blue.png">
+            </app-combobox>
+          </ng-container> -->
+          <!-- Tìm điểm -->
+          <!-- <ng-template #FindLandmark>
+            <ng-container *ngIf="currentSearchType === 1; else TimToaDo">
+              <app-combobox #comboboxSearchRef [placeholder]="LanguageKeys.LandmarkKeys.EnterLandmark" [items]="listLandMark" [bindValue]="LANDMARK_FIELDS.id"
+                [bindLabel]="LANDMARK_FIELDS.name" (selectedItemsChange)="onDropdownLandmarkSelected($event)" iconUrl="/assets/images/common/search-blue.png">
+              </app-combobox>
+            </ng-container>
+          </ng-template> -->
+          <!-- Tìm tọa độ -->
+          <!-- <ng-template #TimToaDo>
+            <input type="text" class="findLatlng" [(ngModel)]="searchLatLng" (keyup)="onEnterFindLatlng($event)" *ngIf="currentSearchType === 2"
+              [placeholder]="listSearchTypes[currentSearchType].placeHolder | translate" />
+            <img class="combobox-right-icon" src="/assets/images/common/search-blue.png" (click)="onEnterFindLatlng($event,true)" />
+          </ng-template> -->
+        </div>
+      </div>
+      <!-- Lọc nhóm xe -->
+      <!-- <app-select-vehicle-group #cbGroup [(items)]="listVehicleGroup" [vehicles]="vehicles" [enableRecount]="true" (itemsChange)="onListVehicleGroupChanged()"
+        [forVehicleOnline]="true" [(selectedItems)]="selectedGroups" (selectedItemsChange)="onChangeSelectedGroup()" [requiredCompany]="false"
+        [(selectedCompany)]="selectedCompany" (selectedCompanyChange)="onSelectedCompanyChange()">
+      </app-select-vehicle-group> -->
+      <!-- lọc trạng thái xe -->
+      <!-- <div class="icon-trang-thai-xe" (wheel)="onStatesWheel($event)">
+        <a id="arrowL">
+          <i class="fas fa-chevron-left"></i>
+        </a>
+        <a id="arrowR">
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <table>
+          <tr>
+            <td (click)="changeStateFilter(-1)" title="{{ LanguageKeys.CommonKeys.ViewAll | translate }}" class="state-selected filter-all">
+              <div class="img-container">
+                <div class="count-virtual-scroll text-black">{{ listByStates?.length || 0 }}</div>
+                <hr />
+                <div class="count-list-vehicles text-black">{{ vehicles.length }}</div>
+              </div>
+              <div class="state-text">{{ LanguageKeys.CommonKeys.All | translate }}</div>
+            </td>
+            <td *ngFor="let stateF of statesFilter" (click)="changeStateFilter(stateF.value)"
+              [title]=" (LanguageKeys.CommonKeys.ClickToFilter | translate) + ' ' + ((stateF.tooltip || stateF.name) | translate) ">
+              <span class="badge badge-danger">{{ (listCommon|vehicleFilter:null:null:stateF.value).length }}</span>
+              <div class="img-container"><img [src]="stateF.img" /></div>
+              <div class="state-text">{{ stateF.name | translate }}</div>
+            </td>
+          </tr>
+        </table>
+      </div> -->
+    </div>
+    <!-- Khu vực danh sách xe--------------------- -->
+    <div class="row" id="dsxe-tool">
+      <div class="col">
+        <b class="text-primary">{{ 'ListVehicle' | translate }}</b>
+      </div>
+      <div class="col-auto">
+        <button [title]="'VehicleStatus' | translate" class="btn btn-primary" (click)="showSystemStatusForm = true">
+          <i class="fas fa-car"></i>
+        </button>
+      </div>
+      <div class="col-auto">
+        <button [title]="'ConfigVehicleVisible' | translate" class="btn btn-primary" (click)="showConfigVisible = true">
+          <i class="fas fa-cog"></i>
+        </button>
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-primary" (click)="getListVehicleInit()" [title]="'Refresh' | translate">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-primary"  [title]="'VehicleColorMeaning' | translate">
+          <i class="fas fa-question"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Danh sách xe -->
+    <!-- <app-virtual-scroll #appScroll [listVehicles]="listByStates" [isShowLeftPanel]=" isShowLeftPanel" [showVirtualScroll]="vehicles.length > 0"
+      [listVehicleGroup]="listVehicleGroup" [selectedGroups]="selectedGroups" (vehicleRowClick)="onVehicleRowClick($event)"></app-virtual-scroll> -->
+    <!-- Hiển thị khi không có dữ liệu -->
+    <div class="text-center no-data p-3" *ngIf="!vehicles.length">
+      {{ 'Không có dữ liệu' }}
+    </div>
+  </div>
+</div>
