@@ -54,17 +54,16 @@ export class LeafletService implements OnDestroy  {
   //   return tile;
   // }
 
-  initMap(): void {
-    this.map = L.map('map', {
+  initMap(id: string): void {
+    this.map = L.map(id, {
       center: [ 21.0227784, 105.8163641],
-      zoom: 15
+      zoom: 15,
+      zoomControl: false
     });
 
-    // const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //   maxZoom: 18,
-    //   minZoom: 3,
-    //   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    // });
+    L.control.zoom({
+      position: 'topright' // Đặt vị trí nút zoom ở góc phải trên
+    }).addTo(this.map);
 
       const tiles = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&hl=vi-vn', {
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],

@@ -60,8 +60,8 @@ const maskConfig: Partial<IConfig> = {
     MatchPasswordDirective,
 
     ReportSpeedViolationComponent,
-    // OnlineComponent,
-    // RouteComponent,
+    OnlineComponent,
+    RouteComponent,
     LeftPanelComponent
   ],
   imports: [
@@ -87,7 +87,7 @@ const maskConfig: Partial<IConfig> = {
       preventDuplicates: true,
       timeOut: 3000,
       // easing: "ease-in"
-      
+
     }),
     BsDatepickerModule.forRoot(),
     ModalModule.forRoot(),
@@ -109,7 +109,7 @@ const maskConfig: Partial<IConfig> = {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { 
+export class AppModule {
   constructor(
     private bsLocaleService: BsLocaleService
    ) {

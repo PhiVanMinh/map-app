@@ -3,7 +3,7 @@
     <!-- Nút ẩn panel -->
     <button id="btnHidePanel" class="btn btn-link bg-primary text-decoration-none" (click)="isShowLeftPanel=!isShowLeftPanel"
       [title]="isShowLeftPanel?'Ẩn panel':'Hiển thị panel'">
-      <i class="fas fa-caret-up"></i>
+      <i class="bi bi-caret-up"></i>
     </button>
     <!-- Khu vực lọc dữ liệu -->
     <div id="filter">
@@ -81,22 +81,22 @@
       </div>
       <div class="col-auto">
         <button [title]="'VehicleStatus' | translate" class="btn btn-primary" (click)="showSystemStatusForm = true">
-          <i class="fas fa-car"></i>
+          <i class="bi bi-car"></i>
         </button>
       </div>
       <div class="col-auto">
         <button [title]="'ConfigVehicleVisible' | translate" class="btn btn-primary" (click)="showConfigVisible = true">
-          <i class="fas fa-cog"></i>
+          <i class="bi bi-gear-fill"></i>
         </button>
       </div>
       <div class="col-auto">
         <button class="btn btn-primary" (click)="getListVehicleInit()" [title]="'Refresh' | translate">
-          <i class="fas fa-sync-alt"></i>
+          <i class="bi bi-sync-alt"></i>
         </button>
       </div>
       <div class="col-auto">
         <button class="btn btn-primary"  [title]="'VehicleColorMeaning' | translate">
-          <i class="fas fa-question"></i>
+          <i class="bi bi-question"></i>
         </button>
       </div>
     </div>

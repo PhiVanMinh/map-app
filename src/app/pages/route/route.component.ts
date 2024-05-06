@@ -16,6 +16,6 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
   ngAfterViewInit(): void {
     // Xóa MAP cũ nếu có
     this.map?.remove();
-    this.initMap();
+    this.initMap('map');
   }
 }

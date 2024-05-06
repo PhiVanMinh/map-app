@@ -16,17 +16,17 @@ export class LeftPanelComponent implements OnInit {
       {
         dropdownText: 'Tìm theo phương tiện',
         placeHolder: 'Nhập phương tiện',
-        iconUrl: '/assets/images/online/left-panel/find-vehicle.png',
+        iconUrl: ''//'/assets/images/online/left-panel/find-vehicle.png',
       },
       {
         dropdownText: 'Tìm theo địa chỉ',
         placeHolder: 'Nhập tên điểm',
-        iconUrl: '/assets/images/online/left-panel/find-landmark.png',
+        iconUrl: ''//'/assets/images/online/left-panel/find-landmark.png',
       },
       {
         dropdownText: 'Tìm theo vị trí',
         placeHolder: 'Nhập vị trí',
-        iconUrl: '/assets/images/online/left-panel/find-point.png',
+        iconUrl: ''//'/assets/images/online/left-panel/find-point.png',
       },
     ];
     currentSearchType = 0;

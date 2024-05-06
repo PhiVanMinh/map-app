@@ -8,12 +8,12 @@ import { OnlineComponent } from './pages/online/online.component';
 import { RouteComponent } from './pages/route/route.component';
 
 const appRoutes: Routes = [
-  { path: 'employee', component: EmployeeManagementComponent, canActivate: [AuthGuard] }, 
+  { path: 'employee', component: EmployeeManagementComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: '', component: ReportSpeedViolationComponent, canActivate: [AuthGuard] },
-  { path: 'online', component: OnlineComponent },
 
   { path: 'route', component: RouteComponent },
+  { path: 'online', component: OnlineComponent },
   // otherwise redirect to home
   { path: '**', redirectTo: '' },
 ];
