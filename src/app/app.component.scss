@@ -108,6 +108,14 @@ ul li{
   align-items: stretch;
 }
 
+.text-primary {
+  color: #0959a0 !important;
+}
+
+.container-fluid {
+   background-color: whitesmoke;
+}
+
 @media screen and (max-width: 991px) {
   .nav-group {
     justify-content: center;

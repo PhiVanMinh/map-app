@@ -30,6 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private authListenerSubs!: Subscription; 
   public userIsAuthenticated = false; 
+  currentLink!: string;
 
   constructor(
     public translate: TranslateService,
@@ -68,5 +69,6 @@ export class AppComponent implements OnInit, OnDestroy {
    showLink(link: string) {
     this.authenticationService.logout();
     this.router.navigate([`/${link}`]);
+    this.currentLink = link;
   }
 }

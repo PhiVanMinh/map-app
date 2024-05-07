@@ -1,4 +1,6 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import * as moment from 'moment';
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({
   selector: 'app-left-panel',
@@ -8,7 +10,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 export class LeftPanelComponent implements OnInit {
 
   isShowLeftPanel = true;
-  vehicles = [];
+  vehicles: {privateCode: string, icon: '', velocity: number }[] = [];
   showConfigVisible!: boolean;
   showSystemStatusForm!: boolean;
     // Tìm kiếm
@@ -16,46 +18,280 @@ export class LeftPanelComponent implements OnInit {
       {
         dropdownText: 'Tìm theo phương tiện',
         placeHolder: 'Nhập phương tiện',
-        iconUrl: ''//'/assets/images/online/left-panel/find-vehicle.png',
+        iconUrl: '/assets/images/online/left-panel/find-vehicle.png',
       },
       {
         dropdownText: 'Tìm theo địa chỉ',
         placeHolder: 'Nhập tên điểm',
-        iconUrl: ''//'/assets/images/online/left-panel/find-landmark.png',
+        iconUrl: '/assets/images/online/left-panel/find-landmark.png',
       },
       {
         dropdownText: 'Tìm theo vị trí',
         placeHolder: 'Nhập vị trí',
-        iconUrl: ''//'/assets/images/online/left-panel/find-point.png',
+        iconUrl: '/assets/images/online/left-panel/find-point.png',
       },
     ];
+
+    dropdownSettings: IDropdownSettings = {
+      singleSelection: false,
+      idField: 'groupId',
+      textField: 'name',
+      selectAllText: 'Chọn tất cả',
+      unSelectAllText: 'Bỏ chọn tất cả',
+      itemsShowLimit: 20,
+      allowSearchFilter: true
+    };
     currentSearchType = 0;
     leftPanelWidth = 300;
 
+    privateCode: any;
+    landmark: any;
+    latlng: any;
+    groupList: {groupId: number, name: string}[] = [];
+    selectedGroupIds: any;
+
+      // Thời gian lọc
+  timeFromDate: any;
+  timeToDate: any;
+  fromDate: Date = new Date();
+  toDate: Date = new Date();
+  minDate: Date | undefined;
+  maxDate: Date | undefined;
+
+ // Player
+ currentKM!: number;
+ currentIndex!: number;
+ totalKM!: number;
+ totalTimeStr!: string;
+ totalTime!: number;
+ totalTimeMachineOn!: string;
+ totalTimeStop!: string;
+ totalTimeMachineOnRaw!: number;
+ currentSpeedLevel!: number;
+ isPlaying!: boolean;
+ isPlayStopped!: boolean;
+ isPause!: boolean;
+ interval: any;
+ arraySpeed: { label: string; interval: number }[] = [];
+  listRoutes: any;
+  selectedState: any;
+
+  @Input() type: number = 1;
 
   constructor(
     private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
+    
+    this.listRoutes = [];
+    this.totalKM = 0;
+    this.totalTimeMachineOn = 'Không xác định';
+    this.totalTimeStop = 'Không xác định';
+    this.currentKM = 0;
+    this.currentIndex = 0;
+    this.currentSpeedLevel = 3;
+    this.arraySpeed = [
+      { label: '1x', interval: 625 },
+      { label: '2x', interval: 125 },
+      { label: '4x', interval: 25 },
+      { label: '8x', interval: 10 },
+      { label: '16x', interval: 1 },
+    ];
+    this.isPlaying = false;
+    this.isPlayStopped = false;
+    this.isPause = true;
   }
 
   getListVehicleInit(){
 
   }
 
-    // Thay đổi loại tìm kiếm
-    changeSearchType(searchType: number) {
-      this.currentSearchType = searchType;
-      this.cdr.detectChanges();
-      // common.delay(50).then(() => {
-      //   // Trỏ vào ô nhập
-      //   if (searchType < 2) {
-      //     this.comboboxSearch?.combobox?.focus();
-      //   }
-      //   else {
-      //     $('.findLatlng').trigger('focus');
-      //   }
-      // });
+  // Thay đổi loại tìm kiếm
+  changeSearchType(searchType: number) {
+    this.currentSearchType = searchType;
+    this.cdr.detectChanges();
+    // common.delay(50).then(() => {
+    //   // Trỏ vào ô nhập
+    //   if (searchType < 2) {
+    //     this.comboboxSearch?.combobox?.focus();
+    //   }
+    //   else {
+    //     $('.findLatlng').trigger('focus');
+    //   }
+    // });
+  }
+
+    /** 
+ * TODO: Hàm thực hiện khi thay đổi giá trị từ ngày
+*/
+    changeDate(value: string){
+      if (value == 'fromDate') {
+        if(!this.fromDate) {
+          this.maxDate = undefined;
+          this.minDate = undefined;
+        }
+        this.minDate = this.fromDate;
+        this.maxDate = new Date(moment(this.fromDate).add(60,'days').toString());
+      } 
+  }
+
+  // Player----------------------------------------------------------------------------
+  changeRange(scrollToFirst?: boolean) {
+    if (this.currentKM) {
+      if (this.currentKM === 0) {
+        this.currentIndex = 0;
+      }
+      else if (this.currentKM >= this.totalKM) {
+        this.currentIndex = this.listRoutes.length - 1;
+      }
+      else {
+        const nearIndex = this.listRoutes.findIndex((x: any) => x.km >= this.currentKM);
+        if (nearIndex == 0) {
+          this.currentIndex = nearIndex;
+        }
+        else if (nearIndex > 0) {
+          const nearKmRange = this.listRoutes[nearIndex].km - this.currentKM;
+          const prevNearKmRange = Math.abs(this.currentKM - this.listRoutes[nearIndex - 1].km);
+          this.currentIndex = nearKmRange <= prevNearKmRange ? nearIndex : nearIndex - 1;
+
+        }
+        this.currentKM = this.listRoutes[this.currentIndex].km;
+      }
     }
+    else {
+      this.currentKM = 0;
+      this.currentIndex = 0;
+    }
+
+    if (this.selectedState) {
+      const route = this.listRoutes[this.currentIndex];
+      if (route) {
+        // const listByState = this.routeStatePipe.transform(this.listRoutes, this.selectedState);
+        // const index = listByState.findIndex(x => x.index == route.index);
+        // this.virtualScrollComponent.scrollToIndex(index);
+      }
+    }
+    else {
+      // Nếu tìm kiếm lần đầu thì trỏ vào bản ghi đầu tiên , xe xuất phát từ 0
+      if (scrollToFirst) {
+        // this.virtualScrollComponent.selectRow(this.currentIndex, false, false, scrollToFirst);
+        // this.virtualScrollComponent.scrollToIndex(0);
+        // this.virtualScrollComponent.currentRouteIndex = 0;
+        this.currentIndex = 0;
+        this.currentKM = 0;
+      }
+      else {
+        // this.virtualScrollComponent.selectRow(this.currentIndex, true, false);
+      }
+    }
+    // this.setStyleRange();
+    this.pause();
+  }
+
+  play(isToEnd?: boolean, isPrint?: boolean) {
+    if (this.listRoutes.length) {
+      this.isPlaying = true;
+      this.isPause = false;
+      this.isPlayStopped = false;
+      this.move(isToEnd, isPrint);
+    }
+  }
+
+  move(isToEnd?: boolean, isPrint?: boolean) {
+    this.interval = setInterval(() => {
+      // Trỏ vào dòng trên danh sách
+      // this.virtualScrollComponent.currentRouteIndex = this.currentIndex;
+      // this.virtualScrollComponent.scrollToIndex(this.currentIndex);
+      // Thay đổi vị trí slider
+      this.currentKM = this.listRoutes[this.currentIndex].km;
+      // this.setStyleRange();
+      // // Truyền sang map
+      // this.obs.showRouteVehicle.next({
+      //   index: this.currentIndex,
+      //   isPlay: !isToEnd,
+      //   speed: this.arraySpeed[this.currentSpeedLevel - 1].interval,
+      //   isLast: false,
+      //   isPrint: isPrint,
+      // });
+      // Nhảy tới vị trí tiếp theo
+      if (this.currentIndex < this.listRoutes.length - 1) {
+        this.currentIndex += 1;
+      }
+      // Dừng nếu là dòng cuối
+      else {
+        this.isPlayStopped = true;
+        this.isPlaying = false;
+        this.isPause = false;
+        clearInterval(this.interval);
+      }
+    }, this.arraySpeed[this.currentSpeedLevel - 1].interval);
+  }
+
+  pause() {
+    this.isPlaying = false;
+    this.isPause = true;
+    this.isPlayStopped = false;
+    clearInterval(this.interval);
+  }
+
+  rePlay() {
+    this.isPlaying = true;
+    this.isPause = false;
+    this.isPlayStopped = false;
+    this.currentIndex = 0;
+    this.play();
+  }
+
+  toBegin() {
+    if (this.currentIndex > 0) {
+      this.currentIndex = 0;
+      this.currentKM = 0;
+      // this.virtualScrollComponent.selectRow(0, true, false);
+      // // Vị trị slider
+      // this.setStyleRange();
+
+      if (this.isPlaying) {
+        clearInterval(this.interval);
+        this.play(false);
+      }
+      else {
+        this.pause();
+      }
+    }
+  }
+
+  toEnd(isPrint?: boolean) {
+    if (this.currentIndex < this.listRoutes.length - 1) {
+      this.currentIndex = this.listRoutes.length - 1;
+      // this.virtualScrollComponent.selectRow(this.currentIndex, true, false);
+      clearInterval(this.interval);
+      this.play(true, isPrint);
+    }
+  }
+
+  speedUp() {
+    if (this.currentSpeedLevel < 5) {
+      this.currentSpeedLevel = this.currentSpeedLevel + 1;
+      if (this.isPlaying) {
+        clearInterval(this.interval);
+        this.play();
+      }
+    }
+  }
+
+  reduceSpeed() {
+    if (this.currentSpeedLevel > 1) {
+      this.currentSpeedLevel = this.currentSpeedLevel - 1;
+      if (this.isPlaying) {
+        clearInterval(this.interval);
+        this.play();
+      }
+    }
+  }
+
+  getRouteData(){
+
+  }
+
 }

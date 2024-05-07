@@ -1,5 +1,18 @@
+@import "./src/style/variables.scss";
+#left-panel-container {
+    position: absolute;
+    left: 0;
+}
+
+.left-panel-show {
+    transform: translateX(0%) !important;
+
+    #btnHidePanel .bi-caret-up {
+        transform: rotate(180deg);
+    }
+}
+
 #left-panel {
-    @import "./src/style/variables.scss";
 
     $input-height: 30px;
     $box-shadow-color: rgba(163, 163, 163, 1);
@@ -25,16 +38,17 @@
     #btnHidePanel {
         color: white;
         position: absolute;
-        right: -20px;
+        right: -27px;
         top: 12px;
         z-index: -1;
         transform: rotate(90deg);
         border-radius: 5px 5px 0 0 !important;
         padding: 0px 10px;
+        background-color: #0959a0 !important;
 
-        .fa-caret-up {
+        .bi-caret-up {
             transition: transform 0.5s;
-            font-size: larger;
+            font-size: medium;
         }
     }
 
@@ -51,10 +65,8 @@
     }
 
     #filter {
-        margin-bottom: 5px;
 
         .tim-kiem {
-            margin-bottom: 5px !important;
             button {
                 border: 1px solid $border-color;
                 padding: 4px 6px;
@@ -264,7 +276,7 @@
     }
 
     #dsxe-tool {
-        padding: 5px 5px 0 5px;
+        padding: 5px 5px 5px 5px;
         //overflow-x: auto;
         .col b {
             font-size: medium;
@@ -283,7 +295,7 @@
                 align-items: center;
                 justify-content: center;
 
-                background-color: var(--primary);
+                background-color: #0959a0;
                 color: white;
 
                 &:hover {
@@ -298,4 +310,189 @@
             }
         }
     }
+}
+
+.text-primary {
+    color: #0959a0 !important;
+  }
+.text-input{
+    width: 100%;
+    height: 100%;
+}
+
+::ng-deep .multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret{
+    top: -3px !important;
+}
+
+::ng-deep .form-control  {
+    font-size: 0.9rem !important;
+ }
+
+::ng-deep 
+.input-group-text, .form-control  {
+    padding: 0.175rem 0.25rem;
+ }
+ .player {
+    padding: 0;
+    border: 1px solid #ced4da;
+    border-radius: 2px;
+    margin-bottom: 5px;
+
+    .form-custom-range {
+      margin: 10px 0;
+      font-family: inherit;
+
+      input[type="range"] {
+        --iconUrl: url("/assets/images/vehicle/car/Blue0.png");
+        --rotateDeg: 90deg;
+
+        &::-webkit-slider-thumb {
+          background: var(--iconUrl) no-repeat;
+          background-size: cover;
+          transform: rotate(#{var(--rotateDeg)});
+          -webkit-transform: rotate(#{var(--rotateDeg)});
+          -moz-transform: rotate(#{var(--rotateDeg)});
+        }
+
+        &::-moz-range-thumb {
+          background: var(--iconUrl) no-repeat;
+          background-size: cover;
+          transform: rotate(#{var(--rotateDeg)});
+          -webkit-transform: rotate(#{var(--rotateDeg)});
+          -moz-transform: rotate(#{var(--rotateDeg)});
+        }
+
+        // Chrome
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+          & {
+            background-color: #ddd;
+          }
+          &::-webkit-slider-runnable-track {
+            color: #444;
+            background: linear-gradient(
+              to right,
+              var(--highlight) 0%,
+              var(--highlight) var(--rangeTrackRadius, 0%),
+              #ddd 0%,
+              #b2b2b2 100%
+            );
+          }
+        }
+      }
+
+      .range-container .range-subcontainer h4 {
+        background-color: white;
+        color: #0783c8 !important;
+        top: -27px;
+        z-index: 2;
+        font-size: 11px !important;
+        justify-content: start;
+        width: 50px;
+
+        &::before,
+        span {
+          background-color: unset;
+          background: unset;
+        }
+      }
+
+      .box-minmax {
+        font-size: 11px !important;
+        z-index: 1;
+
+        span:last-child {
+          color: black;
+        }
+      }
+    }
+
+    .play-button {
+      background-color: #8b8b8b;
+      padding: 0 !important;
+      margin-left: -1px !important;
+      margin-right: -1px !important;
+
+      [class^="col"] {
+        padding: 0;
+      }
+
+      i {
+        color: white;
+        font-size: small;
+        padding: 2px 3px;
+      }
+
+      .currrent-speed {
+        width: 25px;
+        height: 25px;
+        display: inline-flex;
+        border-width: 2px !important;
+        align-items: center;
+        justify-content: center;
+        background-color: #0959a0 !important;
+      }
+    }
+  }
+
+  .player-disabled {
+    background-color: lightgray !important;
+
+    .range-container h4 {
+      background-color: lightgray !important;
+    }
+
+    a,
+    input,
+    button {
+      pointer-events: none !important;
+    }
+
+    i {
+      color: darkgray !important;
+    }
+  }
+
+  .form-control-range {
+    display: block;
+    width: 100%;
+}
+
+.btn-reload {
+    background-color:  #0959a0 !important;
+    border-radius: 4px !important;
+    width: 34px;
+    height: 34px;
+    padding: 5px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      height: 16px !important;
+      width: 100%;
+    }
+  }
+
+.table {
+    margin-bottom: 0;
+    padding: 5px 5px 0 5px;
+    color: none;
+}
+
+
+.row-caption {
+    color: #2d9cdb !important;
+    white-space: nowrap;
+    font-weight: bolder;
+    border-top: none;
+    border: 1px solid #afafaf;
+
+    padding: 5px 0;
+}
+
+.scroll-container{
+    overflow-x: scroll;
+    background-color: #fff;
+    scrollbar-width: none;
+    padding-bottom: 0;
 }

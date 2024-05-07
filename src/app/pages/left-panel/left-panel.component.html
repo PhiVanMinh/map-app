@@ -6,96 +6,139 @@
       <i class="bi bi-caret-up"></i>
     </button>
     <!-- Khu vực lọc dữ liệu -->
-    <div id="filter">
+    <div id="filter"> 
+       <!-- Từ ngày -->
+       <div *ngIf="type == 2" class="row mt-1">
+        <div class="input-group p-0">
+        <span style="width: 40px; align-content: center;"> {{'Từ :' | translate}}</span>
+          <input type="time" class="form-control st-time mr-1 pl-0" [(ngModel)]="timeFromDate"/>
+          <datepicker  class="col-md-7 f-datepicker pr-0" [(ngModel)]="fromDate" (ngModelChange)="changeDate('fromDate')"></datepicker>
+        </div>
+      </div>
+
+      <!-- Đến ngày -->
+      <div *ngIf="type == 2" class="row mt-2 mb-2">
+        <div class="input-group p-0">
+          <span style="width: 40px; align-content: center;"> {{'Đến :' | translate}}</span>
+          <input type="time" class="form-control st-time mr-1 mt-1" [(ngModel)]="timeToDate" />
+          <datepicker class="col-md-7 f-datepicker mt-1" [(ngModel)]="toDate" [minDate]="minDate" [maxDate]="maxDate"></datepicker>
+        </div>
+      </div>
       <div class="row tim-kiem flex-nowrap">
         <div class="col-auto p-0">
           <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <img src="{{ listSearchTypes[currentSearchType].iconUrl }}" />
           </button>
           <div class="dropdown-menu">
-            <a *ngFor="let type of listSearchTypes; let i = index" class="dropdown-item" (click)="changeSearchType(i)"><img src="{{ type.iconUrl }}" class="pr-1" />{{ type.dropdownText |
-              translate }}</a>
+            <a *ngFor="let type of listSearchTypes; let i = index" class="dropdown-item" (click)="changeSearchType(i)">
+              <img src="{{ type.iconUrl }}" class="pr-1" />{{ type.dropdownText | translate }}</a>
           </div>
         </div>
         <div class="col p-0">
-          <!-- Tìm xe -->
-          <!-- <ng-container *ngIf="currentSearchType === 0; else FindLandmark">
-            <app-combobox #comboboxSearchRef [items]="listCommon|vehicleSort" [bindValue]="VEHICLE_FIELDS.id" [bindLabel]="VEHICLE_FIELDS.privateCode"
-              [enableCopySelected]="true" [placeholder]="LanguageKeys.CommonKeys.EnterVehicle" (selectedItemsChange)="onDropdownVehicleSelected($event)"
-              iconUrl="/assets/images/common/search-blue.png">
-            </app-combobox>
-          </ng-container> -->
-          <!-- Tìm điểm -->
-          <!-- <ng-template #FindLandmark>
-            <ng-container *ngIf="currentSearchType === 1; else TimToaDo">
-              <app-combobox #comboboxSearchRef [placeholder]="LanguageKeys.LandmarkKeys.EnterLandmark" [items]="listLandMark" [bindValue]="LANDMARK_FIELDS.id"
-                [bindLabel]="LANDMARK_FIELDS.name" (selectedItemsChange)="onDropdownLandmarkSelected($event)" iconUrl="/assets/images/common/search-blue.png">
-              </app-combobox>
-            </ng-container>
-          </ng-template> -->
-          <!-- Tìm tọa độ -->
-          <!-- <ng-template #TimToaDo>
-            <input type="text" class="findLatlng" [(ngModel)]="searchLatLng" (keyup)="onEnterFindLatlng($event)" *ngIf="currentSearchType === 2"
-              [placeholder]="listSearchTypes[currentSearchType].placeHolder | translate" />
-            <img class="combobox-right-icon" src="/assets/images/common/search-blue.png" (click)="onEnterFindLatlng($event,true)" />
-          </ng-template> -->
+          <ng-container *ngIf="currentSearchType === 0; else FindLandmark">
+            <input type="text" class="text-input" name="privateCode" [(ngModel)]="privateCode" placeholder="{{'Type' | translate}} {{'Vehicle' | translate | lowercase}}" />
+          </ng-container>
+          <ng-template #FindLandmark>
+          <ng-container *ngIf="currentSearchType === 1; else TimToaDo">
+            <input type="text" class="text-input" name="landmark" [(ngModel)]="landmark" placeholder="{{'Type' | translate}} {{'Landmark' | translate | lowercase}}" />
+          </ng-container>
+        </ng-template>
+        <ng-template #TimToaDo>
+          <input type="text" class="text-input" name="latlng" [(ngModel)]="latlng" placeholder="{{'Type' | translate}} {{'Position' | translate | lowercase}}" />
+          </ng-template>
+        </div>
+        <div *ngIf="type == 2" class="col-auto pl-1 pr-0">
+          <button class="btn btn-primary btn-reload" (click)="getRouteData()" >
+            <span  title="{{ 'LoadData' | translate }}"><img
+                src="/assets/images/common/white/download.png" /></span>
+          </button>
         </div>
       </div>
-      <!-- Lọc nhóm xe -->
-      <!-- <app-select-vehicle-group #cbGroup [(items)]="listVehicleGroup" [vehicles]="vehicles" [enableRecount]="true" (itemsChange)="onListVehicleGroupChanged()"
-        [forVehicleOnline]="true" [(selectedItems)]="selectedGroups" (selectedItemsChange)="onChangeSelectedGroup()" [requiredCompany]="false"
-        [(selectedCompany)]="selectedCompany" (selectedCompanyChange)="onSelectedCompanyChange()">
-      </app-select-vehicle-group> -->
-      <!-- lọc trạng thái xe -->
-      <!-- <div class="icon-trang-thai-xe" (wheel)="onStatesWheel($event)">
-        <a id="arrowL">
-          <i class="fas fa-chevron-left"></i>
-        </a>
-        <a id="arrowR">
-          <i class="fas fa-chevron-right"></i>
-        </a>
-        <table>
-          <tr>
-            <td (click)="changeStateFilter(-1)" title="{{ LanguageKeys.CommonKeys.ViewAll | translate }}" class="state-selected filter-all">
-              <div class="img-container">
-                <div class="count-virtual-scroll text-black">{{ listByStates?.length || 0 }}</div>
-                <hr />
-                <div class="count-list-vehicles text-black">{{ vehicles.length }}</div>
-              </div>
-              <div class="state-text">{{ LanguageKeys.CommonKeys.All | translate }}</div>
-            </td>
-            <td *ngFor="let stateF of statesFilter" (click)="changeStateFilter(stateF.value)"
-              [title]=" (LanguageKeys.CommonKeys.ClickToFilter | translate) + ' ' + ((stateF.tooltip || stateF.name) | translate) ">
-              <span class="badge badge-danger">{{ (listCommon|vehicleFilter:null:null:stateF.value).length }}</span>
-              <div class="img-container"><img [src]="stateF.img" /></div>
-              <div class="state-text">{{ stateF.name | translate }}</div>
-            </td>
-          </tr>
-        </table>
-      </div> -->
+      <div *ngIf="type == 1" class="row">
+        <ng-multiselect-dropdown
+        class="mt-2 p-0"
+        [placeholder]="'Chọn nhóm phương tiện'"
+        [settings]="dropdownSettings"
+        [data]="groupList"
+        [(ngModel)]="selectedGroupIds">
+        </ng-multiselect-dropdown>
+      </div>
+
+      <div class="row">
+        <ng-multiselect-dropdown
+        class="mt-2 p-0"
+        [placeholder]="'Trạng thái xe'"
+        [settings]="dropdownSettings"
+        [data]="groupList"
+        [(ngModel)]="selectedGroupIds">
+        </ng-multiselect-dropdown>
+      </div>
+      
+         <!-- Player -->
+    <div *ngIf="type == 2" class="player mt-2" >
+      <div class="form-group d-flex mb-0" style="padding: 10px 5px 0px 5px">
+        <div class="form-custom-range">
+          <input #inputRange type="range" class="form-control-range" [(ngModel)]="currentKM" step="0.001" min="0" [max]="totalKM" (change)="changeRange()"
+            [disabled]="isPlaying" />
+          <div class="range-container">
+            <div class="range-subcontainer">
+              <h4 id="sub-text">{{ currentKM | number: '1.0-2' }}&nbsp;km</h4>
+            </div>
+          </div>
+          <div class="box-minmax">
+            <span>0</span><span>{{ totalKM | number: '1.0-2' }}&nbsp;km</span>
+          </div>
+        </div>
+      </div>
+      <div class="row play-button">
+        <div class="col-auto mt-1 pl-1">
+          <a *ngIf="isPause" title="{{ 'Play' | translate }}" (click)="play()"><i class="bi bi-play-fill"></i></a>
+          <a *ngIf="isPlaying"><i class="bi bi-pause-fill" title="{{ 'Pause' | translate }}" (click)="pause()"></i></a>
+          <a *ngIf="isPlayStopped"><i class="bi bi-arrow-counterclockwise" title="{{ 'RePlay' | translate }}" (click)="rePlay()"></i></a>
+        </div>
+        <div class="col-auto mt-1">
+          <a (click)="toBegin()" title="{{ 'GotoBegin'| translate }}"><i class="bi bi-skip-start-fill"></i></a>
+        </div>
+        <div class="col-auto mt-1">
+          <a (click)="toEnd()" title="{{ 'GotoEnd' | translate }}"><i class="bi bi-skip-end-fill"></i></a>
+        </div>
+        <div class="col-auto mt-1">
+          <a (click)="reduceSpeed()" title="{{ 'ReduceSpeed' | translate }}"><i class="bi bi-skip-backward-fill"></i></a>
+        </div>
+        <div class="col mr-auto mt-1">
+          <a (click)="speedUp()" title="{{ 'SpeedUp' | translate }}"><i class="bi bi-skip-forward-fill"></i></a>
+        </div>
+        <div class="col-auto pr-1">
+          <span class="text-light">{{ 'PlaySpeed' | translate }}&nbsp;</span>
+          <div class="currrent-speed bg-primary border border-light rounded-circle text-light">
+            {{ arraySpeed[currentSpeedLevel-1]?.label }}
+          </div>
+        </div>
+      </div>
+    </div>
     </div>
     <!-- Khu vực danh sách xe--------------------- -->
     <div class="row" id="dsxe-tool">
       <div class="col">
-        <b class="text-primary">{{ 'ListVehicle' | translate }}</b>
+        <b class="text-primary">{{ 'Danh sách xe' | translate }}</b>
       </div>
       <div class="col-auto">
-        <button [title]="'VehicleStatus' | translate" class="btn btn-primary" (click)="showSystemStatusForm = true">
-          <i class="bi bi-car"></i>
+        <button [title]="'VehicleStatus' | translate" class="btn btn-sm btn-primary" (click)="showSystemStatusForm = true">
+          <i class="bi bi-car-front-fill"></i>
         </button>
       </div>
       <div class="col-auto">
-        <button [title]="'ConfigVehicleVisible' | translate" class="btn btn-primary" (click)="showConfigVisible = true">
+        <button [title]="'ConfigVehicleVisible' | translate" class="btn btn-sm btn-primary" (click)="showConfigVisible = true">
           <i class="bi bi-gear-fill"></i>
         </button>
       </div>
       <div class="col-auto">
-        <button class="btn btn-primary" (click)="getListVehicleInit()" [title]="'Refresh' | translate">
-          <i class="bi bi-sync-alt"></i>
+        <button class="btn btn-sm btn-primary" (click)="getListVehicleInit()" [title]="'Refresh' | translate">
+          <i class="bi bi bi-arrow-repeat"></i>
         </button>
       </div>
       <div class="col-auto">
-        <button class="btn btn-primary"  [title]="'VehicleColorMeaning' | translate">
+        <button class="btn btn-sm btn-primary"  [title]="'VehicleColorMeaning' | translate">
           <i class="bi bi-question"></i>
         </button>
       </div>
@@ -104,6 +147,51 @@
     <!-- <app-virtual-scroll #appScroll [listVehicles]="listByStates" [isShowLeftPanel]=" isShowLeftPanel" [showVirtualScroll]="vehicles.length > 0"
       [listVehicleGroup]="listVehicleGroup" [selectedGroups]="selectedGroups" (vehicleRowClick)="onVehicleRowClick($event)"></app-virtual-scroll> -->
     <!-- Hiển thị khi không có dữ liệu -->
+
+    <div class="scroll-container">
+    <div *ngIf="type == 1" class="table-responsive table-scroll" style="margin: 5px;">
+      <table class="table table-striped">
+        <thead>
+          <tr class="row-caption" style="vertical-align: middle;">
+            <th rowspan="2" style="min-width: 10px;"></th>
+            <th rowspan="2" style="min-width: 110px;">{{'PlateNo' | translate}}</th>
+            <th rowspan="2">{{'Vgps' | translate}}</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let dataItem of vehicles; let i = index" [attr.data-index]="i" style="vertical-align: middle;">
+            <td class="text-center" style="width: 10px;"><img [src]=" dataItem?.icon ?? '/assets/images/vehicle/car/Blue0.png'"></td>
+            <td class="text-left"> {{ dataItem.privateCode }}</td>
+            <td class="text-center">{{ dataItem.velocity }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="type == 2" class="table-responsive table-scroll" style="margin: 5px;">
+      <table class="table table-striped">
+        <thead>
+          <tr class="row-caption" style="vertical-align: middle;">
+            <th rowspan="2" style="min-width: 10px;"></th>
+            <th rowspan="2" style="min-width: 110px;">{{'PlateNo' | translate}}</th>
+            <th rowspan="2">{{'Vgps' | translate}}</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let dataItem of vehicles; let i = index" [attr.data-index]="i" style="vertical-align: middle;">
+            <td class="text-center" style="width: 10px;"><img [src]=" dataItem?.icon ?? '/assets/images/vehicle/car/Blue0.png'"></td>
+            <td class="text-left"> {{ dataItem.privateCode }}</td>
+            <td class="text-center">{{ dataItem.velocity }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
     <div class="text-center no-data p-3" *ngIf="!vehicles.length">
       {{ 'Không có dữ liệu' }}
     </div>
