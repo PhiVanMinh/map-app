@@ -1,0 +1,239 @@
+.custom-leaflet-map {
+  height: 100%;
+  padding: 0;
+
+  .leaflet-control-layers-scrollbar {
+    overflow: auto;
+  }
+
+  .leaflet-control-layers-selector {
+    vertical-align: top;
+  }
+
+  .custom-marker-icon {
+    display: flex !important;
+    justify-content: center;
+
+    label {
+      cursor: pointer;
+      position: absolute;
+      bottom: 110%;
+      margin: auto !important;
+
+      line-height: normal;
+      padding: 2px;
+
+      max-width: 350px;
+      width: max-content;
+      font-weight: bold;
+      border-radius: 3px;
+      word-break: break-word;
+      word-wrap: break-word;
+    }
+  }
+
+  .custom-popup {
+    bottom: 21px;
+
+    .leaflet-popup-content {
+      margin: 5px;
+      padding: 5px;
+      border: 1px solid #0959a0;
+      border-radius: 5px;
+
+      table {
+        tr {
+          &:first-child {
+            td {
+              &:last-child {
+                padding-right: 18px;
+              }
+            }
+          }
+
+          td {
+            vertical-align: top;
+            padding: 3px;
+
+            &:last-child {
+              width: 100%;
+            }
+          }
+
+          .leaflet-popup-content-label {
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+
+    .leaflet-popup-close-button {
+      margin-right: 9px;
+      margin-top: 10px;
+      border: 1px solid red !important;
+      border-radius: 50%;
+      background: red !important;
+      color: white !important;
+      line-height: 15px !important;
+      width: 18px !important;
+      height: 18px !important;
+      text-align: center !important;
+      font-size: 12px !important;
+      padding: 0px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .custom-cluster-group {
+    .cluster-group {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border-style: solid;
+      border-width: 1px;
+      left: -20px;
+      top: -20px;
+      position: relative;
+      text-align: center;
+      line-height: 20px;
+      font-weight: 700;
+      font-size: 14px;
+
+      .text-group {
+        display: block;
+        height: 20px;
+        pointer-events: none;
+      }
+
+      i {
+        display: block;
+        pointer-events: none;
+      }
+    }
+
+    .cluster-group-level-1 {
+      background-color: rgba(0, 171, 225, 0.8);
+      border-color: #00abe199;
+    }
+
+    .cluster-group-level-2 {
+      background-color: rgba(249, 207, 38, 0.8);
+      border-color: #f9cf26;
+    }
+
+    .cluster-group-level-3 {
+      background-color: rgba(255, 126, 85, 0.8);
+      border-color: #ff5722;
+    }
+
+    .cluster-group-level-4 {
+      background-color: rgba(177, 113, 216, 0.8);
+      border-color: #b171d8;
+    }
+  }
+
+  /* FOR VEHICLE */
+  .marker-icon-vehicle,
+  .marker-icon-vehicle-selected {
+    @extend .custom-marker-icon;
+
+    label {
+      font-size: smaller;
+      border-radius: 3px;
+    }
+  }
+
+  /* FOR VEHICLE */
+  .marker-icon-vehicle {
+    label {
+      color: white;
+      background-color: steelblue;
+    }
+  }
+
+  .marker-icon-vehicle-selected {
+    label {
+      color: white;
+      background-color: green;
+    }
+  }
+
+  .marker-time {
+    @extend .custom-marker-icon;
+    label {
+      background-color: #0959a0;
+      border-radius: 3px;
+      color: white;
+      padding: 2px 4px;
+      font-weight: normal;
+    }
+  }
+
+  .popup-vehicle-detail {
+    .leaflet-popup-close-button {
+      padding: 2px !important;
+      height: 18px !important;
+      width: 18px !important;
+      border-radius: 50%;
+      margin: 7px;
+      top: 4px !important;
+      right: 4px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: red !important;
+      color: white !important;
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 6px !important;
+    }
+
+    .leaflet-popup-content {
+      margin: 3px !important;
+    }
+  }
+
+  /* ĐO KHOẢNG CÁCH */
+  .distance-measure {
+    & > label {
+      color: #f10000;
+      position: absolute;
+      bottom: 0;
+      display: inline-table;
+      padding: 5px;
+      white-space: nowrap;
+      font-weight: 800;
+    }
+  }
+}
+
+.hide-marker-label {
+  display: flex !important;
+  justify-content: center;
+
+  label {
+    display: none;
+  }
+}
+
+.hide-marker-surround {
+  .marker-surround {
+    display: none !important;
+  }
+}
+
+.custom-marker-icon-landmark {
+  @extend .custom-marker-icon;
+
+  label {
+    color: #e63c2b;
+    text-shadow:
+      -1px 0 white,
+      0 1px white,
+      1px 0 white,
+      0 -1px white;
+  }
+}

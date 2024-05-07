@@ -62,7 +62,7 @@ const maskConfig: Partial<IConfig> = {
     ReportSpeedViolationComponent,
     OnlineComponent,
     RouteComponent,
-    LeftPanelComponent
+    LeftPanelComponent,
   ],
   imports: [
     CommonModule,

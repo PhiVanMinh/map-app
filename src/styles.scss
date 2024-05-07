@@ -1,3 +1,6 @@
+@import "./style/variables";
+@import "./style/leaflet-map.scss";
+
 .m-0 {
     margin: 0 !important;
 }
@@ -341,7 +344,7 @@ a {
     min-width: fit-content;
     padding-right: 30px;
   }
-  
+
   select.minimal:focus {
     background-image:
       linear-gradient(45deg, green 50%, transparent 50%),
@@ -380,7 +383,7 @@ a {
         $custom_range_bg_input_from: #37adbf;
         $custom_range_runnable_track: #444;
         $custom_range_range_subcontainer_h4: #fff;
-    
+
         position: relative;
         height: 100%;
         // display: flex;
@@ -485,7 +488,7 @@ a {
                 background-color: var(--primary);
             }
         }
-    
+
         .range-container {
             width: 400px;
             max-width: 100%;
@@ -540,7 +543,7 @@ a {
         // 	margin-top: -50px;
         // 	pointer-events: none;
         // }
-    
+
         .box-minmax {
             pointer-events: none;
             width: 100%;
@@ -551,4 +554,3 @@ a {
             color: var(--primary);
         }
     }
-    
