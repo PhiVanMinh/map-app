@@ -3,7 +3,8 @@ export class Vehicle {
   privateCode!: string;
   lat!: number;
   lng!: number;
-  velocity!: string;
+  velocity!: number;
   userName!: string;
   date!: Date;
+  icon!: string;
 }

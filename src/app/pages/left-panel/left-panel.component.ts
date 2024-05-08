@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { Vehicle } from 'src/app/_models/vehicle';
 
 @Component({
   selector: 'app-left-panel',
@@ -10,7 +11,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 export class LeftPanelComponent implements OnInit {
 
   isShowLeftPanel = true;
-  vehicles: {privateCode: string, icon: '', velocity: number }[] = [];
+  @Input() vehicles: Vehicle[] = [];
   showConfigVisible!: boolean;
   showSystemStatusForm!: boolean;
     // Tìm kiếm
