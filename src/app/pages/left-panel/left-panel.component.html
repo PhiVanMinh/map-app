@@ -69,8 +69,8 @@
         class="mt-2 p-0"
         [placeholder]="'Trạng thái xe'"
         [settings]="dropdownSettings"
-        [data]="groupList"
-        [(ngModel)]="selectedGroupIds">
+        [data]="statusList"
+        [(ngModel)]="selectedStatusIds">
         </ng-multiselect-dropdown>
       </div>
       
@@ -154,15 +154,16 @@
         <thead>
           <tr class="row-caption" style="vertical-align: middle;">
             <th rowspan="2" style="min-width: 10px;"></th>
-            <th rowspan="2" style="min-width: 110px;">{{'PlateNo' | translate}}</th>
-            <th rowspan="2">{{'Vgps' | translate}}</th>
+            <th rowspan="2" style="min-width: 90px; color: #0959a0 !important;">{{'PlateNo' | translate}}</th>
+            <th rowspan="2" style="text-align: center; color: #0959a0 !important;">{{'Vgps' | translate}}</th>
           </tr>
 
         </thead>
 
         <tbody>
-          <tr *ngFor="let dataItem of vehicles; let i = index" [attr.data-index]="i" style="vertical-align: middle;">
-            <td class="text-center" style="width: 10px;"><img [src]=" dataItem?.icon ?? '/assets/images/vehicle/car/Blue0.png'"></td>
+          <tr *ngFor="let dataItem of vehicles; let i = index" [attr.data-index]="i" (click)="test(dataItem)"
+            style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;">
+            <td class="text-center" style="width: 10px;"><img height="16px" [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
             <td class="text-left"> {{ dataItem.privateCode }}</td>
             <td class="text-center">{{ dataItem.velocity }}</td>
           </tr>
@@ -183,7 +184,7 @@
 
         <tbody>
           <tr *ngFor="let dataItem of vehicles; let i = index" [attr.data-index]="i" style="vertical-align: middle;">
-            <td class="text-center" style="width: 10px;"><img [src]=" dataItem?.icon ?? '/assets/images/vehicle/car/Blue0.png'"></td>
+            <td class="text-center" style="width: 10px;"><img [src]=" dataItem?.icon ?? '/assets/images/vehicle/car/Blue0.png'"/></td>
             <td class="text-left"> {{ dataItem.privateCode }}</td>
             <td class="text-center">{{ dataItem.velocity }}</td>
           </tr>

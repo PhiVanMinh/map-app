@@ -4,6 +4,8 @@ import { MapOptions } from 'leaflet';
 import 'leaflet-fullscreen';
 import 'leaflet-draw';
 import 'leaflet.markercluster';
+import { isArray } from 'ngx-bootstrap/chronos';
+import { Vehicle } from '../_models/vehicle';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +26,8 @@ export class LeafletService implements OnDestroy  {
   hideClusterIcon: boolean = false;
   vehicleGroupLayer: L.MarkerClusterGroup;
   curentVehicleId!: number;
+
+  vehicleLayer: L.LayerGroup = new L.LayerGroup();
 
   constructor() {
     this.vehicleGroupLayer = this.createClusterGroup();
@@ -52,15 +56,37 @@ export class LeafletService implements OnDestroy  {
     });
 
     tiles.addTo(this.map);
+    this.vehicleLayer?.addTo(this.map);
     this.vehicleGroupLayer?.addTo(this.map);
   }
 
+  updateIconMarker(marker: L.Marker, vehicle: Vehicle, rotationDeg: number ,isCurrent?: boolean){
+    marker.setIcon(this.createIcon({
+        iconSize: [25, 25],
+        iconAnchor: [15, 15],
+        iconUrl: '/assets/images/vehicle/car/Blue0.png',
+        className: isCurrent ? 'marker-icon-vehicle-selected' : 'marker-icon-vehicle',
+        labelContent: vehicle.privateCode,
+        rotationDeg: rotationDeg,
+    }))
+  }
 
-  public addMarker(id: string, lat: number, lng: number): void {
-    const marker = L.marker([lat, lng]).addTo(this.map);
-    marker.bindPopup(id); // Example: Add a popup with marker ID
+  public addMarker(id: string, lat: number, lng: number, options: L.MarkerOptions, isCurrent?: boolean): void {
+      if (options.iconOptions) {
+        options.icon = this.createIcon(options.iconOptions);
+    }
+    const marker = L.marker([lat, lng], options);
+    if (options.popupContent) {
+      options.popupClass = options.popupClass ?? 'custom-popup';
+      options.popupMinWidth = options.popupMinWidth ?? 50;
+      options.popupMaxWidth = options.popupMaxWidth ?? 500;
+      options.popupOffset = options.popupOffset ?? undefined;
+      marker.bindPopup(options.popupContent, { className: options.popupClass, minWidth: options.popupMinWidth, maxWidth: options.popupMaxWidth, offset: options.popupOffset });
+    }
+     //marker.bindPopup(id); // Example: Add a popup with marker ID
     this.markers[id] = marker; // Store marker reference with ID
-    this.vehicleGroupLayer.addLayer(marker);
+    if(isCurrent) this.vehicleLayer.addLayer(marker)
+    else this.vehicleGroupLayer.addLayer(marker);
   }
 
   public getMarkerById(id: string): L.Marker {
@@ -92,9 +118,11 @@ export class LeafletService implements OnDestroy  {
   createClusterGroup(options?: L.MarkerClusterGroupOptions): L.MarkerClusterGroup {
     // Đặt các giá trị mặc định
     options = options ?? {};
+    options.hideClusterIcon = options.hideClusterIcon ?? false;
     options.chunkedLoading = options.chunkedLoading ?? true;
 
-    if (!this.hideClusterIcon) {
+    if (!options.hideClusterIcon) {
+      options.iconHtml = options.iconHtml ?? '<i class=\"bi bi-car-front-fill\"></i>';
         options.iconCreateFunction = (cluster) => {
             let classGroupSmall: string;
             const count = cluster.getChildCount();
@@ -114,7 +142,7 @@ export class LeafletService implements OnDestroy  {
             const html = `
             <div class="cluster-group ${classGroupSmall}">
                 <span class="text-group">${count}</span>
-                ${'<i class="fas fa-map-marker-alt"></i>'}
+                ${options?.iconHtml}
             </div>
                 `;
             return L.divIcon({ html, className: 'custom-cluster-group' });
@@ -154,6 +182,56 @@ export class LeafletService implements OnDestroy  {
   // Trả về vị trí latlng mới
   return L.latLng(newLat, newLng);
 }
+
+    /**
+     * Tạo icon cho marker với các thuộc tính nâng cao
+     * @param options Thuộc tính icon
+     */
+  createIcon(options: L.DivIconOptions) {
+    // Gán giá trị mặc định nếu ko có
+    options.iconSize = isArray(options.iconSize) && options.iconSize?.length > 0 ? options.iconSize : [32, 32];
+    options.iconAnchor = options.iconAnchor ?? [16, 32];
+    options.className = options.className ?? 'custom-marker-icon';
+
+    let html = '';
+    if (options.labelContent) {
+        html += `<label>${options.labelContent}</label>`;
+    }
+
+    const transformText = options.rotationDeg ? ` transform: rotate(${options.rotationDeg}deg)${options.flipX ? ' scaleX(-1)' : ''}${options.flipY ? ' scaleY(-1)' : ''};` : '';
+
+    if (options.fontAwesomeClass) {
+        html += `<i class="${options.fontAwesomeClass}" style="max-width:${options.iconSize[0]}px !important; max-height:${options.iconSize[1]}px !important; font-size: ${options.iconSize[0]}px !important; ${options.fontAwesomeColor ? 'color:' + options.fontAwesomeColor + ';' : ''}${transformText}"></i>`;
+    }
+    else {
+        if (options.iconUrl) {
+            html += `<img src="${options.iconUrl}" style="max-width:${options.iconSize[0]}px !important; max-height:${options.iconSize[1]}px !important;${transformText}"/>`;
+        }
+    }
+
+    options.html = html;
+
+    return new L.DivIcon(options);
+  }
+
+      /** Tính hướng xoay. Trả về số Deg (Độ) */
+  computeDirection(fromLat: number, fromLng: number, toLat: number, toLng: number) {
+    const fromLatRadian = this.toRadians(fromLat);
+    const fromLngRadian = this.toRadians(fromLng);
+    const toLatRadian = this.toRadians(toLat);
+    const toLngRadian = this.toRadians(toLng);
+
+    const heading: number = Math.atan2(toLngRadian - fromLngRadian, toLatRadian - fromLatRadian);
+    let angleDeg = Math.ceil(heading * 180 / Math.PI);
+    if (angleDeg < 0) {
+        angleDeg += 360;
+    }
+    return angleDeg;
+  }
+
+  toRadians(angdeg: number): number {
+    return (angdeg / 180.0) * Math.PI;
+  }
 
 }
 

@@ -14,44 +14,46 @@ export class LeftPanelComponent implements OnInit {
   @Input() vehicles: Vehicle[] = [];
   showConfigVisible!: boolean;
   showSystemStatusForm!: boolean;
-    // Tìm kiếm
-    listSearchTypes: { dropdownText: string, placeHolder: string, iconUrl: string }[] = [
-      {
-        dropdownText: 'Tìm theo phương tiện',
-        placeHolder: 'Nhập phương tiện',
-        iconUrl: '/assets/images/online/left-panel/find-vehicle.png',
-      },
-      {
-        dropdownText: 'Tìm theo địa chỉ',
-        placeHolder: 'Nhập tên điểm',
-        iconUrl: '/assets/images/online/left-panel/find-landmark.png',
-      },
-      {
-        dropdownText: 'Tìm theo vị trí',
-        placeHolder: 'Nhập vị trí',
-        iconUrl: '/assets/images/online/left-panel/find-point.png',
-      },
-    ];
+  // Tìm kiếm
+  listSearchTypes: { dropdownText: string, placeHolder: string, iconUrl: string }[] = [
+    {
+      dropdownText: 'Tìm theo phương tiện',
+      placeHolder: 'Nhập phương tiện',
+      iconUrl: '/assets/images/online/left-panel/find-vehicle.png',
+    },
+    {
+      dropdownText: 'Tìm theo địa chỉ',
+      placeHolder: 'Nhập tên điểm',
+      iconUrl: '/assets/images/online/left-panel/find-landmark.png',
+    },
+    {
+      dropdownText: 'Tìm theo vị trí',
+      placeHolder: 'Nhập vị trí',
+      iconUrl: '/assets/images/online/left-panel/find-point.png',
+    },
+  ];
 
-    dropdownSettings: IDropdownSettings = {
-      singleSelection: false,
-      idField: 'groupId',
-      textField: 'name',
-      selectAllText: 'Chọn tất cả',
-      unSelectAllText: 'Bỏ chọn tất cả',
-      itemsShowLimit: 20,
-      allowSearchFilter: true
-    };
-    currentSearchType = 0;
-    leftPanelWidth = 300;
+  dropdownSettings: IDropdownSettings = {
+    singleSelection: false,
+    idField: 'id',
+    textField: 'name',
+    selectAllText: 'Chọn tất cả',
+    unSelectAllText: 'Bỏ chọn tất cả',
+    itemsShowLimit: 20,
+    allowSearchFilter: true
+  };
+  currentSearchType = 0;
+  leftPanelWidth = 300;
 
-    privateCode: any;
-    landmark: any;
-    latlng: any;
-    groupList: {groupId: number, name: string}[] = [];
-    selectedGroupIds: any;
+  privateCode: any;
+  landmark: any;
+  latlng: any;
+  groupList: {id: number, name: string}[] = [{id: 1, name: 'Nhóm 1'}, {id: 2, name: 'Nhóm 2'}, {id: 3, name: 'Nhóm 3'},{id: 4, name: 'Nhóm 4'}];
+  statusList: {id: number, name: string}[] = [{id: 1, name: 'Di chuyển'}, {id: 2, name: 'Dừng - bật'}, {id: 3, name: 'Dừng - tắt'},{id: 4, name: 'Quá tốc độ'}];
+  selectedGroupIds: any;
+  selectedStatusIds: any;
 
-      // Thời gian lọc
+    // Thời gian lọc
   timeFromDate: any;
   timeToDate: any;
   fromDate: Date = new Date();
@@ -293,6 +295,11 @@ export class LeftPanelComponent implements OnInit {
 
   getRouteData(){
 
+  }
+
+  test(a: any){
+    console.log(a);
+    
   }
 
 }

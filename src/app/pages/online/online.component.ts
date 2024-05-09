@@ -14,18 +14,51 @@ export class OnlineComponent extends LeafletService  implements AfterViewInit {
     {id: 440894, privateCode: '19C06580', lat: 10.858499, lng: 106.65221, velocity: 16, userName: 'Nguyễn Nhật Nam', date: new Date, icon:''},
     {id: 272332, privateCode: '24B00606', lat: 10.767991, lng: 106.68936, velocity: 2, userName: 'Nguyễn Văn Thuận', date: new Date, icon:''},
     {id: 546890, privateCode: '24B00606_C', lat: 20.973986, lng: 105.84675, velocity: 54, userName: 'Nguyễn Văn Dũng', date: new Date, icon:''},
-    {id: 546882, privateCode: '24B00608_C', lat: 20.973986, lng: 105.84675, velocity: 72, userName: 'Hoàng Hải Đăng', date: new Date, icon:''},
+    {id: 546882, privateCode: '24B00608_C', lat: 20.823234, lng: 105.94652, velocity: 72, userName: 'Hoàng Hải Đăng', date: new Date, icon:''},
     {id: 272331, privateCode: '24B00609', lat: 10.819613, lng: 1106.69446, velocity: 24, userName: 'Giang Trung Hiền', date: new Date, icon:''},
-    {id: 546876, privateCode: '24B00609_C', lat: 20.973986, lng: 105.84675, velocity: 10, userName: 'LAI XE DANG XUAT', date: new Date, icon:''},
+    {id: 546876, privateCode: '24B00609_C', lat: 20.813119, lng: 105.74653, velocity: 10, userName: 'LAI XE DANG XUAT', date: new Date, icon:''},
   ];
+
+  interval: any;
   constructor() {
     super();
+  }
+
+  override ngOnDestroy(): void {
+    // Hủy bỏ interval khi component bị hủy
+    clearInterval(this.interval);
   }
 
   ngAfterViewInit() {
     // Xóa MAP cũ nếu có
     this.map?.remove();
     this.initMap('map2');
+    this.bindingData();
+
+    // Khởi tạo interval khi component được khởi tạo
+    this.interval = setInterval(() => {
+      this.getDataOnline();
+    }, 10000); // Chạy hàm mỗi 10 giây
+  }
+
+  bindingData(){
+    this.listVehicle.forEach(e => {
+      this.addMarker(e.id.toString(), e.lat, e.lng, {
+        iconOptions: {
+          iconSize: [25, 25],
+          iconAnchor: [15, 15],
+          iconUrl: '/assets/images/vehicle/car/Blue0.png',
+          className: 'marker-icon-vehicle',
+          labelContent: e.privateCode,
+          rotationDeg: 0,
+          },
+      });
+    })
+    
+  }
+
+  getDataOnline() {
+    
   }
 
 
