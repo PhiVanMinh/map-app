@@ -6,7 +6,7 @@
       <i class="bi bi-caret-up"></i>
     </button>
     <!-- Khu vực lọc dữ liệu -->
-    <div id="filter"> 
+    <div id="filter">
        <!-- Từ ngày -->
        <div *ngIf="type == 2" class="row mt-1">
         <div class="input-group p-0">
@@ -73,7 +73,7 @@
         [(ngModel)]="selectedStatusIds">
         </ng-multiselect-dropdown>
       </div>
-      
+
          <!-- Player -->
     <div *ngIf="type == 2" class="player mt-2" >
       <div class="form-group d-flex mb-0" style="padding: 10px 5px 0px 5px">
@@ -161,7 +161,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let dataItem of vehicles; let i = index" [attr.data-index]="i" (click)="test(dataItem)"
+          <tr *ngFor="let dataItem of vehicles; let i = index" [attr.data-index]="i" (click)="selectVehicle(dataItem)"
             style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;">
             <td class="text-center" style="width: 10px;"><img height="16px" [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
             <td class="text-left"> {{ dataItem.privateCode }}</td>

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as moment from 'moment';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Vehicle } from 'src/app/_models/vehicle';
@@ -80,13 +80,14 @@ export class LeftPanelComponent implements OnInit {
   selectedState: any;
 
   @Input() type: number = 1;
+  @Output() emitVehicle: EventEmitter<Vehicle> = new EventEmitter()
 
   constructor(
     private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    
+
     this.listRoutes = [];
     this.totalKM = 0;
     this.totalTimeMachineOn = 'Không xác định';
@@ -125,7 +126,7 @@ export class LeftPanelComponent implements OnInit {
     // });
   }
 
-    /** 
+    /**
  * TODO: Hàm thực hiện khi thay đổi giá trị từ ngày
 */
     changeDate(value: string){
@@ -136,7 +137,7 @@ export class LeftPanelComponent implements OnInit {
         }
         this.minDate = this.fromDate;
         this.maxDate = new Date(moment(this.fromDate).add(60,'days').toString());
-      } 
+      }
   }
 
   // Player----------------------------------------------------------------------------
@@ -297,9 +298,8 @@ export class LeftPanelComponent implements OnInit {
 
   }
 
-  test(a: any){
-    console.log(a);
-    
+  selectVehicle(value: Vehicle){
+    this.emitVehicle.emit(value)
   }
 
 }

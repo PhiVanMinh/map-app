@@ -90,10 +90,11 @@ export class LeafletService implements OnDestroy  {
   }
 
   public getMarkerById(id: string): L.Marker {
-    const selectedMarker = this.markers[id];
-    this.vehicleGroupLayer.removeLayer(selectedMarker);
+    // const selectedMarker = this.markers[id];
+    // this.vehicleGroupLayer.removeLayer(selectedMarker);
     return this.markers[id]; // Retrieve marker by ID
   }
+
   public moveMarkerTo(newLat: number, newLng: number): void {
     const startLatLng = this.marker.getLatLng();
     const stepLat = (newLat - startLatLng.lat) / 100; // Tính toán bước di chuyển

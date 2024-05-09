@@ -20,6 +20,7 @@ export class OnlineComponent extends LeafletService  implements AfterViewInit {
   ];
 
   interval: any;
+  selectedVehicle!: Vehicle;
   constructor() {
     super();
   }
@@ -54,12 +55,55 @@ export class OnlineComponent extends LeafletService  implements AfterViewInit {
           },
       });
     })
-    
+
   }
 
-  getDataOnline() {
-    
+  getDataOnline() { //generateRandomLatLng
+    this.listVehicle.map(e => {
+      const marker = this.getMarkerById(e?.id?.toString())
+      if(marker){
+        const newMarker = this.generateRandomLatLng(marker.getLatLng(), 0.5);
+        const angleDeg = this.computeDirection(marker.getLatLng().lat, marker.getLatLng().lng, newMarker?.lat, newMarker?.lng);
+        this.updateIconMarker(marker, e, angleDeg, e.id == this.selectedVehicle?.id);
+        marker.setLatLng(newMarker);
+      } else {
+        this.addMarker(e.id.toString(), e.lat, e.lng, {
+          iconOptions: {
+            iconSize: [25, 25],
+            iconAnchor: [15, 15],
+            iconUrl: '/assets/images/vehicle/car/Blue0.png',
+            className: 'marker-icon-vehicle',
+            labelContent: e.privateCode,
+            rotationDeg: 0,
+            },
+        }, true);
+      }
+      if(e.id == this.selectedVehicle?.id) this.map.setView(marker?.getLatLng());
+    })
   }
 
+onChangeSelectedVehicle(value: Vehicle){
+  this.selectedVehicle = value;
+  const vMarker = this.getMarkerById(value?.id?.toString());
+  if(vMarker){
+    this.listVehicle.map(e => {
+      const marker = this.getMarkerById(e?.id?.toString())
+      this.updateIconMarker(marker, e, 0, e.id == value?.id);
+    })
 
+    this.map.setView(vMarker?.getLatLng());
+  } else {
+    this.addMarker(value.id.toString(), value.lat, value.lng, {
+      iconOptions: {
+        iconSize: [25, 25],
+        iconAnchor: [15, 15],
+        iconUrl: '/assets/images/vehicle/car/Blue0.png',
+        className: 'marker-icon-vehicle',
+        labelContent: value.privateCode,
+        rotationDeg: 0,
+        },
+    }, true);
+  }
+
+}
 }

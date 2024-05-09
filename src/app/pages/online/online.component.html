@@ -1,5 +1,5 @@
 <div class="container">
-    <app-left-panel #leftPanel [type]="1" [vehicles]="listVehicle" setFullHeight></app-left-panel>
+    <app-left-panel #leftPanel [type]="1" [vehicles]="listVehicle" (emitVehicle)="onChangeSelectedVehicle($event)" setFullHeight></app-left-panel>
     <div setFullHeight class="map-container">
         <div id="map2"></div>
     </div>
