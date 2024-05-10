@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import * as moment from 'moment';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { RouteModel } from 'src/app/_models/route';
 import { Vehicle } from 'src/app/_models/vehicle';
 
 @Component({
@@ -15,6 +16,7 @@ export class LeftPanelComponent implements OnInit {
   showConfigVisible!: boolean;
   showSystemStatusForm!: boolean;
   vehiclesByFilter!: Vehicle[] | undefined;
+  @Input() routeList: RouteModel[] = [];
   // Tìm kiếm
   listSearchTypes: { dropdownText: string, placeHolder: string, iconUrl: string }[] = [
     {

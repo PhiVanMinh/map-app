@@ -114,16 +114,24 @@
         <div class="col-auto pr-1">
           <span class="text-light">{{ 'PlaySpeed' | translate }}&nbsp;</span>
           <div class="currrent-speed bg-primary border border-light rounded-circle text-light">
-            {{ arraySpeed[currentSpeedLevel-1]?.label }}
+            {{ arraySpeed[currentSpeedLevel-1].label }}
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Thông tin khác -->
+    <div class="row other-info">
+      <div class="col-auto pr-1 align-self-auto">{{ 'Loại hình vận tải' | translate }}:</div>
+      <div class="col align-self-auto">
+        <b>{{ 'Không khác định' | translate }}</b>
       </div>
     </div>
     </div>
     <!-- Khu vực danh sách xe--------------------- -->
     <div class="row" id="dsxe-tool">
       <div class="col">
-        <b class="text-primary">{{ 'Danh sách xe' | translate }}</b>
+        <b class="text-primary">{{ type == 1 ? 'Danh sách xe' : 'Lộ trình' | translate }}</b>
       </div>
       <div class="col-auto">
         <button [title]="'VehicleStatus' | translate" class="btn btn-sm btn-primary" (click)="showSystemStatusForm = true">
@@ -161,7 +169,7 @@
 
         <tbody>
           <tr *ngFor="let dataItem of (vehiclesByFilter ?? vehicles); let i = index" [attr.data-index]="i" (click)="selectVehicle(dataItem)"
-            style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;">
+            style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;" [ngClass]="{ active: true}">
             <td class="text-center" style="width: 10px;"><img height="16px" [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
             <td class="text-left"> {{ dataItem.privateCode }}</td>
             <td class="text-center">{{ dataItem.velocity }}</td>
@@ -175,17 +183,20 @@
         <thead>
           <tr class="row-caption" style="vertical-align: middle;">
             <th rowspan="2" style="min-width: 10px;"></th>
-            <th rowspan="2" style="min-width: 110px;">{{'PlateNo' | translate}}</th>
-            <th rowspan="2">{{'Vgps' | translate}}</th>
+            <th rowspan="2" style="min-width: 110px; color: #0959a0 !important;">{{'Thời gian' | translate}}</th>
+            <th rowspan="2" style="color: #0959a0 !important;">{{'V Gps' | translate}}</th>
+            <th rowspan="2" style="color: #0959a0 !important;">{{'Km Gps' | translate}}</th>
+            <th rowspan="2" style="color: #0959a0 !important;">{{'Tọa độ' | translate}}</th>
           </tr>
-
         </thead>
 
         <tbody>
-          <tr *ngFor="let dataItem of vehicles; let i = index" [attr.data-index]="i" style="vertical-align: middle;">
-            <td class="text-center" style="width: 10px;"><img [src]=" dataItem?.icon ?? '/assets/images/vehicle/car/Blue0.png'"/></td>
-            <td class="text-left"> {{ dataItem.privateCode }}</td>
-            <td class="text-center">{{ dataItem.velocity }}</td>
+          <tr *ngFor="let item of routeList; let i = index" [attr.data-index]="i"  style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;">
+            <td class="text-center" style="width: 10px;"><img [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
+            <td class="text-left"> {{ item.dateTime }}</td>
+            <td class="text-center">{{ item.velocity }}</td>
+            <td class="text-center">{{ item.kmGps }}</td>
+            <td class="text-center">{{ item.lat + ',' + item.lng}}</td>
           </tr>
         </tbody>
       </table>
