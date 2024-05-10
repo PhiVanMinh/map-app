@@ -14,6 +14,7 @@ export class LeftPanelComponent implements OnInit {
   @Input() vehicles: Vehicle[] = [];
   showConfigVisible!: boolean;
   showSystemStatusForm!: boolean;
+  vehiclesByFilter!: Vehicle[] | undefined;
   // Tìm kiếm
   listSearchTypes: { dropdownText: string, placeHolder: string, iconUrl: string }[] = [
     {
@@ -300,6 +301,34 @@ export class LeftPanelComponent implements OnInit {
 
   selectVehicle(value: Vehicle){
     this.emitVehicle.emit(value)
+  }
+
+  filterVehicle(value?: string){
+    if(this.type == 1){
+      if(value || this.selectedGroupIds || this.selectedStatusIds)
+         this.vehiclesByFilter = this.vehicles.filter(e => {
+          let ok = true;
+          // Lọc theo điểm
+          if (value && value != '') {
+              ok = ok && e.privateCode.startsWith(value);
+          }
+
+          // Lọc theo nhóm phương tiện
+          if (ok && this.selectedGroupIds?.length > 0) {
+            ok = this.selectedGroupIds?.some((z: any) => z.id == e.groupId);
+          }
+
+          // Lọc theo trạng thái của phương tiện
+          if (ok && this.selectedStatusIds?.length > 0) {
+            ok = this.selectedStatusIds.some((s: any) => s.id == e.status);
+          }
+
+          return ok;
+        });
+      else this.vehiclesByFilter = undefined;
+    } else {
+
+    }    
   }
 
 }

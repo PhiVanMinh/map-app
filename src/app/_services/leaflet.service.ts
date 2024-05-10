@@ -43,13 +43,12 @@ export class LeafletService implements OnDestroy  {
     });
 
     L.control.zoom({
-      position: 'topright' // Đặt vị trí nút zoom ở góc phải trên
+      position: 'topright'
     }).addTo(this.map);
 
       const tiles = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&hl=vi-vn', {
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
       attribution: 'Vệ tinh Google',
-      /** False: Tăng hiệu suất load ảnh nền; True: ảnh nền độ chi tiết cao */
       detectRetina: true,
       maxZoom: 22,
       minZoom: 5,
@@ -90,30 +89,7 @@ export class LeafletService implements OnDestroy  {
   }
 
   public getMarkerById(id: string): L.Marker {
-    // const selectedMarker = this.markers[id];
-    // this.vehicleGroupLayer.removeLayer(selectedMarker);
     return this.markers[id]; // Retrieve marker by ID
-  }
-
-  public moveMarkerTo(newLat: number, newLng: number): void {
-    const startLatLng = this.marker.getLatLng();
-    const stepLat = (newLat - startLatLng.lat) / 100; // Tính toán bước di chuyển
-    const stepLng = (newLng - startLatLng.lng) / 100;
-
-    this.moveMarkerStep(startLatLng.lat, startLatLng.lng, newLat, newLng, stepLat, stepLng, 0);
-  }
-
-  private moveMarkerStep(startLat: number, startLng: number, newLat: number, newLng: number, stepLat: number, stepLng: number, count: number): void {
-    if (count < 100) {
-      const lat = startLat + (stepLat * count);
-      const lng = startLng + (stepLng * count);
-      this.marker.setLatLng([lat, lng]);
-
-      count++;
-      setTimeout(() => {
-        this.moveMarkerStep(startLat, startLng, newLat, newLng, stepLat, stepLng, count);
-      }, 10); // Thời gian delay (milliseconds) giữa các bước di chuyển
-    }
   }
 
   createClusterGroup(options?: L.MarkerClusterGroupOptions): L.MarkerClusterGroup {
@@ -160,27 +136,21 @@ export class LeafletService implements OnDestroy  {
 
 // Hàm để sinh ra một vị trí latlng ngẫu nhiên cách một khoảng cách xác định từ vị trí hiện tại
  generateRandomLatLng(currentLatLng: L.LatLng, distance: number): L.LatLng {
-  // Chuyển đổi độ sang radian
   const currentLatRad = currentLatLng.lat * Math.PI / 180;
   const currentLngRad = currentLatLng.lng * Math.PI / 180;
 
-  // Bán kính trái đất ở đơn vị kilometer
-  const earthRadius = 6371; // in kilometers
+  const earthRadius = 6371; 
 
-  // Tính toán hướng ngẫu nhiên (từ 0 đến 2*PI)
   const randomDirection = Math.random() * 2 * Math.PI;
 
-  // Tính toán vị trí mới dựa trên hướng và khoảng cách
   const newLatRad = Math.asin(Math.sin(currentLatRad) * Math.cos(distance / earthRadius) +
                   Math.cos(currentLatRad) * Math.sin(distance / earthRadius) * Math.cos(randomDirection));
   const newLngRad = currentLngRad + Math.atan2(Math.sin(randomDirection) * Math.sin(distance / earthRadius) * Math.cos(currentLatRad),
                   Math.cos(distance / earthRadius) - Math.sin(currentLatRad) * Math.sin(newLatRad));
 
-  // Chuyển đổi kết quả từ radian sang độ
   const newLat = newLatRad * 180 / Math.PI;
   const newLng = newLngRad * 180 / Math.PI;
 
-  // Trả về vị trí latlng mới
   return L.latLng(newLat, newLng);
 }
 
@@ -189,7 +159,6 @@ export class LeafletService implements OnDestroy  {
      * @param options Thuộc tính icon
      */
   createIcon(options: L.DivIconOptions) {
-    // Gán giá trị mặc định nếu ko có
     options.iconSize = isArray(options.iconSize) && options.iconSize?.length > 0 ? options.iconSize : [32, 32];
     options.iconAnchor = options.iconAnchor ?? [16, 32];
     options.className = options.className ?? 'custom-marker-icon';
@@ -232,6 +201,67 @@ export class LeafletService implements OnDestroy  {
 
   toRadians(angdeg: number): number {
     return (angdeg / 180.0) * Math.PI;
+  }
+
+  private _prevPoint: L.LatLng | null = null;
+  slideTo(options: { lat: number; lng: number; keepAtCenter: boolean }, vMarker: L.Marker) {
+    if (!this.map) { return; }
+
+    const intermediatePoints = this._getIntermediatePoints(options.lat, options.lng, vMarker);
+
+    intermediatePoints.forEach((point, index) => {
+      const duration = 10000 / intermediatePoints.length;
+      const keepAtCenter = index === intermediatePoints.length - 1 ? options.keepAtCenter : false;
+
+      setTimeout(() => {
+        this._moveMarkerTo(point, duration, keepAtCenter, vMarker);
+      }, index * duration);
+    });
+  }
+
+  private _getIntermediatePoints(lat: number, lng: number, vMarker: L.Marker): L.LatLng[] {
+    const startPoint = vMarker.getLatLng();
+    const endPoint = new L.LatLng(lat, lng);
+    const numberOfPoints = 15; 
+
+    const intermediatePoints = [];
+    for (let i = 1; i < numberOfPoints; i++) {
+      const ratio = i / numberOfPoints;
+      const intermediateLat = startPoint.lat + (endPoint.lat - startPoint.lat) * ratio;
+      const intermediateLng = startPoint.lng + (endPoint.lng - startPoint.lng) * ratio;
+      intermediatePoints.push(new L.LatLng(intermediateLat, intermediateLng));
+    }
+    return intermediatePoints;
+  }
+
+  private _moveMarkerTo(point: L.LatLng, duration: number, keepAtCenter: boolean, vMarker: L.Marker) {
+    if (!this.map) { return; }
+
+    const startPoint = vMarker.getLatLng();
+    const endLatLng = point;
+    const start = performance.now();
+
+    const animateMarker = (timestamp: number) => {
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const currLatLng = new L.LatLng(
+        startPoint.lat + (endLatLng.lat - startPoint.lat) * progress,
+        startPoint.lng + (endLatLng.lng - startPoint.lng) * progress
+      );
+
+      vMarker.setLatLng(currLatLng);
+
+      if (keepAtCenter) {
+        this.map.panTo(currLatLng, { animate: false });
+      }
+
+      if (progress < 1) {
+        L.Util.requestAnimFrame(animateMarker);
+      } else {
+        this._prevPoint = endLatLng;
+      }
+    };
+
+    L.Util.requestAnimFrame(animateMarker);
   }
 
 }

@@ -7,4 +7,6 @@ export class Vehicle {
   userName!: string;
   date!: Date;
   icon!: string;
+  groupId?: number;
+  status?: number;
 }

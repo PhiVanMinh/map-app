@@ -25,8 +25,9 @@
         </div>
       </div>
       <div class="row tim-kiem flex-nowrap">
-        <div class="col-auto p-0">
-          <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div class="col-auto p-0" style="align-content: center;">
+          <span *ngIf="type == 2" style="width: 40px; display: flex;"> {{'Xe :' | translate}}</span>
+          <button *ngIf="type == 1 " class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <img src="{{ listSearchTypes[currentSearchType].iconUrl }}" />
           </button>
           <div class="dropdown-menu">
@@ -36,7 +37,7 @@
         </div>
         <div class="col p-0">
           <ng-container *ngIf="currentSearchType === 0; else FindLandmark">
-            <input type="text" class="text-input" name="privateCode" [(ngModel)]="privateCode" placeholder="{{'Type' | translate}} {{'Vehicle' | translate | lowercase}}" />
+            <input type="text" class="text-input" name="privateCode" (ngModelChange)="filterVehicle($event)" [(ngModel)]="privateCode" placeholder="{{'Type' | translate}} {{'Vehicle' | translate | lowercase}}" />
           </ng-container>
           <ng-template #FindLandmark>
           <ng-container *ngIf="currentSearchType === 1; else TimToaDo">
@@ -60,7 +61,8 @@
         [placeholder]="'Chọn nhóm phương tiện'"
         [settings]="dropdownSettings"
         [data]="groupList"
-        [(ngModel)]="selectedGroupIds">
+        [(ngModel)]="selectedGroupIds"
+        (ngModelChange)="filterVehicle()">
         </ng-multiselect-dropdown>
       </div>
 
@@ -70,7 +72,8 @@
         [placeholder]="'Trạng thái xe'"
         [settings]="dropdownSettings"
         [data]="statusList"
-        [(ngModel)]="selectedStatusIds">
+        [(ngModel)]="selectedStatusIds"
+        (ngModelChange)="filterVehicle()">
         </ng-multiselect-dropdown>
       </div>
 
@@ -143,10 +146,6 @@
         </button>
       </div>
     </div>
-    <!-- Danh sách xe -->
-    <!-- <app-virtual-scroll #appScroll [listVehicles]="listByStates" [isShowLeftPanel]=" isShowLeftPanel" [showVirtualScroll]="vehicles.length > 0"
-      [listVehicleGroup]="listVehicleGroup" [selectedGroups]="selectedGroups" (vehicleRowClick)="onVehicleRowClick($event)"></app-virtual-scroll> -->
-    <!-- Hiển thị khi không có dữ liệu -->
 
     <div class="scroll-container">
     <div *ngIf="type == 1" class="table-responsive table-scroll" style="margin: 5px;">
@@ -161,7 +160,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let dataItem of vehicles; let i = index" [attr.data-index]="i" (click)="selectVehicle(dataItem)"
+          <tr *ngFor="let dataItem of (vehiclesByFilter ?? vehicles); let i = index" [attr.data-index]="i" (click)="selectVehicle(dataItem)"
             style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;">
             <td class="text-center" style="width: 10px;"><img height="16px" [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
             <td class="text-left"> {{ dataItem.privateCode }}</td>
@@ -193,7 +192,7 @@
     </div>
   </div>
 
-    <div class="text-center no-data p-3" *ngIf="!vehicles.length">
+    <div class="text-center no-data p-3" *ngIf="!(vehiclesByFilter ?? vehicles).length">
       {{ 'Không có dữ liệu' }}
     </div>
   </div>
