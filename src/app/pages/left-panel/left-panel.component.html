@@ -11,7 +11,7 @@
        <div *ngIf="type == 2" class="row mt-1">
         <div class="input-group p-0">
         <span style="width: 40px; align-content: center;"> {{'Từ :' | translate}}</span>
-          <input type="time" class="form-control st-time mr-1 pl-0" [(ngModel)]="timeFromDate"/>
+          <input type="time" class="form-control st-time mr-1 pl-0" style="border-radius: 4px;" [(ngModel)]="timeFromDate"/>
           <datepicker  class="col-md-7 f-datepicker pr-0" [(ngModel)]="fromDate" (ngModelChange)="changeDate('fromDate')"></datepicker>
         </div>
       </div>
@@ -20,7 +20,7 @@
       <div *ngIf="type == 2" class="row mt-2 mb-2">
         <div class="input-group p-0">
           <span style="width: 40px; align-content: center;"> {{'Đến :' | translate}}</span>
-          <input type="time" class="form-control st-time mr-1 mt-1" [(ngModel)]="timeToDate" />
+          <input type="time" class="form-control st-time mr-1 mt-1" style="border-radius: 4px;" [(ngModel)]="timeToDate" />
           <datepicker class="col-md-7 f-datepicker mt-1" [(ngModel)]="toDate" [minDate]="minDate" [maxDate]="maxDate"></datepicker>
         </div>
       </div>
@@ -35,7 +35,7 @@
               <img src="{{ type.iconUrl }}" class="pr-1" />{{ type.dropdownText | translate }}</a>
           </div>
         </div>
-        <div class="col p-0">
+        <div *ngIf="type == 1" class="col p-0">
           <ng-container *ngIf="currentSearchType === 0; else FindLandmark">
             <input type="text" class="text-input" name="privateCode" (ngModelChange)="filterVehicle($event)" [(ngModel)]="privateCode" placeholder="{{'Type' | translate}} {{'Vehicle' | translate | lowercase}}" />
           </ng-container>
@@ -43,10 +43,20 @@
           <ng-container *ngIf="currentSearchType === 1; else TimToaDo">
             <input type="text" class="text-input" name="landmark" [(ngModel)]="landmark" placeholder="{{'Type' | translate}} {{'Landmark' | translate | lowercase}}" />
           </ng-container>
-        </ng-template>
-        <ng-template #TimToaDo>
-          <input type="text" class="text-input" name="latlng" [(ngModel)]="latlng" placeholder="{{'Type' | translate}} {{'Position' | translate | lowercase}}" />
           </ng-template>
+          <ng-template #TimToaDo>
+            <input type="text" class="text-input" name="latlng" [(ngModel)]="latlng" placeholder="{{'Type' | translate}} {{'Position' | translate | lowercase}}" />
+          </ng-template>
+        </div>
+        <div *ngIf="type == 2" class="col p-0">
+          <ng-multiselect-dropdown
+          class="mt-2 p-0"
+          [placeholder]="'Chọn nhóm phương tiện'"
+          [settings]="dropdownVehicleSettings"
+          [data]="vehicles"
+          [(ngModel)]="selectedVhcList"
+          (ngModelChange)="onChangeSelectedVehicleRoute($event)">
+          </ng-multiselect-dropdown>
         </div>
         <div *ngIf="type == 2" class="col-auto pl-1 pr-0">
           <button class="btn btn-primary btn-reload" (click)="getRouteData()" >
@@ -66,7 +76,7 @@
         </ng-multiselect-dropdown>
       </div>
 
-      <div class="row">
+      <div *ngIf="type == 1" class="row">
         <ng-multiselect-dropdown
         class="mt-2 p-0"
         [placeholder]="'Trạng thái xe'"
@@ -121,8 +131,8 @@
     </div>
 
     <!-- Thông tin khác -->
-    <div class="row other-info">
-      <div class="col-auto pr-1 align-self-auto">{{ 'Loại hình vận tải' | translate }}:</div>
+    <div *ngIf="type == 2" class="row other-info ">
+      <div class="col-auto pr-1 align-self-auto pl-0">{{ 'Loại hình vận tải' | translate }}:</div>
       <div class="col align-self-auto">
         <b>{{ 'Không khác định' | translate }}</b>
       </div>
@@ -155,53 +165,53 @@
       </div>
     </div>
 
-    <div class="scroll-container">
-    <div *ngIf="type == 1" class="table-responsive table-scroll" style="margin: 5px;">
-      <table class="table table-striped">
-        <thead>
-          <tr class="row-caption" style="vertical-align: middle;">
-            <th rowspan="2" style="min-width: 10px;"></th>
-            <th rowspan="2" style="min-width: 90px; color: #0959a0 !important;">{{'PlateNo' | translate}}</th>
-            <th rowspan="2" style="text-align: center; color: #0959a0 !important;">{{'Vgps' | translate}}</th>
-          </tr>
+    <div class="scroll-container" setFullHeight>
+      <div *ngIf="type == 1" class="table-responsive table-scroll" style="margin: 5px;">
+        <table class="table table-striped">
+          <thead>
+            <tr class="row-caption" style="vertical-align: middle;">
+              <th rowspan="2" style="min-width: 10px;"></th>
+              <th rowspan="2" style="min-width: 90px; color: #0959a0 !important;">{{'PlateNo' | translate}}</th>
+              <th rowspan="2" style="text-align: center; color: #0959a0 !important;">{{'Vgps' | translate}}</th>
+            </tr>
 
-        </thead>
+          </thead>
 
-        <tbody>
-          <tr *ngFor="let dataItem of (vehiclesByFilter ?? vehicles); let i = index" [attr.data-index]="i" (click)="selectVehicle(dataItem)"
-            style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;" [ngClass]="{ active: true}">
-            <td class="text-center" style="width: 10px;"><img height="16px" [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
-            <td class="text-left"> {{ dataItem.privateCode }}</td>
-            <td class="text-center">{{ dataItem.velocity }}</td>
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            <tr *ngFor="let dataItem of (vehiclesByFilter ?? vehicles); let i = index" [attr.data-index]="i" (click)="selectVehicle(dataItem)"
+              style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;">
+              <td class="text-center" [ngClass]="{ active: dataItem.id == selectedVehicle.id}" style="width: 10px;"><img height="16px" [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
+              <td class="text-left" [ngClass]="{ active: dataItem.id == selectedVehicle.id}"> {{ dataItem.privateCode }}</td>
+              <td class="text-center" [ngClass]="{ active: dataItem.id == selectedVehicle.id}">{{ dataItem.velocity }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="type == 2" class="table-responsive table-scroll" style="margin: 5px;" setFullHeight>
+        <table class="table table-striped">
+          <thead>
+            <tr class="row-caption" style="vertical-align: middle;">
+              <th rowspan="2" style="min-width: 10px;"></th>
+              <th rowspan="2" style="min-width: 110px; color: #0959a0 !important;">{{'Thời gian' | translate}}</th>
+              <th rowspan="2" style="color: #0959a0 !important;">{{'V Gps' | translate}}</th>
+              <th rowspan="2" style="color: #0959a0 !important;">{{'Km Gps' | translate}}</th>
+              <th rowspan="2" style="color: #0959a0 !important;">{{'Tọa độ' | translate}}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let item of (routeByFilter ?? routeList); let i = index" [attr.data-index]="i"  style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;">
+              <td class="text-center" style="width: 10px;"><img height="16px" [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
+              <td class="text-left"> {{ item.dateTime }}</td>
+              <td class="text-center">{{ item.velocity }}</td>
+              <td class="text-center">{{ item.kmGps }}</td>
+              <td class="text-center">{{ item.lat + ',' + item.lng}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-
-    <div *ngIf="type == 2" class="table-responsive table-scroll" style="margin: 5px;">
-      <table class="table table-striped">
-        <thead>
-          <tr class="row-caption" style="vertical-align: middle;">
-            <th rowspan="2" style="min-width: 10px;"></th>
-            <th rowspan="2" style="min-width: 110px; color: #0959a0 !important;">{{'Thời gian' | translate}}</th>
-            <th rowspan="2" style="color: #0959a0 !important;">{{'V Gps' | translate}}</th>
-            <th rowspan="2" style="color: #0959a0 !important;">{{'Km Gps' | translate}}</th>
-            <th rowspan="2" style="color: #0959a0 !important;">{{'Tọa độ' | translate}}</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let item of routeList; let i = index" [attr.data-index]="i"  style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;">
-            <td class="text-center" style="width: 10px;"><img [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
-            <td class="text-left"> {{ item.dateTime }}</td>
-            <td class="text-center">{{ item.velocity }}</td>
-            <td class="text-center">{{ item.kmGps }}</td>
-            <td class="text-center">{{ item.lat + ',' + item.lng}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
 
     <div class="text-center no-data p-3" *ngIf="!(vehiclesByFilter ?? vehicles).length">
       {{ 'Không có dữ liệu' }}

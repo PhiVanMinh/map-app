@@ -485,18 +485,31 @@
     white-space: nowrap;
     font-weight: bolder;
     border-top: none;
-    border: 1px solid #afafaf;
+    // border: 1px solid #afafaf;
 
     padding: 5px 0;
 }
 
 .scroll-container{
     overflow-x: scroll;
+    overflow-y: scroll;
     background-color: #fff;
     scrollbar-width: none;
     padding-bottom: 0;
 }
 
 .active {
-    background-color: #2d9cdb;
+    background-color: #2d9cdb !important;
+    color: white !important;
 }
+
+.table-scroll {
+    max-height: 550px;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    border: 1px solid #afafaf;
+
+}
+
+.table-scroll thead th { position: sticky; top: 0; z-index: 1; }

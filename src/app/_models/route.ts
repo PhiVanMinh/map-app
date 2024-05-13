@@ -1,10 +1,10 @@
 export class RouteModel {
     id!: number;
-    privateCode!: string;
+    privateCode?: string;
     lat!: number;
     lng!: number;
     velocity!: number;
     kmGps!: number;
-    userName!: string;
-    dateTime!: Date;
+    userName?: string;
+    dateTime!: string;
   }

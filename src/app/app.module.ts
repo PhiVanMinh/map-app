@@ -35,6 +35,7 @@ import { routing } from './routes';
 import { OnlineComponent } from './pages/online/online.component';
 import { RouteComponent } from './pages/route/route.component';
 import { LeftPanelComponent } from './pages/left-panel/left-panel.component';
+import { SetFullHeightDirective } from './_directives/set-full-height.directive';
 
 defineLocale('vi', viLocale);
 

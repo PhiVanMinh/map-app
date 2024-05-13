@@ -17,6 +17,7 @@ export class LeftPanelComponent implements OnInit {
   showSystemStatusForm!: boolean;
   vehiclesByFilter!: Vehicle[] | undefined;
   @Input() routeList: RouteModel[] = [];
+  routeByFilter!: RouteModel[] | undefined;
   // Tìm kiếm
   listSearchTypes: { dropdownText: string, placeHolder: string, iconUrl: string }[] = [
     {
@@ -45,6 +46,16 @@ export class LeftPanelComponent implements OnInit {
     itemsShowLimit: 20,
     allowSearchFilter: true
   };
+
+  dropdownVehicleSettings: IDropdownSettings = {
+    singleSelection: true,
+    idField: 'id',
+    textField: 'privateCode',
+    // selectAllText: 'Chọn tất cả',
+    // unSelectAllText: 'Bỏ chọn tất cả',
+    // itemsShowLimit: 20,
+    allowSearchFilter: true
+  };
   currentSearchType = 0;
   leftPanelWidth = 300;
 
@@ -55,6 +66,7 @@ export class LeftPanelComponent implements OnInit {
   statusList: {id: number, name: string}[] = [{id: 1, name: 'Di chuyển'}, {id: 2, name: 'Dừng - bật'}, {id: 3, name: 'Dừng - tắt'},{id: 4, name: 'Quá tốc độ'}];
   selectedGroupIds: any;
   selectedStatusIds: any;
+  selectedVehicleId: any
 
     // Thời gian lọc
   timeFromDate: any;
@@ -83,7 +95,9 @@ export class LeftPanelComponent implements OnInit {
   selectedState: any;
 
   @Input() type: number = 1;
-  @Output() emitVehicle: EventEmitter<Vehicle> = new EventEmitter()
+  @Output() emitVehicle: EventEmitter<Vehicle> = new EventEmitter();
+  selectedVehicle: Vehicle = new Vehicle();
+  selectedVhcList: any;
 
   constructor(
     private cdr: ChangeDetectorRef
@@ -298,11 +312,17 @@ export class LeftPanelComponent implements OnInit {
   }
 
   getRouteData(){
-
+    if( this.selectedVehicleId ) this.emitVehicle.emit(this.selectedVehicleId);
   }
 
   selectVehicle(value: Vehicle){
+    this.selectedVehicle = value;
     this.emitVehicle.emit(value)
+  }
+
+  onChangeSelectedVehicleRoute(value: any){
+    this.selectedVhcList = value;
+    this.selectedVehicleId = value ? value[0] : undefined;
   }
 
   filterVehicle(value?: string){

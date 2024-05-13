@@ -22,6 +22,8 @@
   #leftPanel {
     position: absolute;
     margin-top: 55px;
+    height: 100%;
+    max-height: 350px;
   }
   #left-panel {
     @import "./src/style/variables.scss";

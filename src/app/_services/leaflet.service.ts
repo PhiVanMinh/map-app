@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
-import { MapOptions } from 'leaflet';
+import { FeatureGroup, MapOptions } from 'leaflet';
 import 'leaflet-fullscreen';
 import 'leaflet-draw';
 import 'leaflet.markercluster';
@@ -28,6 +28,7 @@ export class LeafletService implements OnDestroy  {
   curentVehicleId!: number;
 
   vehicleLayer: L.LayerGroup = new L.LayerGroup();
+  routeLayers: FeatureGroup = new FeatureGroup()
 
   constructor() {
     this.vehicleGroupLayer = this.createClusterGroup();
@@ -57,6 +58,7 @@ export class LeafletService implements OnDestroy  {
     tiles.addTo(this.map);
     this.vehicleLayer?.addTo(this.map);
     this.vehicleGroupLayer?.addTo(this.map);
+    this.routeLayers.addTo(this.map);
   }
 
   updateIconMarker(marker: L.Marker, vehicle: Vehicle, rotationDeg: number ,isCurrent?: boolean){
@@ -204,13 +206,13 @@ export class LeafletService implements OnDestroy  {
   }
 
   private _prevPoint: L.LatLng | null = null;
-  slideTo(options: { lat: number; lng: number; keepAtCenter: boolean }, vMarker: L.Marker) {
+  slideTo(options: { lat: number; lng: number; keepAtCenter: boolean; duration: number }, vMarker: L.Marker) {
     if (!this.map) { return; }
 
     const intermediatePoints = this._getIntermediatePoints(options.lat, options.lng, vMarker);
 
     intermediatePoints.forEach((point, index) => {
-      const duration = 10000 / intermediatePoints.length;
+      const duration = options.duration / intermediatePoints.length;
       const keepAtCenter = index === intermediatePoints.length - 1 ? options.keepAtCenter : false;
 
       setTimeout(() => {
@@ -264,5 +266,8 @@ export class LeafletService implements OnDestroy  {
     L.Util.requestAnimFrame(animateMarker);
   }
 
+  drawRoute(){
+
+  }
 }
 

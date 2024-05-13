@@ -63,7 +63,7 @@ export class OnlineComponent extends LeafletService  implements AfterViewInit {
         const newMarker = this.generateRandomLatLng(marker.getLatLng(), 0.1);
         const angleDeg = this.computeDirection(marker.getLatLng().lat, marker.getLatLng().lng, newMarker?.lat, newMarker?.lng);
         this.updateIconMarker(marker, e, angleDeg, e.id == this.selectedVehicle?.id);
-        const option = {lat: newMarker.lat, lng: newMarker.lng, keepAtCenter: e.id == this.selectedVehicle?.id}
+        const option = {lat: newMarker.lat, lng: newMarker.lng, keepAtCenter: e.id == this.selectedVehicle?.id, duration: 10000}
         this.slideTo(option, marker);
       } else {
         this.addMarker(e.id.toString(), e.lat, e.lng, {
