@@ -1,5 +1,6 @@
 <div class="container">
-    <app-left-panel #leftPanel [type]="2" [vehicles]="listVehicle" [routeList]="dataRoute" (emitVehicle)="onChangeSelectedVehicle($event)"  setFullHeight></app-left-panel>
+    <app-left-panel #leftPanel [type]="2" [vehicles]="listVehicle" [listRoutes]="dataRoute"  [totalKM]="totalKm"
+        (emitVehicle)="onChangeSelectedVehicle($event)" (emitRoute)="onChangeSeletedRoute($event)" (emitPlayRoute)="playRoute($event)" setFullHeight></app-left-panel>
     <div class="map-container">
         <div id="map"></div>
     </div>

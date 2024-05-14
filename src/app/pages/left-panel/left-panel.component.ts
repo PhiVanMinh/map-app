@@ -16,7 +16,6 @@ export class LeftPanelComponent implements OnInit {
   showConfigVisible!: boolean;
   showSystemStatusForm!: boolean;
   vehiclesByFilter!: Vehicle[] | undefined;
-  @Input() routeList: RouteModel[] = [];
   routeByFilter!: RouteModel[] | undefined;
   // Tìm kiếm
   listSearchTypes: { dropdownText: string, placeHolder: string, iconUrl: string }[] = [
@@ -77,9 +76,9 @@ export class LeftPanelComponent implements OnInit {
   maxDate: Date | undefined;
 
  // Player
- currentKM!: number;
+ @Input() currentKM!: number;
  currentIndex!: number;
- totalKM!: number;
+ @Input() totalKM!: number;
  totalTimeStr!: string;
  totalTime!: number;
  totalTimeMachineOn!: string;
@@ -91,13 +90,16 @@ export class LeftPanelComponent implements OnInit {
  isPause!: boolean;
  interval: any;
  arraySpeed: { label: string; interval: number }[] = [];
-  listRoutes: any;
+ @Input() listRoutes: RouteModel[] = [];
   selectedState: any;
 
   @Input() type: number = 1;
-  @Output() emitVehicle: EventEmitter<Vehicle> = new EventEmitter();
   selectedVehicle: Vehicle = new Vehicle();
+  selectedRoute: RouteModel = new RouteModel();
   selectedVhcList: any;
+  @Output() emitVehicle: EventEmitter<Vehicle> = new EventEmitter();
+  @Output() emitRoute: EventEmitter<RouteModel> = new EventEmitter();
+  @Output() emitPlayRoute: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private cdr: ChangeDetectorRef
@@ -122,6 +124,8 @@ export class LeftPanelComponent implements OnInit {
     this.isPlaying = false;
     this.isPlayStopped = false;
     this.isPause = true;
+    this.timeFromDate = moment().startOf('day').format('HH:mm');
+    this.timeToDate = moment().endOf('day').format('HH:mm');
   }
 
   getListVehicleInit(){
@@ -132,15 +136,6 @@ export class LeftPanelComponent implements OnInit {
   changeSearchType(searchType: number) {
     this.currentSearchType = searchType;
     this.cdr.detectChanges();
-    // common.delay(50).then(() => {
-    //   // Trỏ vào ô nhập
-    //   if (searchType < 2) {
-    //     this.comboboxSearch?.combobox?.focus();
-    //   }
-    //   else {
-    //     $('.findLatlng').trigger('focus');
-    //   }
-    // });
   }
 
     /**
@@ -172,12 +167,12 @@ export class LeftPanelComponent implements OnInit {
           this.currentIndex = nearIndex;
         }
         else if (nearIndex > 0) {
-          const nearKmRange = this.listRoutes[nearIndex].km - this.currentKM;
-          const prevNearKmRange = Math.abs(this.currentKM - this.listRoutes[nearIndex - 1].km);
+          const nearKmRange = this.listRoutes[nearIndex].kmGps - this.currentKM;
+          const prevNearKmRange = Math.abs(this.currentKM - this.listRoutes[nearIndex - 1].kmGps);
           this.currentIndex = nearKmRange <= prevNearKmRange ? nearIndex : nearIndex - 1;
 
         }
-        this.currentKM = this.listRoutes[this.currentIndex].km;
+        this.currentKM = this.listRoutes[this.currentIndex].kmGps;
       }
     }
     else {
@@ -225,7 +220,7 @@ export class LeftPanelComponent implements OnInit {
       // this.virtualScrollComponent.currentRouteIndex = this.currentIndex;
       // this.virtualScrollComponent.scrollToIndex(this.currentIndex);
       // Thay đổi vị trí slider
-      this.currentKM = this.listRoutes[this.currentIndex].km;
+      this.currentKM = this.listRoutes[this.currentIndex].kmGps;
       // this.setStyleRange();
       // // Truyền sang map
       // this.obs.showRouteVehicle.next({
@@ -235,6 +230,14 @@ export class LeftPanelComponent implements OnInit {
       //   isLast: false,
       //   isPrint: isPrint,
       // });
+
+      this.emitPlayRoute.emit({
+        index: this.currentIndex,
+        isPlay: !isToEnd,
+        speed: this.arraySpeed[this.currentSpeedLevel - 1].interval,
+        isLast: false,
+      });
+
       // Nhảy tới vị trí tiếp theo
       if (this.currentIndex < this.listRoutes.length - 1) {
         this.currentIndex += 1;
@@ -312,12 +315,17 @@ export class LeftPanelComponent implements OnInit {
   }
 
   getRouteData(){
-    if( this.selectedVehicleId ) this.emitVehicle.emit(this.selectedVehicleId);
+    this.emitVehicle.emit(this.selectedVehicleId);
   }
 
   selectVehicle(value: Vehicle){
     this.selectedVehicle = value;
     this.emitVehicle.emit(value)
+  }
+
+  selectRoute(value: RouteModel){
+    this.selectedRoute = value;
+    this.emitRoute.emit(value)
   }
 
   onChangeSelectedVehicleRoute(value: any){

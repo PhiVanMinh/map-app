@@ -30,6 +30,7 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
   currentDate: Date = new Date();
   vehicleMarker!: L.Marker;
   private routeMarkers: L.Marker[]= [];
+  totalKm: number = 0;
   constructor() {
     super();
   }
@@ -47,28 +48,32 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
     this.listPolylines = [];
     this.currentKm = 0;
   
-    this.selectedVehicle = this.listVehicle.find(e => e.id == value?.id);
-    if(this.selectedVehicle)
-    for (let i = 1; i < 200; i++) {
-      const oldLatlng = this.dataRoute?.length > 0 ? new L.LatLng(this.dataRoute[this.dataRoute?.length -1].lat, this.dataRoute[this.dataRoute?.length -1].lng) 
-       : new L.LatLng(this.selectedVehicle.lat, this.selectedVehicle.lng);
-      const newLatlng = this.generateRandomLatLng(new L.LatLng(oldLatlng.lat, oldLatlng.lng), 0.1);
-      const route = new RouteModel();
-      route.id = i;
-      route.kmGps = i * 0.5;
-      this.currentDate.setHours(0, 0, i * 10, 0);
-      route.dateTime = moment(this.currentDate).format('DD/MM HH:mm');
-      route.privateCode = this.selectedVehicle?.privateCode;
-      route.velocity = Math.floor( Math.random() * (80 - 1) + 1) + 1;
-      route.userName = this.selectedVehicle?.userName;
-      route.lat = newLatlng.lat;
-      route.lng = newLatlng.lng;
-      this.dataRoute.push(route);
-    } 
-    this.dataRoute.forEach((e, index) => {
-      this.initRouter(index);
-      this.routerVehicle(e);
-    })
+    if(value){
+      this.selectedVehicle = this.listVehicle.find(e => e.id == value?.id);
+      if(this.selectedVehicle)
+      for (let i = 1; i < 200; i++) {
+        const oldLatlng = this.dataRoute?.length > 0 ? new L.LatLng(this.dataRoute[this.dataRoute?.length -1].lat, this.dataRoute[this.dataRoute?.length -1].lng) 
+        : new L.LatLng(this.selectedVehicle.lat, this.selectedVehicle.lng);
+        const newLatlng = this.generateRandomLatLng(new L.LatLng(oldLatlng.lat, oldLatlng.lng), 0.1);
+        const route = new RouteModel();
+        route.id = i;
+        route.kmGps = i * 0.5;
+        this.currentDate.setHours(0, 0, i * 10, 0);
+        route.dateTime = moment(this.currentDate).format('DD/MM HH:mm');
+        route.privateCode = this.selectedVehicle?.privateCode;
+        route.velocity = Math.floor( Math.random() * (80 - 1) + 1) + 1;
+        route.userName = this.selectedVehicle?.userName;
+        route.lat = newLatlng.lat;
+        route.lng = newLatlng.lng;
+        this.dataRoute.push(route);
+      } 
+      this.dataRoute.forEach((e, index) => {
+        this.initRouter(index);
+        this.routerVehicle(e);
+      })
+
+      if(this.dataRoute?.length > 0) this.totalKm = this.dataRoute[this.dataRoute?.length -1].kmGps - this.dataRoute[0].kmGps;
+    }
   }
 
   initRouter(index: number) {
@@ -136,7 +141,7 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
     }
   }
 
-  routerVehicle(route: RouteModel, color?: string, speed?: number) {
+  routerVehicle(route: RouteModel, color?: string, speed?: number, isPlay?: boolean) {
     if (!color) color = '#0000ED';
       // Vẽ line lộ trình
       this.addLineMultiColor(route, color);
@@ -149,7 +154,7 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
         this.latestPoint = latlngCurrent;
         const angleDeg = this.computeDirection(this.vehicleMarker.getLatLng().lat, this.vehicleMarker.getLatLng().lng, route?.lat, route?.lng);
         this.updateIconMarker(this.vehicleMarker, this.selectedVehicle ?? new Vehicle(), angleDeg, true);
-        // this.slideTo({ lat: latlngCurrent.lat, lng: latlngCurrent.lng, duration: route.velocity * 1000, keepAtCenter: true }, this.vehicleMarker);
+        // if(isPlay)this.slideTo({ lat: latlngCurrent.lat, lng: latlngCurrent.lng, duration: speed ?? route.velocity * 1000, keepAtCenter: true }, this.vehicleMarker);
 
         if (!this.map.getBounds().contains(latlngCurrent)) {
           this.map.setView(latlngCurrent);
@@ -214,5 +219,31 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
         this.routeLayers.addLayer(arrow);
       }
     }
+  }
+
+  onChangeSeletedRoute(value: any){
+    this.routeLayers.clearLayers();
+    this.listPolylines = [];
+    this.currentKm = 0;
+    this.dataRoute.forEach((e, index) => {
+      this.initRouter(index);
+      if(e.id <=value.id) this.routerVehicle(e);
+      if(e.id == value.id){
+        this.vehicleMarker.setLatLng([e.lat, e.lng]);
+      } 
+    })
+  }
+
+  playRoute(data: any){
+    this.routeLayers.clearLayers();
+    this.listPolylines = [];
+    this.currentKm = 0;
+    this.dataRoute.forEach((e, index) => {
+      this.initRouter(index);
+      if(index <= data.index) this.routerVehicle(e);
+      if(e.id == data.index){
+        this.vehicleMarker.setLatLng([e.lat, e.lng]);
+      } 
+    })
   }
 }

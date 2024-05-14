@@ -11,7 +11,7 @@
        <div *ngIf="type == 2" class="row mt-1">
         <div class="input-group p-0">
         <span style="width: 40px; align-content: center;"> {{'Từ :' | translate}}</span>
-          <input type="time" class="form-control st-time mr-1 pl-0" style="border-radius: 4px;" [(ngModel)]="timeFromDate"/>
+          <input type="time" class="form-control st-time mr-1 mt-1" style="border-radius: 4px;" [(ngModel)]="timeFromDate"/>
           <datepicker  class="col-md-7 f-datepicker pr-0" [(ngModel)]="fromDate" (ngModelChange)="changeDate('fromDate')"></datepicker>
         </div>
       </div>
@@ -187,30 +187,35 @@
           </tbody>
         </table>
       </div>
-
-      <div *ngIf="type == 2" class="table-responsive table-scroll" style="margin: 5px;" setFullHeight>
-        <table class="table table-striped">
-          <thead>
-            <tr class="row-caption" style="vertical-align: middle;">
-              <th rowspan="2" style="min-width: 10px;"></th>
-              <th rowspan="2" style="min-width: 110px; color: #0959a0 !important;">{{'Thời gian' | translate}}</th>
-              <th rowspan="2" style="color: #0959a0 !important;">{{'V Gps' | translate}}</th>
-              <th rowspan="2" style="color: #0959a0 !important;">{{'Km Gps' | translate}}</th>
-              <th rowspan="2" style="color: #0959a0 !important;">{{'Tọa độ' | translate}}</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr *ngFor="let item of (routeByFilter ?? routeList); let i = index" [attr.data-index]="i"  style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;">
-              <td class="text-center" style="width: 10px;"><img height="16px" [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
-              <td class="text-left"> {{ item.dateTime }}</td>
-              <td class="text-center">{{ item.velocity }}</td>
-              <td class="text-center">{{ item.kmGps }}</td>
-              <td class="text-center">{{ item.lat + ',' + item.lng}}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="text-center no-data p-3" *ngIf="!(routeByFilter ?? listRoutes)?.length; else showTableRoute">
+        {{ 'Không có dữ liệu' }}
       </div>
+      <ng-template #showTableRoute>
+        <div *ngIf="type == 2" class="table-responsive table-scroll" style="margin: 5px;" setFullHeight>
+          <table class="table table-striped">
+            <thead>
+              <tr class="row-caption" style="vertical-align: middle;">
+                <th rowspan="2" style="min-width: 10px;"></th>
+                <th rowspan="2" style="min-width: 110px; color: #0959a0 !important;">{{'Thời gian' | translate}}</th>
+                <th rowspan="2" style="color: #0959a0 !important;">{{'V Gps' | translate}}</th>
+                <th rowspan="2" style="color: #0959a0 !important;">{{'Km Gps' | translate}}</th>
+                <th rowspan="2" style="color: #0959a0 !important;">{{'Tọa độ' | translate}}</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let item of (routeByFilter ?? listRoutes); let i = index" [attr.data-index]="i"  
+                style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;" (click)="selectRoute(item)">
+                <td class="text-center" [ngClass]="{ active: item.id == selectedRoute.id}" style="width: 10px;"><img height="16px" [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
+                <td class="text-left" [ngClass]="{ active: item.id == selectedRoute.id}"> {{ item.dateTime }}</td>
+                <td class="text-center" [ngClass]="{ active: item.id == selectedRoute.id}">{{ item.velocity }}</td>
+                <td class="text-center" [ngClass]="{ active: item.id == selectedRoute.id}">{{ item.kmGps }}</td>
+                <td class="text-center" [ngClass]="{ active: item.id == selectedRoute.id}">{{ item.lat + ',' + item.lng}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
     </div>
 
     <div class="text-center no-data p-3" *ngIf="!(vehiclesByFilter ?? vehicles).length">
