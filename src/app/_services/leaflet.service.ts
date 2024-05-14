@@ -73,8 +73,8 @@ export class LeafletService implements OnDestroy  {
   }
 
   public addMarker(id: string, lat: number, lng: number, options: L.MarkerOptions, isCurrent?: boolean): void {
-      if (options.iconOptions) {
-        options.icon = this.createIcon(options.iconOptions);
+    if (options.iconOptions) {
+      options.icon = this.createIcon(options.iconOptions);
     }
     const marker = L.marker([lat, lng], options);
     if (options.popupContent) {
@@ -266,8 +266,21 @@ export class LeafletService implements OnDestroy  {
     L.Util.requestAnimFrame(animateMarker);
   }
 
-  drawRoute(){
-
+  addMarkerRoute(id: string, lat: number, lng: number, options: L.MarkerOptions,){
+    if (options.iconOptions) {
+      options.icon = this.createIcon(options.iconOptions);
+    }
+    const marker = L.marker([lat, lng], options);
+    if (options.popupContent) {
+      options.popupClass = options.popupClass ?? 'custom-popup';
+      options.popupMinWidth = options.popupMinWidth ?? 50;
+      options.popupMaxWidth = options.popupMaxWidth ?? 500;
+      options.popupOffset = options.popupOffset ?? undefined;
+      marker.bindPopup(options.popupContent, { className: options.popupClass, minWidth: options.popupMinWidth, maxWidth: options.popupMaxWidth, offset: options.popupOffset });
+    }
+    //marker.bindPopup(id); // Example: Add a popup with marker ID
+    this.markers[id] = marker; // Store marker reference with ID
+    return marker
   }
 }
 

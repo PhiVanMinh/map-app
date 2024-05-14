@@ -12,23 +12,24 @@ import { LeafletService } from 'src/app/_services/leaflet.service';
 })
 export class RouteComponent extends LeafletService implements AfterViewInit {
   listVehicle: Vehicle[] = [
-    {id: 1, privateCode: '14C16317', lat: 10.767598, lng: 106.689415, velocity: 40, userName: 'Hoàng Văn Long', date: new Date, icon:'', groupId: 1, status:1},
-    {id: 2, privateCode: '19C06580', lat: 10.858499, lng: 106.65221, velocity: 16, userName: 'Nguyễn Nhật Nam', date: new Date, icon:'', groupId: 2 , status:1},
-    {id: 3, privateCode: '24B00606', lat: 10.767991, lng: 106.68936, velocity: 2, userName: 'Nguyễn Văn Thuận', date: new Date, icon:'', groupId: 3, status:1},
-    {id: 4, privateCode: '24B00606_C', lat: 20.973986, lng: 105.84675, velocity: 54, userName: 'Nguyễn Văn Dũng', date: new Date, icon:'', groupId: 3, status:1},
-    {id: 5, privateCode: '24B00608_C', lat: 20.823234, lng: 105.94652, velocity: 72, userName: 'Hoàng Hải Đăng', date: new Date, icon:'', groupId: 4, status:1},
-    {id: 6, privateCode: '24B00609', lat: 10.819613, lng: 106.69446, velocity: 24, userName: 'Giang Trung Hiền', date: new Date, icon:'', groupId: 4, status:1},
-    {id: 7, privateCode: '24B00609_C', lat: 20.813119, lng: 105.74653, velocity: 10, userName: 'LAI XE DANG XUAT', date: new Date, icon:'', groupId: 4, status:1},
+    {id: 10001, privateCode: '14C16317', lat: 10.767598, lng: 106.689415, velocity: 40, userName: 'Hoàng Văn Long', date: new Date, icon:'', groupId: 1, status:1},
+    {id: 10002, privateCode: '19C06580', lat: 10.858499, lng: 106.65221, velocity: 16, userName: 'Nguyễn Nhật Nam', date: new Date, icon:'', groupId: 2 , status:1},
+    {id: 10003, privateCode: '24B00606', lat: 10.767991, lng: 106.68936, velocity: 2, userName: 'Nguyễn Văn Thuận', date: new Date, icon:'', groupId: 3, status:1},
+    {id: 10004, privateCode: '24B00606_C', lat: 20.973986, lng: 105.84675, velocity: 54, userName: 'Nguyễn Văn Dũng', date: new Date, icon:'', groupId: 3, status:1},
+    {id: 10005, privateCode: '24B00608_C', lat: 20.823234, lng: 105.94652, velocity: 72, userName: 'Hoàng Hải Đăng', date: new Date, icon:'', groupId: 4, status:1},
+    {id: 10006, privateCode: '24B00609', lat: 10.819613, lng: 106.69446, velocity: 24, userName: 'Giang Trung Hiền', date: new Date, icon:'', groupId: 4, status:1},
+    {id: 10007, privateCode: '24B00609_C', lat: 20.813119, lng: 105.74653, velocity: 10, userName: 'LAI XE DANG XUAT', date: new Date, icon:'', groupId: 4, status:1},
   ];
 
   dataRoute: RouteModel[] = [];
   latestPoint!: L.LatLng;
   listPolylines: { color: string, polyline: L.Polyline }[] = [];
-  currentKm!: number;
+  currentKm: number = 0;
   arrowKmStep: number = 1;
   selectedVehicle: Vehicle | undefined;
   currentDate: Date = new Date();
   vehicleMarker!: L.Marker;
+  private routeMarkers: L.Marker[]= [];
   constructor() {
     super();
   }
@@ -40,6 +41,12 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
   }
 
   onChangeSelectedVehicle(value: any){
+
+    this.routeLayers.clearLayers();
+    this.dataRoute = [];
+    this.listPolylines = [];
+    this.currentKm = 0;
+  
     this.selectedVehicle = this.listVehicle.find(e => e.id == value?.id);
     if(this.selectedVehicle)
     for (let i = 1; i < 200; i++) {
@@ -71,7 +78,7 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
     const endIndex = this.dataRoute.length - 1;
     if (index === 0) {
       // Tạo marker điểm đầu
-      this.addMarker(route?.id.toString(),route.lat, route.lng, {
+      const marker = this.addMarkerRoute(route?.id.toString(),route.lat, route.lng, {
         iconOptions: {
           iconUrl: '/assets/images/common/point-green.png',
           iconSize: [30, 30],
@@ -80,6 +87,8 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
           labelContent: 'Điểm xuất phát'
         }
       });
+      this.routeMarkers.push(marker);
+      this.routeLayers.addLayer(marker);
 
       // Tạo icon xe
       this.latestPoint = new L.LatLng(route.lat, route.lng);
@@ -96,6 +105,7 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
       )
 
       if (this.vehicleMarker) {
+        this.routeMarkers.push(this.vehicleMarker);
         this.routeLayers.addLayer(this.vehicleMarker);
         this.map.setView(this.vehicleMarker?.getLatLng());
       }
@@ -110,16 +120,19 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
       if (route.lng > 0) {
         lng = route.lng;
       }
+      // this.vehicleMarker.setLatLng([lat, lng]);
 
-      this.addMarker(route?.id.toString(),lat, lng, {
+      const marker = this.addMarkerRoute(route?.id.toString(),lat, lng, {
         iconOptions: {
           iconUrl: '/assets/images/common/point-red.png',
           iconSize: [30, 30],
           iconAnchor: [15, 30],
           className: 'marker-icon-vehicle-selected',
-          labelContent: this.selectedVehicle?.privateCode,
+          labelContent: 'Điểm kết thúc',
         }
       });
+      this.routeMarkers.push(marker);
+      this.routeLayers.addLayer(marker)
     }
   }
 
@@ -179,18 +192,16 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
     if (this.arrowKmStep > 0 && route.kmGps - this.currentKm > this.arrowKmStep) {
       this.currentKm = route.kmGps;
 
-      this.addMarker(route.id?.toString(),route.lat, route.lng, {
+      const arrow = this.addMarkerRoute(route.id?.toString(),route.lat, route.lng, {
         iconOptions: {
           iconSize: [16, 16],
           iconAnchor: [8, 8],
-          fontAwesomeClass: 'fa fa-caret-up',
+          fontAwesomeClass: 'bi bi-caret-up-fill',
           fontAwesomeColor: color,
           className:  'marker-icon-vehicle-selected',
           rotationDeg: eDirection,
         }
       });
-
-      const arrow = this.getMarkerById(route.id?.toString());
 
       if (arrow != undefined && arrow != null) {
         if (route.lat === 0 && route.lng === 0) {
@@ -199,6 +210,7 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
           }
         }
 
+        this.routeMarkers.push(arrow);
         this.routeLayers.addLayer(arrow);
       }
     }
