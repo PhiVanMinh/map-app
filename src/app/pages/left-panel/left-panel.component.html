@@ -187,11 +187,12 @@
           </tbody>
         </table>
       </div>
+      <ng-container *ngIf="type == 2">
       <div class="text-center no-data p-3" *ngIf="!(routeByFilter ?? listRoutes)?.length; else showTableRoute">
         {{ 'Không có dữ liệu' }}
       </div>
       <ng-template #showTableRoute>
-        <div *ngIf="type == 2" class="table-responsive table-scroll" style="margin: 5px;" setFullHeight>
+        <div  class="table-responsive table-scroll" style="margin: 5px;" setFullHeight>
           <table class="table table-striped">
             <thead>
               <tr class="row-caption" style="vertical-align: middle;">
@@ -216,6 +217,7 @@
           </table>
         </div>
       </ng-template>
+    </ng-container>
     </div>
 
     <div class="text-center no-data p-3" *ngIf="!(vehiclesByFilter ?? vehicles).length">
