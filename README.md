@@ -1,27 +1,31 @@
-# MyApp
+# Giới thiệu 
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.5.
+Dự án đang sử dụng [Angular CLI](https://github.com/angular/angular-cli) version 16.2.5.
+Phiên bản Node.js khả dụng cho phiên bản angular trên là Node.js 16.x hoặc Node.js 18.x
 
-## Development server
+## Thư viện 
+Chạy lệnh `npm install` để cài đặt các thư viện cần thiết cho dự án 
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Chạy dự án
 
-## Code scaffolding
+Chạy lệnh `ng serve` hoặc `npm start` để khởi động máy chủ phát triển. Điều hướng đến `http://localhost:4200/`. Ứng dụng sẽ tự động tải lại nếu bạn thay đổi bất kỳ tệp nguồn nào.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Tạo khung mã
 
-## Build
+Chạy lệnh `ng generate component component-name` để tạo một component mới. Bạn cũng có thể sử dụng các lệnh `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Xây dựng dự án
 
-## Running unit tests
+Chạy lệnh `ng build` để xây dựng dự án. Các tệp build sẽ được lưu trữ trong thư mục dist/.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Chạy các bài kiểm tra đơn vị
 
-## Running end-to-end tests
+Chạy lệnh `ng test` để thực thi các bài kiểm tra đơn vị thông qua Karma.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Chạy các bài kiểm tra end-to-end
 
-## Further help
+Chạy lệnh `ng e2e` để thực thi các bài kiểm tra end-to-end thông qua một nền tảng mà bạn chọn. Để sử dụng lệnh này, bạn cần thêm một gói thực hiện khả năng kiểm tra end-to-end trước.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Trợ giúp thêm
+
+Để nhận thêm trợ giúp về Angular CLI, sử dụng lệnh `ng help` hoặc xem trang Angular CLI Overview and Command Reference.
