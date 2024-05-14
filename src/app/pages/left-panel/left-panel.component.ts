@@ -315,6 +315,7 @@ export class LeftPanelComponent implements OnInit {
   }
 
   getRouteData(){
+    this.currentKM = 0;
     this.emitVehicle.emit(this.selectedVehicleId);
   }
 

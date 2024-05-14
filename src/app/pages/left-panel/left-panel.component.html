@@ -143,26 +143,6 @@
       <div class="col">
         <b class="text-primary">{{ type == 1 ? 'Danh sách xe' : 'Lộ trình' | translate }}</b>
       </div>
-      <div class="col-auto">
-        <button [title]="'VehicleStatus' | translate" class="btn btn-sm btn-primary" (click)="showSystemStatusForm = true">
-          <i class="bi bi-car-front-fill"></i>
-        </button>
-      </div>
-      <div class="col-auto">
-        <button [title]="'ConfigVehicleVisible' | translate" class="btn btn-sm btn-primary" (click)="showConfigVisible = true">
-          <i class="bi bi-gear-fill"></i>
-        </button>
-      </div>
-      <div class="col-auto">
-        <button class="btn btn-sm btn-primary" (click)="getListVehicleInit()" [title]="'Refresh' | translate">
-          <i class="bi bi bi-arrow-repeat"></i>
-        </button>
-      </div>
-      <div class="col-auto">
-        <button class="btn btn-sm btn-primary"  [title]="'VehicleColorMeaning' | translate">
-          <i class="bi bi-question"></i>
-        </button>
-      </div>
     </div>
 
     <div class="scroll-container" setFullHeight>

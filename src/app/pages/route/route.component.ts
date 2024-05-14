@@ -47,6 +47,7 @@ export class RouteComponent extends LeafletService implements AfterViewInit {
     this.dataRoute = [];
     this.listPolylines = [];
     this.currentKm = 0;
+    this.totalKm = 0
   
     if(value){
       this.selectedVehicle = this.listVehicle.find(e => e.id == value?.id);

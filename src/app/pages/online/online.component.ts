@@ -51,7 +51,7 @@ export class OnlineComponent extends LeafletService  implements AfterViewInit {
           labelContent: e.privateCode,
           rotationDeg: 0,
           },
-      });
+      }, false, e);
     })
 
   }
@@ -65,6 +65,8 @@ export class OnlineComponent extends LeafletService  implements AfterViewInit {
         this.updateIconMarker(marker, e, angleDeg, e.id == this.selectedVehicle?.id);
         const option = {lat: newMarker.lat, lng: newMarker.lng, keepAtCenter: e.id == this.selectedVehicle?.id, duration: 10000}
         this.slideTo(option, marker);
+        if(e.id == this.selectedVehicle?.id) marker.openPopup();
+        else marker.closePopup();
       } else {
         this.addMarker(e.id.toString(), e.lat, e.lng, {
           iconOptions: {
@@ -75,7 +77,7 @@ export class OnlineComponent extends LeafletService  implements AfterViewInit {
             labelContent: e.privateCode,
             rotationDeg: 0,
             },
-        }, true);
+        }, true, e);
       }
       if(e.id == this.selectedVehicle?.id) this.map.setView(marker?.getLatLng());
     })
@@ -88,6 +90,8 @@ onChangeSelectedVehicle(value: Vehicle){
     this.listVehicle.map(e => {
       const marker = this.getMarkerById(e?.id?.toString())
       this.updateIconMarker(marker, e, 0, e.id == value?.id);
+      if(e.id == value?.id) marker.openPopup();
+      else marker.closePopup();
     })
 
     this.map.setView(vMarker?.getLatLng());
@@ -101,7 +105,7 @@ onChangeSelectedVehicle(value: Vehicle){
         labelContent: value.privateCode,
         rotationDeg: 0,
         },
-    }, true);
+    }, true, this.selectedVehicle);
   }
 
 }
