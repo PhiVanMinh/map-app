@@ -505,8 +505,7 @@
 
 .table-scroll {
     max-height: 550px;
-    overflow-x: scroll;
-    overflow-y: scroll;
+    overflow: auto;
     scrollbar-width: thin;
     border: 1px solid #afafaf;
 
