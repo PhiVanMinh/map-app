@@ -78,22 +78,29 @@ export class LeafletService implements OnDestroy  {
       options.icon = this.createIcon(options.iconOptions);
     }
     const marker = L.marker([lat, lng], options);
+
     marker.bindPopup(`<b> Phương tiện : ${vehicle?.privateCode}</b><br>
-                      <b> Thời gian : ${moment(vehicle?.date).format('HH:mm dd/MM/yyyy')}</b><br>
+                      <b> Thời gian : ${moment(vehicle?.date).format('HH:mm DD/MM/yyyy')}</b><br>
                       <b> Km trong ngày : 99km</b><br>
                       <b> Vận tốc : ${vehicle?.velocity} km/h</b><br>
-                      <b> Lái xe : ${vehicle?.userName} km/h</b><br>
-                      <b> Trạng thái : ${vehicle?.status == 1 ? 'Đang chạy' : 'đang đỗ'} km/h</b><br>
-                    `
-                    );
-    // if (options.popupContent) {
+                      <b> Lái xe : ${vehicle?.userName}</b><br>
+                      <b> Trạng thái : ${vehicle?.status == 1 ? 'Đang chạy' : 'đang đỗ'}</b><br>
+                    `, {autoClose: false, keepInView: true, className: 'custom-popup', autoPan: true} );
+
     //   options.popupClass = options.popupClass ?? 'custom-popup';
     //   options.popupMinWidth = options.popupMinWidth ?? 50;
     //   options.popupMaxWidth = options.popupMaxWidth ?? 500;
     //   options.popupOffset = options.popupOffset ?? undefined;
-    //   marker.bindPopup(options.popupContent, { className: options.popupClass, minWidth: options.popupMinWidth, maxWidth: options.popupMaxWidth, offset: options.popupOffset });
-    // }
-     //marker.bindPopup(id); // Example: Add a popup with marker ID
+    //   marker.bindPopup(
+    //   `<b> Phương tiện : ${vehicle?.privateCode}</b><br>
+    //   <b> Thời gian : ${moment(vehicle?.date).format('HH:mm dd/MM/yyyy')}</b><br>
+    //   <b> Km trong ngày : 99km</b><br>
+    //   <b> Vận tốc : ${vehicle?.velocity} km/h</b><br>
+    //   <b> Lái xe : ${vehicle?.userName} km/h</b><br>
+    //   <b> Trạng thái : ${vehicle?.status == 1 ? 'Đang chạy' : 'đang đỗ'} km/h</b><br>`,
+    //    { className: options.popupClass, minWidth: options.popupMinWidth, maxWidth: options.popupMaxWidth, offset: options.popupOffset, autoPan: true, keepInView: true });
+    //  marker.bindPopup(id); // Example: Add a popup with marker ID
+
     this.markers[id] = marker; // Store marker reference with ID
     if(isCurrent) this.vehicleLayer.addLayer(marker)
     else this.vehicleGroupLayer.addLayer(marker);

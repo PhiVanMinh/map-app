@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, Renderer2 } from '@angular/core';
 import * as L from 'leaflet';
 import { Vehicle } from 'src/app/_models/vehicle';
 import { LeafletService } from 'src/app/_services/leaflet.service';
@@ -21,7 +21,7 @@ export class OnlineComponent extends LeafletService  implements AfterViewInit {
 
   interval: any;
   selectedVehicle!: Vehicle;
-  constructor() {
+  constructor(private renderer: Renderer2) {
     super();
   }
 
@@ -65,8 +65,6 @@ export class OnlineComponent extends LeafletService  implements AfterViewInit {
         this.updateIconMarker(marker, e, angleDeg, e.id == this.selectedVehicle?.id);
         const option = {lat: newMarker.lat, lng: newMarker.lng, keepAtCenter: e.id == this.selectedVehicle?.id, duration: 10000}
         this.slideTo(option, marker);
-        if(e.id == this.selectedVehicle?.id) marker.openPopup();
-        else marker.closePopup();
       } else {
         this.addMarker(e.id.toString(), e.lat, e.lng, {
           iconOptions: {
@@ -79,7 +77,10 @@ export class OnlineComponent extends LeafletService  implements AfterViewInit {
             },
         }, true, e);
       }
-      if(e.id == this.selectedVehicle?.id) this.map.setView(marker?.getLatLng());
+      if(e.id == this.selectedVehicle?.id){ 
+        this.map.setView(marker?.getLatLng()); 
+        marker.openPopup();
+      }
     })
   }
 
@@ -89,12 +90,19 @@ onChangeSelectedVehicle(value: Vehicle){
   if(vMarker){
     this.listVehicle.map(e => {
       const marker = this.getMarkerById(e?.id?.toString())
-      this.updateIconMarker(marker, e, 0, e.id == value?.id);
-      if(e.id == value?.id) marker.openPopup();
-      else marker.closePopup();
+      this.updateIconMarker(marker, e, 0, e.id == value?.id);      
+    })    
+    this.map.setView(vMarker?.getLatLng());
+    vMarker.openPopup();
+    vMarker.on('click', () => {
+      if(vMarker.isPopupOpen()) {
+        const elements = document.querySelectorAll('.custom-popup');
+          elements.forEach(element => {
+            this.renderer.setStyle(element, 'opacity', '0');
+          });
+        };
     })
 
-    this.map.setView(vMarker?.getLatLng());
   } else {
     this.addMarker(value.id.toString(), value.lat, value.lng, {
       iconOptions: {
