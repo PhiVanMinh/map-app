@@ -1,0 +1,41 @@
+<div class="virtual-tree-container">
+  <tree-root #tree [nodes]="nodes" [options]="options" [focused]="true" [ngClass]="{ 'd-none': nodes.length <= 0 }">
+    <ng-template #treeNodeTemplate let-node let-index="index">
+      <div class="row" [ngClass]="{ 'child-row': !node.data.isGroup }">
+        <div class="col-auto">
+          <input type="checkbox" class="my-tree-checkbox"  [(ngModel)]="node.data.checked" [indeterminate]="node.data.indeterminate" (change)="toggleCheckbox(node, $event)" />
+        </div>
+        <ng-template [ngIf]="node.data.isGroup" [ngIfElse]="childNode">
+          <div class="col-auto">
+            <img [src]="node.data.iconUrl" />
+          </div>
+          <div class="col">
+            {{ node.data.name }} ({{
+            node.children ? node.children.length : 0
+            }})
+          </div>
+        </ng-template>
+        <ng-template #childNode>
+          <div class="col">
+            {{ node.data.name }}
+          </div>
+          <div class="col-auto">
+            <button class="btn" (click)="editLandmark(node.data.id)" title="{{'Edit' | translate}}">
+              <i class="fas fa-edit text-highlight" title="{{ 'Edit' |translate }}"></i>
+            </button>
+          </div>
+          <div class="col-auto">
+            <button class="btn" (click)="deleteLanmark(node)" title="{{'Delete' | translate}}">
+              <i class="fas fa-trash-alt text-highlight" title="{{ 'Delete' |translate}}"></i>
+            </button>
+          </div>
+        </ng-template>
+      </div>
+    </ng-template>
+  </tree-root>
+  <ng-container *ngIf="listLandmarks.length <= 0">
+    <div class="p-3 text-center">
+      {{ 'Không có dữ liệu' | translate }}
+    </div>
+  </ng-container>
+</div>

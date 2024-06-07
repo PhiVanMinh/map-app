@@ -30,7 +30,7 @@
           <button *ngIf="type == 1 " class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <img src="{{ listSearchTypes[currentSearchType].iconUrl }}" />
           </button>
-          <div class="dropdown-menu">
+          <div  *ngIf="type == 1" class="dropdown-menu">
             <a *ngFor="let type of listSearchTypes; let i = index" class="dropdown-item" (click)="changeSearchType(i)">
               <img src="{{ type.iconUrl }}" class="pr-1" />{{ type.dropdownText | translate }}</a>
           </div>
@@ -64,7 +64,51 @@
                 src="/assets/images/common/white/download.png" /></span>
           </button>
         </div>
+
+        <!-- Điểm -->
+        <ng-container *ngIf="type == 3">
+        <div class="col p-0">
+          <ng-container>
+            <input type="text" class="text-input" name="privateCode" (ngModelChange)="filterLandmark($event)" style="padding: 6px 12px;" [(ngModel)]="landmarkName" placeholder="{{'Type' | translate}} {{'Vehicle' | translate | lowercase}}" />
+          </ng-container>
+        </div>
+      </ng-container>
       </div>
+
+      <ng-container *ngIf="type == 3">
+        <div class="row">
+          <ng-multiselect-dropdown
+          class="mt-2 p-0"
+          [placeholder]="'Chọn loại điểm'"
+          [settings]="dropdownSettings"
+          [data]="listLandmarkCategorys"
+          [(ngModel)]="selectedCategoryIds"
+          (ngModelChange)="filterLandmark()">
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="row">
+          <ng-multiselect-dropdown
+          class="mt-2 p-0"
+          [placeholder]="'Chọn nhóm điểm'"
+          [settings]="dropdownSettings"
+          [data]="listLandmarkGroups"
+          [(ngModel)]="selectedLandmarkGroupIds"
+          (ngModelChange)="filterLandmark()">
+          </ng-multiselect-dropdown>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-6 pl-0 check-box-label">
+            <input class="check-box" type="checkbox" name="showLandmarkName" [(ngModel)]="showLandmarkName">
+            <label class="ml-1">{{'Hiển thị tên điểm' | translate}}</label>
+          </div>
+          <div class="col-6 pl-0 check-box-label">
+            <input class="check-box" type="checkbox" name="showPolygon" [(ngModel)]="showPolygon">
+            <label class="ml-1">{{'Hiển thị vùng bao' | translate}}</label>
+          </div>
+        </div>
+      </ng-container>
+      
       <div *ngIf="type == 1" class="row">
         <ng-multiselect-dropdown
         class="mt-2 p-0"
@@ -87,7 +131,7 @@
         </ng-multiselect-dropdown>
       </div>
 
-         <!-- Player -->
+    <!-- Player -->
     <div *ngIf="type == 2" class="player mt-2" >
       <div class="form-group d-flex mb-0" style="padding: 10px 5px 0px 5px">
         <div class="form-custom-range">
@@ -141,7 +185,9 @@
     <!-- Khu vực danh sách xe--------------------- -->
     <div class="row" id="dsxe-tool">
       <div class="col">
-        <b class="text-primary">{{ type == 1 ? 'Danh sách xe' : 'Lộ trình' | translate }}</b>
+        <b *ngIf="type == 1" class="text-primary">{{ 'Danh sách xe' | translate }}</b>
+        <b *ngIf="type == 2" class="text-primary">{{ 'Lộ trình' | translate }}</b>
+        <b *ngIf="type == 3" class="text-primary">{{ 'Danh sách điểm' | translate }}</b>
       </div>
     </div>
 
@@ -167,7 +213,7 @@
           </tbody>
         </table>
       </div>
-      <ng-container *ngIf="type == 2">
+    <ng-container *ngIf="type == 2">
       <div class="text-center no-data p-3" *ngIf="!(routeByFilter ?? listRoutes)?.length; else showTableRoute">
         {{ 'Không có dữ liệu' }}
       </div>
@@ -198,9 +244,15 @@
         </div>
       </ng-template>
     </ng-container>
+
+    <ng-container *ngIf="type == 3">
+        <app-virtual-tree [listLandmarks]="landmarkByFilter ?? listLandmarks" [listLandmarkCategorys]="listLandmarkCategorys" (onSelectedChanged)="countSelectedNodes()" 
+        (onDataLoaded)="finishCreateNodes()">
+      </app-virtual-tree>
+    </ng-container>
     </div>
 
-    <div class="text-center no-data p-3" *ngIf="!(vehiclesByFilter ?? vehicles).length">
+    <div class="text-center no-data p-3" *ngIf="!(vehiclesByFilter ?? vehicles).length && (type == 2 || type == 1)">
       {{ 'Không có dữ liệu' }}
     </div>
   </div>

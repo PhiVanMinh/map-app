@@ -1,6 +1,10 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { VirtualTreeComponent } from 'src/app/_components/share/virtual-tree/virtual-tree.component';
+import { LandmarkCategory } from 'src/app/_models/landmark/landmark-category';
+import { LandmarkGroup } from 'src/app/_models/landmark/landmark-group';
+import { Landmark } from 'src/app/_models/landmark/landmark.model';
 import { RouteModel } from 'src/app/_models/route';
 import { Vehicle } from 'src/app/_models/vehicle';
 
@@ -100,6 +104,20 @@ export class LeftPanelComponent implements OnInit {
   @Output() emitVehicle: EventEmitter<Vehicle> = new EventEmitter();
   @Output() emitRoute: EventEmitter<RouteModel> = new EventEmitter();
   @Output() emitPlayRoute: EventEmitter<any> = new EventEmitter();
+
+
+  // Điểm 
+  landmarkName!: string;
+  showLandmarkName!: boolean;
+  showPolygon!: boolean;
+  @Input() listLandmarks: Landmark[] = [];
+  @Input() listLandmarkCategorys: LandmarkCategory[] = [];
+  @Input() listLandmarkGroups: LandmarkGroup[] = [];
+  @ViewChild(VirtualTreeComponent) virtualTree!: VirtualTreeComponent;
+  countSelectedNode = 0;
+  selectedCategoryIds: any;
+  selectedLandmarkGroupIds: any;
+  landmarkByFilter!: Landmark[] | undefined;
 
   constructor(
     private cdr: ChangeDetectorRef
@@ -360,6 +378,51 @@ export class LeftPanelComponent implements OnInit {
     } else {
 
     }    
+  }
+
+  filterLandmark(value?: string){
+    if(this.type == 3){
+      if(value || this.selectedLandmarkGroupIds || this.selectedCategoryIds)
+         this.landmarkByFilter = this.listLandmarks.filter(e => {
+          let ok = true;
+          // Lọc theo điểm
+          if (value && value != '') {
+              ok = ok && e.name.startsWith(value);
+          }
+
+          // Lọc theo nhóm phương tiện
+          if (ok && this.selectedCategoryIds?.length > 0) {
+            ok = this.selectedCategoryIds?.some((z: any) => z.id == e.categoryID);
+          }
+
+          // Lọc theo trạng thái của phương tiện
+          if (ok && this.selectedGroupIds?.length > 0) {
+            ok = this.selectedGroupIds.some((s: any) => e.groupIDs.some(g => g == s.id));
+          }
+
+          return ok;
+        });
+      else this.vehiclesByFilter = undefined;
+    }   
+  }
+
+    // #region Handle sự kiện -------------------------------------------------------------------
+  // Khi Virtual Tree tạo xong danh sách nodes
+  finishCreateNodes() {
+    if (this.virtualTree) {
+      this.virtualTree.autoHeightVirtualTree();
+    }
+    this.cdr.detectChanges();
+  }
+
+  // Tự động đếm số node đã chọn khi Virtual Tree thay đổi
+  countSelectedNodes() {
+    if (this.virtualTree) {
+      this.countSelectedNode = this.virtualTree.selectedNodes.length;
+    }
+    else {
+      this.countSelectedNode = 0;
+    }
   }
 
 }

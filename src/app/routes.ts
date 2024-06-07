@@ -6,6 +6,7 @@ import { EmployeeManagementComponent } from './pages/employee-management/employe
 import { ReportSpeedViolationComponent } from './pages/report-speed-violation/report-speed-violation.component';
 import { OnlineComponent } from './pages/online/online.component';
 import { RouteComponent } from './pages/route/route.component';
+import { LandmarkComponent } from './pages/landmark/landmark.component';
 
 const appRoutes: Routes = [
   // { path: 'employee', component: EmployeeManagementComponent, canActivate: [AuthGuard] },
@@ -14,6 +15,7 @@ const appRoutes: Routes = [
 
   { path: 'route', component: RouteComponent },
   { path: 'online', component: OnlineComponent },
+  { path: 'landmark', component: LandmarkComponent },
   // otherwise redirect to home
   { path: '**', redirectTo: '' },
 ];

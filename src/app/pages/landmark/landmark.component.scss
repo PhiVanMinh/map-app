@@ -1,23 +1,36 @@
-@import "./src/style/variables.scss";
-#left-panel-container {
+
+#leftPanel {
     position: absolute;
+    margin-top: 55px;
+  }
+  
+  .map-container {
+    position: absolute;
+    top: 0;
     left: 0;
-}
-
-.left-panel-show {
-    transform: translateX(0%) !important;
-
-    #btnHidePanel .bi-caret-up {
-        transform: rotate(180deg);
-    }
-}
-
-#left-panel {
-
+    right: 0;
+    bottom: 0;
+    margin-top: 55px;
+  }
+  #map3 {
+    height: 100%;
+  }
+  
+  // .left-panel-show {
+  //   transform: translateX(0%) !important;
+  
+  //   #btnHidePanel .fa-caret-up {
+  //       transform: rotate(180deg);
+  //   }
+  // }
+  
+  #left-panel {
+    @import "./src/style/variables.scss";
+  
     $input-height: 30px;
     $box-shadow-color: rgba(163, 163, 163, 1);
     $bg-color: white;
-
+  
     background-color: rgba(109, 109, 109, 0.62);
     color: black;
     position: absolute;
@@ -26,103 +39,104 @@
     transition: transform 0.5s;
     font-size: $font-size-12 !important;
     font-family: inherit !important;
-
+  
     .row {
         margin: 0;
-
+  
         .col {
             padding: 0;
         }
     }
-
+  
     #btnHidePanel {
         color: white;
         position: absolute;
-        right: -27px;
+        right: -20px;
         top: 12px;
         z-index: -1;
         transform: rotate(90deg);
         border-radius: 5px 5px 0 0 !important;
         padding: 0px 10px;
-        background-color: #0959a0 !important;
-
-        .bi-caret-up {
+  
+        .fa-caret-up {
             transition: transform 0.5s;
-            font-size: medium;
+            font-size: larger;
         }
     }
-
+  
     #filter,
     #dsxe-tool,
     .no-data {
         background-color: $bg-color;
     }
-
+  
     #filter,
     .scroller-container,
     .no-data {
         padding: 5px 5px 0 5px;
     }
-
+  
     #filter {
-
+        margin-bottom: 5px;
+  
         .tim-kiem {
+            margin-bottom: 5px !important;
             button {
                 border: 1px solid $border-color;
                 padding: 4px 6px;
                 border-radius: $border-radius 0 0 $border-radius;
                 box-shadow: none;
-
+  
                 img {
                     height: 20px;
                     vertical-align: middle;
                 }
-
+  
                 span {
                     vertical-align: middle;
                 }
             }
-
+  
             .dropdown-menu {
                 .dropdown-item {
                     font-size: $font-size-12 !important;
                     display: flex;
-
+  
                     align-items: center;
-
+  
                     &:hover {
                         background-color: var(--primary) !important;
                         color: white;
                     }
                 }
-
+  
                 img {
                     height: 20px;
                 }
             }
-
+  
             ng-select {
                 display: grid;
             }
-
+  
             ::ng-deep .ng-select:first-child {
                 .ng-select-container {
                     height: $input-height !important;
                     border-radius: 0 $border-radius $border-radius 0 !important;
                     border-left: unset !important;
-
+  
                     .ng-input,
                     .ng-value-container {
                         padding: 0 30px 0 10px !important;
                     }
-
+  
                     .ng-arrow-wrapper,
                     .ng-clear-wrapper {
                         display: none;
                     }
                 }
             }
-
+  
             .findLatlng {
                 border-radius: 0 $border-radius $border-radius 0 !important;
                 width: 100%;
@@ -131,14 +145,14 @@
                 height: $input-height;
                 min-height: unset;
                 padding: 0 30px 0 10px !important;
-
+  
                 &:focus {
                     outline: 0;
                     box-shadow: none;
                 }
             }
         }
-
+  
         .icon-trang-thai-xe {
             margin-top: 10px;
             overflow: scroll;
@@ -152,45 +166,45 @@
                 border-radius: 3px;
                 text-align: center;
                 margin-top: 8px;
-
+  
                 &:hover {
                     border: 1px solid #a6a6a6;
                 }
             }
-
+  
             #arrowL {
                 left: 0px;
             }
-
+  
             #arrowR {
                 right: 0px;
             }
-
+  
             &::-webkit-scrollbar {
                 width: 0px;
                 height: 0px;
             }
-
+  
             scrollbar-width: none;
-
+  
             table {
                 width: 100%;
             }
-
+  
             td {
                 text-align: center;
                 align-self: center;
                 padding-top: 7px;
                 position: relative;
                 cursor: pointer;
-
+  
                 &:last-child {
                     padding-right: 20px;
                     .badge {
                         left: 45% !important;
                     }
                 }
-
+  
                 .badge {
                     position: absolute;
                     margin-top: -5px;
@@ -198,7 +212,7 @@
                     //font-size: 70%;
                     //font-weight: normal;
                 }
-
+  
                 .img-container {
                     height: 35px;
                     width: 35px;
@@ -208,23 +222,23 @@
                     border: 1px solid #57606f;
                     border-radius: 100%;
                     text-align: center;
-
+  
                     hr {
                         margin: 0 2px;
                         border-top: 1px solid rgba(0, 0, 0, 0.5);
                     }
-
+  
                     .count-virtual-scroll,
                     .count-list-vehicles {
                         font-size: 80%;
                     }
-
+  
                     img {
                         max-width: 100%;
                         max-height: 100%;
                     }
                 }
-
+  
                 .state-text {
                     font-size: smaller;
                     width: max-content;
@@ -232,7 +246,7 @@
                     margin: auto;
                 }
             }
-
+  
             .filter-all {
                 position: sticky;
                 top: 0;
@@ -242,31 +256,31 @@
                 padding-left: 15px;
                 .img-container {
                     padding: 0;
-
+  
                     .count-virtual-scroll {
                         margin-top: 1px;
                     }
                 }
             }
-
+  
             .state-selected {
                 color: var(--highlight);
-
+  
                 .img-container {
                     background-color: var(--focus);
                     border-color: var(--primary);
                 }
-
+  
                 .state-text {
                     font-weight: bold !important;
                 }
             }
         }
-
+  
         .carousel-indicators {
             position: inherit;
             margin: 0;
-
+  
             li {
                 background-color: #bfbfbf;
                 border: 0;
@@ -274,9 +288,9 @@
             }
         }
     }
-
+  
     #dsxe-tool {
-        padding: 5px 5px 5px 5px;
+        padding: 5px 5px 0 5px;
         //overflow-x: auto;
         .col b {
             font-size: medium;
@@ -285,7 +299,7 @@
             padding: 0;
             margin-left: 5px;
             text-align: center;
-
+  
             button {
                 padding: 0;
                 width: 24px;
@@ -294,227 +308,26 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-
-                background-color: #0959a0;
+  
+                background-color: var(--primary);
                 color: white;
-
+  
                 &:hover {
                     background-color: black !important;
                     border-color: black !important;
                 }
             }
-
+  
             i {
                 vertical-align: middle;
-                font-size: 14px;
+                font-size: smaller;
             }
         }
     }
-}
-
-.text-primary {
-    color: #0959a0 !important;
   }
-.text-input{
-    width: 100%;
-    height: 100%;
-}
-
-::ng-deep .multiselect-dropdown .dropdown-btn .dropdown-multiselect__caret{
-    top: -3px !important;
-}
-
-::ng-deep .form-control  {
-    font-size: 0.9rem !important;
- }
-
-::ng-deep 
-.input-group-text, .form-control  {
-    padding: 0.175rem 0.25rem;
- }
- .player {
-    padding: 0;
-    border: 1px solid #ced4da;
-    border-radius: 2px;
-    margin-bottom: 5px;
-
-    .form-custom-range {
-      margin: 10px 0;
-      font-family: inherit;
-
-      input[type="range"] {
-        --iconUrl: url("/assets/images/vehicle/car/Blue0.png");
-        --rotateDeg: 90deg;
-
-        &::-webkit-slider-thumb {
-          background: var(--iconUrl) no-repeat;
-          background-size: cover;
-          transform: rotate(#{var(--rotateDeg)});
-          -webkit-transform: rotate(#{var(--rotateDeg)});
-          -moz-transform: rotate(#{var(--rotateDeg)});
-        }
-
-        &::-moz-range-thumb {
-          background: var(--iconUrl) no-repeat;
-          background-size: cover;
-          transform: rotate(#{var(--rotateDeg)});
-          -webkit-transform: rotate(#{var(--rotateDeg)});
-          -moz-transform: rotate(#{var(--rotateDeg)});
-        }
-
-        // Chrome
-        @media screen and (-webkit-min-device-pixel-ratio: 0) {
-          & {
-            background-color: #ddd;
-          }
-          &::-webkit-slider-runnable-track {
-            color: #444;
-            background: linear-gradient(
-              to right,
-              var(--highlight) 0%,
-              var(--highlight) var(--rangeTrackRadius, 0%),
-              #ddd 0%,
-              #b2b2b2 100%
-            );
-          }
-        }
-      }
-
-      .range-container .range-subcontainer h4 {
-        background-color: white;
-        color: #0783c8 !important;
-        top: -27px;
-        z-index: 2;
-        font-size: 11px !important;
-        justify-content: start;
-        width: 50px;
-
-        &::before,
-        span {
-          background-color: unset;
-          background: unset;
-        }
-      }
-
-      .box-minmax {
-        font-size: 11px !important;
-        z-index: 1;
-
-        span:last-child {
-          color: black;
-        }
-      }
-    }
-
-    .play-button {
-      background-color: #8b8b8b;
-      padding: 0 !important;
-      margin-left: -1px !important;
-      margin-right: -1px !important;
-
-      [class^="col"] {
-        padding: 0;
-      }
-
-      i {
-        color: white;
-        font-size: small;
-        padding: 2px 3px;
-      }
-
-      .currrent-speed {
-        width: 25px;
-        height: 25px;
-        display: inline-flex;
-        border-width: 2px !important;
-        align-items: center;
-        justify-content: center;
-        background-color: #0959a0 !important;
-      }
-    }
+  
+  ::ng-deep .custom-popup{
+      opacity: 1 !important;
   }
-
-  .player-disabled {
-    background-color: lightgray !important;
-
-    .range-container h4 {
-      background-color: lightgray !important;
-    }
-
-    a,
-    input,
-    button {
-      pointer-events: none !important;
-    }
-
-    i {
-      color: darkgray !important;
-    }
-  }
-
-  .form-control-range {
-    display: block;
-    width: 100%;
-}
-
-.btn-reload {
-    background-color:  #0959a0 !important;
-    border-radius: 4px !important;
-    width: 32px;
-    height: 32px;
-    padding: 5px !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    img {
-      height: 16px !important;
-      width: 100%;
-    }
-  }
-
-.table {
-    margin-bottom: 0;
-    padding: 5px 5px 0 5px;
-    color: none;
-}
-
-
-.row-caption {
-    color: #2d9cdb !important;
-    white-space: nowrap;
-    font-weight: bolder;
-    border-top: none;
-    // border: 1px solid #afafaf;
-
-    padding: 5px 0;
-}
-
-.scroll-container{
-    overflow-x: scroll;
-    overflow-y: scroll;
-    background-color: #fff;
-    scrollbar-width: none;
-    padding-bottom: 0;
-}
-
-.active {
-    background-color: #2d9cdb !important;
-    color: white !important;
-}
-
-.table-scroll {
-    max-height: 550px;
-    overflow: auto;
-    scrollbar-width: thin;
-    border: 1px solid #afafaf;
-
-}
-
-.table-scroll thead th { position: sticky; top: 0; z-index: 1; }
-
-.check-box-label {
-    display: flex;
-    align-items: center;
-    padding: 0;
-}
+  
+  

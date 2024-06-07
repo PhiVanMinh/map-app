@@ -1,0 +1,42 @@
+.virtual-tree-container {
+    padding: 0px 5px 5px 5px;
+    background-color: white;
+  
+    ::ng-deep tree-root {
+      tree-viewport {
+        display: block;
+        overflow: auto;
+        scrollbar-width: thin;
+        border: 1px solid #b8b8b8;
+  
+        .tree-node-level-2.tree-node-focused {
+          background-color: var(--focus);
+        }
+  
+        .node-wrapper {
+          background-color: #e1e1e1;
+          word-break: break-word;
+          display: flex;
+          align-items: flex-start;
+  
+          .node-content-wrapper:hover {
+            background-color: unset;
+          }
+  
+          .node-content-wrapper-focused {
+            background-color: unset;
+            box-shadow: unset;
+          }
+        }
+  
+        .tree-children {
+          .node-wrapper {
+            background-color: unset;
+          }
+        }
+      }
+    }
+  }
+
+
+  

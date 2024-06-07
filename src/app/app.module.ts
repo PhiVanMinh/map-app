@@ -36,6 +36,9 @@ import { OnlineComponent } from './pages/online/online.component';
 import { RouteComponent } from './pages/route/route.component';
 import { LeftPanelComponent } from './pages/left-panel/left-panel.component';
 import { SetFullHeightDirective } from './_directives/set-full-height.directive';
+import { LandmarkComponent } from './pages/landmark/landmark.component';
+import { VirtualTreeComponent } from './_components/share/virtual-tree/virtual-tree.component';
+import { TreeModule } from '@ali-hm/angular-tree-component';
 
 defineLocale('vi', viLocale);
 
@@ -64,6 +67,8 @@ const maskConfig: Partial<IConfig> = {
     OnlineComponent,
     RouteComponent,
     LeftPanelComponent,
+    LandmarkComponent,
+    VirtualTreeComponent
   ],
   imports: [
     CommonModule,
@@ -100,8 +105,9 @@ const maskConfig: Partial<IConfig> = {
         disallowedRoutes: []
       }
     }),
-    NgxMaskModule.forRoot(maskConfig),
-    NgMultiSelectDropDownModule.forRoot()
+    // NgxMaskModule.forRoot(maskConfig),
+    NgMultiSelectDropDownModule.forRoot(),
+    TreeModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

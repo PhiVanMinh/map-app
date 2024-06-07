@@ -24,6 +24,9 @@
         <li class="nav-item">
           <a class="nav-link nav-link-header" [ngClass]="{'active': currentLink == 'route'}" target="_blank" (click)="showLink('route')">{{'Lộ trình' | translate }}</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-header" [ngClass]="{'active': currentLink == 'landmark'}" target="_blank" (click)="showLink('landmark')">{{'Quản trị điểm' | translate }}</a>
+        </li>
       </ul>
       
       <!-- Navbar right -->
