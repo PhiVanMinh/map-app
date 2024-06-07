@@ -46,17 +46,16 @@ export class VirtualTreeComponent implements OnInit, OnChanges {
   };
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.listLandmarks);
-    
-    for (const propName in changes) {
-      if (propName === 'listLandmarks') {
-        if (changes['listLandmarks'].firstChange) {
-          this.createTreeNodes();
-          // this.landmarkDic = new DictionaryAutoOrder(this.listLandmarks, (x: { id: any; }) => x.id);
-          break;
-        }
-      }
-    }
+    // for (const propName in changes) {
+    //   if (propName === 'listLandmarks') {
+    //     if (!changes['listLandmarks'].firstChange) {
+    //       this.createTreeNodes();
+    //       // this.landmarkDic = new DictionaryAutoOrder(this.listLandmarks, (x: { id: any; }) => x.id);
+    //       break;
+    //     }
+    //   }
+    // }
+    this.createTreeNodes();
   }
 
   @HostListener('window:resize', ['$event'])

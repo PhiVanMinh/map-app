@@ -1,0 +1,43 @@
+<div class="custom-popup" *ngIf="isShow">
+  <div class="popup" [ngClass]="{'box-shadow':!backdrop}" [style.height]="height" [style.minHeight]="minHeight" [style.maxHeight]="maxHeight" [style.width]="width"
+    [style.minWidth]="minWidth" [style.maxWidth]="maxWidth" [style.zIndex]="zIndex" (mousedown)="swapPopup($event)">
+    <!-- Header -->
+    <div *ngIf="showHeader" class="popup-header row" [ngClass]="{'cursor-draggable':allowDrag && !isPin}" (mousedown)="onHeaderHold($event)">
+      <!-- Icon -->
+      <div class="col-auto" *ngIf="titleIcon">
+        <img [src]="titleIcon" style="height: 20px; padding: 0 5px 0 0;">
+      </div>
+      <div class="col mr-auto popup-title">
+        {{ title ?? '' | translate }}
+      </div>
+      <!-- Nút custom bên ngoài -->
+      <div class="col-auto ml-2" *ngIf="customButtom">
+        <ng-container *ngTemplateOutlet="customButtom"></ng-container>
+      </div>
+      <!-- Nút ghim -->
+      <div class="col-auto ml-2" *ngIf="allowDrag && showPinButton">
+        <img src="/assets/images/common/pin.png" (click)="togglePinPopup()" [title]="(isPin ? 'Bỏ ghim' : 'Ghim') | translate"
+          [style.opacity]="isPin ? 1 : 0.5" style="cursor:pointer">
+      </div>
+      <!-- Nút phản hồi -->
+      <div class="col-auto ml-2" *ngIf="showFeedbackButton">
+        <img src="/assets/images/common/comment.png" style="cursor:pointer" [title]="'Phản hồi' | translate" (click)="feedBackClick()">
+      </div>
+      <!-- Nút đóng -->
+      <div class="col-auto ml-2">
+        <img src="/assets/images/common/close.png" (click)="closePopup()" [title]="'Đóng' | translate" style="cursor:pointer">
+      </div>
+    </div>
+    <!-- Content -->
+    <!-- <div class="popup-body" [style.padding]="padding" [ngClass]="classPopupBody ?? ''">
+      <div class="popup-body-content">
+        <ng-content *ngIf="!isLoading; else loading"></ng-content>
+        <ng-template #loading>
+          <app-loading></app-loading>
+        </ng-template>
+      </div>
+    </div> -->
+  </div>
+  <!-- Nền đen -->
+  <div *ngIf="backdrop && zIndex!=null" class="popup-backdrop" [style.zIndex]="zIndex - 1"></div>
+</div>

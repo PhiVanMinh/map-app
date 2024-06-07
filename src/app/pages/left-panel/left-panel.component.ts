@@ -387,7 +387,7 @@ export class LeftPanelComponent implements OnInit {
           let ok = true;
           // Lọc theo điểm
           if (value && value != '') {
-              ok = ok && e.name.startsWith(value);
+              ok = ok && e.name.includes(value);
           }
 
           // Lọc theo nhóm phương tiện
@@ -396,13 +396,15 @@ export class LeftPanelComponent implements OnInit {
           }
 
           // Lọc theo trạng thái của phương tiện
-          if (ok && this.selectedGroupIds?.length > 0) {
-            ok = this.selectedGroupIds.some((s: any) => e.groupIDs.some(g => g == s.id));
+          if (ok && this.selectedLandmarkGroupIds?.length > 0) {
+            ok = this.selectedLandmarkGroupIds.some((s: any) => e.groupIDs.some(g => g == s.id));
           }
 
           return ok;
         });
-      else this.vehiclesByFilter = undefined;
+      else {
+        this.landmarkByFilter = undefined;
+      }
     }   
   }
 

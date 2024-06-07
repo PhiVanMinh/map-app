@@ -39,6 +39,7 @@ import { SetFullHeightDirective } from './_directives/set-full-height.directive'
 import { LandmarkComponent } from './pages/landmark/landmark.component';
 import { VirtualTreeComponent } from './_components/share/virtual-tree/virtual-tree.component';
 import { TreeModule } from '@ali-hm/angular-tree-component';
+import { CustomPopupComponent } from './_components/share/custom-popup/custom-popup.component';
 
 defineLocale('vi', viLocale);
 
@@ -68,7 +69,8 @@ const maskConfig: Partial<IConfig> = {
     RouteComponent,
     LeftPanelComponent,
     LandmarkComponent,
-    VirtualTreeComponent
+    VirtualTreeComponent,
+    CustomPopupComponent
   ],
   imports: [
     CommonModule,

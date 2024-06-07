@@ -1,0 +1,58 @@
+.custom-popup {
+    .popup {
+        @import "./src/style/variables.scss";
+
+        position: fixed;
+        -moz-border-radius: $border-radius;
+        -webkit-border-radius: $border-radius;
+        border-radius: $border-radius;
+        // Hiệu ứng
+        transform: scale(0);
+        $transition: transform 0.5s;
+        -webkit-transition: $transition;
+        -moz-transition: $transition;
+        -ms-transition: $transition;
+        transition: $transition;
+        // overflow: hidden; - Cái này làm combobox bị che mất danh sách
+
+        .popup-header {
+            border-radius: $border-radius $border-radius 0 0;
+            flex-wrap: nowrap;
+
+            .popup-title {
+                text-transform: uppercase;
+                font-weight: 500;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                display: block;
+                text-align: left !important;
+            }
+
+            img {
+                padding: 5px;
+                height: 22px;
+            }
+        }
+    }
+
+    .popup-show {
+        transform: unset !important;
+    }
+
+    .cursor-draggable {
+        cursor: move;
+        cursor: -moz-move;
+        cursor: -webkit-move;
+    }
+
+    .popup-backdrop {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 0.6;
+    }
+}
