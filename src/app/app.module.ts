@@ -40,6 +40,8 @@ import { LandmarkComponent } from './pages/landmark/landmark.component';
 import { VirtualTreeComponent } from './_components/share/virtual-tree/virtual-tree.component';
 import { TreeModule } from '@ali-hm/angular-tree-component';
 import { CustomPopupComponent } from './_components/share/custom-popup/custom-popup.component';
+import { AddOrEditLandmarkComponent } from './pages/landmark/add-or-edit-landmark/add-or-edit-landmark.component';
+import { DragulaModule } from 'ng2-dragula';
 
 defineLocale('vi', viLocale);
 
@@ -70,7 +72,8 @@ const maskConfig: Partial<IConfig> = {
     LeftPanelComponent,
     LandmarkComponent,
     VirtualTreeComponent,
-    CustomPopupComponent
+    CustomPopupComponent,
+    AddOrEditLandmarkComponent
   ],
   imports: [
     CommonModule,
@@ -109,7 +112,7 @@ const maskConfig: Partial<IConfig> = {
     }),
     // NgxMaskModule.forRoot(maskConfig),
     NgMultiSelectDropDownModule.forRoot(),
-    TreeModule
+    TreeModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

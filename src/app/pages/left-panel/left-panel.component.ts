@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import * as moment from 'moment';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { VirtualTreeComponent } from 'src/app/_components/share/virtual-tree/virtual-tree.component';
@@ -7,6 +7,9 @@ import { LandmarkGroup } from 'src/app/_models/landmark/landmark-group';
 import { Landmark } from 'src/app/_models/landmark/landmark.model';
 import { RouteModel } from 'src/app/_models/route';
 import { Vehicle } from 'src/app/_models/vehicle';
+import { LeafletService } from 'src/app/_services/leaflet.service';
+import { ConfirmModalComponent } from 'src/app/_components/share/modal/confirm-modal/confirm-modal.component';
+import { AddOrEditLandmarkComponent } from '../landmark/add-or-edit-landmark/add-or-edit-landmark.component';
 
 @Component({
   selector: 'app-left-panel',
@@ -15,6 +18,7 @@ import { Vehicle } from 'src/app/_models/vehicle';
 })
 export class LeftPanelComponent implements OnInit {
 
+  @ViewChild('formInputLandmark', { read: ViewContainerRef, static: true }) formInputLandmarkComponentRef!: ViewContainerRef;
   isShowLeftPanel = true;
   @Input() vehicles: Vehicle[] = [];
   showConfigVisible!: boolean;
@@ -118,8 +122,16 @@ export class LeftPanelComponent implements OnInit {
   selectedCategoryIds: any;
   selectedLandmarkGroupIds: any;
   landmarkByFilter!: Landmark[] | undefined;
+  @Input() map: any;
+  @Output() emitLandmark: EventEmitter<any> = new EventEmitter();
+  @Output() emitAddOrEditLandmark: EventEmitter<any> = new EventEmitter();
+  @Output() emitRemoveLandmark: EventEmitter<any> = new EventEmitter();
+  selectedLandmark: any;
+
+  @ViewChild('createOrEditLandmark', { static: true }) createOrEditEmployee!: AddOrEditLandmarkComponent;
 
   constructor(
+    private leafletService: LeafletService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -427,4 +439,34 @@ export class LeftPanelComponent implements OnInit {
     }
   }
 
+  onChangeSelectedLandmark(landmark: any){
+    this.selectedLandmark = landmark
+    this.emitLandmark.emit(landmark);
+  }
+
+  showModal(value?: any){
+    // const component = this.leafletService.createComponent(LandmarkFormInputComponent, this.formInputLandmarkComponentRef);
+    // component.instance.isShow = true;
+    // component.instance.currentMap = this.map;
+    // if(value) component.instance.editLandmark = value;
+
+    this.createOrEditEmployee?.show(value);
+  }
+
+  modalSave(value?: any){
+
+  }
+
+  delete(value: any){
+    this.selectedLandmark = value;
+    this.confirmModal?.show(undefined, 1);
+  }
+
+  @ViewChild('confirmModal', { static: true }) confirmModal: ConfirmModalComponent | undefined;
+  acceptDelete(value: any){
+    this.listLandmarks = this.listLandmarks.filter(e => e.id != this.selectedLandmark.id);
+    if( this.landmarkByFilter) this.landmarkByFilter = this.landmarkByFilter.filter(e => e.id != this.selectedLandmark.id);
+
+    this.emitRemoveLandmark.emit(this.selectedLandmark);
+  }
 }

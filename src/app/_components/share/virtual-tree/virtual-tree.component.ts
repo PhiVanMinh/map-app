@@ -22,6 +22,9 @@ export class VirtualTreeComponent implements OnInit, OnChanges {
   @Output() onDataLoaded = new EventEmitter<any>();
   @Output() onEditClick = new EventEmitter<any>();
 
+  @Output() clickLandmark = new EventEmitter<any>();
+  @Output() removeLandmark =  new EventEmitter<any>();
+
   options: ITreeOptions = {
     idField: 'id',
     displayField: 'name',
@@ -166,6 +169,8 @@ export class VirtualTreeComponent implements OnInit, OnChanges {
         // if (landmark) {
         //   this.landmarkSv.currentLandmark$.next({ landmark, isEditOrDelete });
         // }
+
+        this.clickLandmark.emit(node.data);
       }
     }
   }
@@ -262,12 +267,14 @@ export class VirtualTreeComponent implements OnInit, OnChanges {
     }, 50);
   }
 
-  editLandmark(id: number) {
+  editLandmark(data: any) {
     // const landmark = this.landmarkDic.get(id);
     // if (landmark) {
     //   // this.obsSv.landmarkSubjects.landmarkToEdit.next(landmark);
     //   this.onEditClick.emit(true);
     // }
+
+    this.onEditClick.emit(data);
   }
 
   deleteLanmark(node: TreeNode) {
@@ -285,5 +292,7 @@ export class VirtualTreeComponent implements OnInit, OnChanges {
     //     }
     //   }
     // });
+
+    this.removeLandmark.emit(node.data);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, Type, ViewContainerRef } from '@angular/core';
 import * as L from 'leaflet';
 import { FeatureGroup, MapOptions } from 'leaflet';
 import 'leaflet-fullscreen';
@@ -7,6 +7,7 @@ import 'leaflet.markercluster';
 import { isArray } from 'ngx-bootstrap/chronos';
 import { Vehicle } from '../_models/vehicle';
 import * as moment from 'moment';
+import { Landmark } from '../_models/landmark/landmark.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,13 +28,16 @@ export class LeafletService implements OnDestroy  {
   marker!: L.Marker;
   hideClusterIcon: boolean = false;
   vehicleGroupLayer: L.MarkerClusterGroup;
+  landmarkGroupLayer: L.MarkerClusterGroup;
   curentVehicleId!: number;
 
   vehicleLayer: L.LayerGroup = new L.LayerGroup();
-  routeLayers: FeatureGroup = new FeatureGroup()
+  routeLayers: FeatureGroup = new FeatureGroup();
+
 
   constructor() {
     this.vehicleGroupLayer = this.createClusterGroup();
+    this.landmarkGroupLayer = this.createClusterGroup(undefined , 'bi bi-geo-alt-fill')
   }
     ngOnDestroy(): void {
     }
@@ -87,6 +91,7 @@ export class LeafletService implements OnDestroy  {
     this.vehicleLayer?.addTo(this.map);
     this.vehicleGroupLayer?.addTo(this.map);
     this.routeLayers.addTo(this.map);
+    this.landmarkGroupLayer.addTo(this.map);
 
   }
 
@@ -124,14 +129,14 @@ export class LeafletService implements OnDestroy  {
     return this.markers[id]; // Retrieve marker by ID
   }
 
-  createClusterGroup(options?: L.MarkerClusterGroupOptions): L.MarkerClusterGroup {
+  createClusterGroup(options?: L.MarkerClusterGroupOptions, icon?: string): L.MarkerClusterGroup {
     // Đặt các giá trị mặc định
     options = options ?? {};
     options.hideClusterIcon = options.hideClusterIcon ?? false;
     options.chunkedLoading = options.chunkedLoading ?? true;
 
     if (!options.hideClusterIcon) {
-      options.iconHtml = options.iconHtml ?? '<i class=\"bi bi-car-front-fill\"></i>';
+      options.iconHtml = options.iconHtml ?? `<i class=\"${icon ? icon : 'bi bi-car-front-fill'}\"></i>`;
         options.iconCreateFunction = (cluster) => {
             let classGroupSmall: string;
             const count = cluster.getChildCount();
@@ -311,6 +316,68 @@ export class LeafletService implements OnDestroy  {
     //marker.bindPopup(id); // Example: Add a popup with marker ID
     this.markers[id] = marker; // Store marker reference with ID
     return marker
+  }
+
+      /**
+     * Tạo Circle
+     * @param lat Vĩ độ
+     * @param lng Kinh độ
+     * @param options Các thuộc tính
+     */
+      createCircle(lat: number, lng: number, options: L.CircleOptions) {
+        let circle: L.Circle;
+            circle = new L.Circle(new L.LatLng(lat, lng), options);
+
+        return circle;
+    }
+
+    createPolygon(latlngs: L.LatLngLiteral[], options: L.PolylineOptions) {
+      let polygon: L.Polygon;
+
+      polygon = new L.Polygon(latlngs, options);
+
+      return polygon;
+    }
+
+    createPolyline(latlngs: L.LatLngLiteral[], options: L.PolylineOptions) {
+      let polyline: L.Polyline;
+
+          polyline = new L.Polyline(latlngs, options);
+
+      return polyline;
+    }
+
+    createMarker(lat: number, lng: number, options: L.MarkerOptions, landmark: Landmark) {
+      let marker: L.Marker;
+
+      // Kiểm tra tọa độ hợp lệ
+          // Bring to front khi hover chuột
+          options.riseOnHover = options.riseOnHover ?? true;
+          options.interactive = options.interactive ?? true;
+          // Tạo icon theo options nếu có
+          if (options.iconOptions) {
+              options.icon = this.createIcon(options.iconOptions);
+          }
+
+          marker = new L.Marker(new L.LatLng(lat, lng), options);
+          if (options.popupContent) {
+              // options.popupClass = options.popupClass ?? MapDefaultValues.popupClass;
+              options.popupMinWidth = options.popupMinWidth ?? 50;
+              options.popupMaxWidth = options.popupMaxWidth ?? 500;
+              // options.popupOffset = options.popupOffset ?? null;
+              marker.bindPopup(options.popupContent, { className: options.popupClass, minWidth: options.popupMinWidth, maxWidth: options.popupMaxWidth, offset: options.popupOffset });
+          }
+
+          this.markers[landmark.id] = marker
+
+      return marker;
+  }
+
+  
+  /** Tạo component động */
+  createComponent<T>(component: Type<T>, viewContainerRef: ViewContainerRef) {
+    viewContainerRef?.clear();
+    return viewContainerRef?.createComponent(component);
   }
 }
 

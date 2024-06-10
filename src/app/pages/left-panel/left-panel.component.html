@@ -189,6 +189,11 @@
         <b *ngIf="type == 2" class="text-primary">{{ 'Lộ trình' | translate }}</b>
         <b *ngIf="type == 3" class="text-primary">{{ 'Danh sách điểm' | translate }}</b>
       </div>
+      <div class="col-auto" >
+        <button class="btn btn-primary" (click)="showModal()" title="{{ 'Thêm' | translate }}">
+          <i class="bi bi-plus"></i>
+        </button>
+      </div>
     </div>
 
     <div class="scroll-container" setFullHeight>
@@ -247,7 +252,7 @@
 
     <ng-container *ngIf="type == 3">
         <app-virtual-tree [listLandmarks]="landmarkByFilter ?? listLandmarks" [listLandmarkCategorys]="listLandmarkCategorys" (onSelectedChanged)="countSelectedNodes()" 
-        (onDataLoaded)="finishCreateNodes()">
+        (onDataLoaded)="finishCreateNodes()" (clickLandmark)="onChangeSelectedLandmark($event)" (removeLandmark)="delete($event)" (onEditClick)="showModal($event)">
       </app-virtual-tree>
     </ng-container>
     </div>
@@ -257,3 +262,8 @@
     </div>
   </div>
 </div>
+
+<ng-template #formInputLandmark></ng-template>
+<confirm-modal #confirmModal (modalAccept)="acceptDelete($event)"></confirm-modal>
+
+<app-add-or-edit-landmark #createOrEditLandmark [currentMap]="map" (modalSave)="modalSave($event)"></app-add-or-edit-landmark>

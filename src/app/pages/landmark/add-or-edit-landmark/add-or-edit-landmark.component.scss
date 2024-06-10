@@ -1,0 +1,58 @@
+.input-group {
+    width: 75%;
+}
+
+
+@media screen and (max-width: 767px) {
+    .input-group {
+      width: 100%;
+    }
+  }
+
+  .landmark-form-input {
+    .tab-pane {
+      padding: 10px;
+  
+      > table {
+        td {
+          padding: 5px 10px;
+          vertical-align: middle;
+  
+          label {
+            margin-bottom: 0;
+            align-items: center;
+            align-self: center;
+          }
+  
+          .custom-control {
+            display: flex;
+          }
+        }
+      }
+    }
+  
+    .nav-tabs {
+      border-bottom: 3px solid #caeffb;
+  
+      .nav-item {
+        margin-bottom: -2px;
+  
+        .nav-link {
+          border: none;
+  
+          &.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  
+    .area-title {
+      font-weight: bold;
+      color: #0959a0;
+    }
+  }
+
+  

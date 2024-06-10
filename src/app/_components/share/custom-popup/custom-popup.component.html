@@ -29,14 +29,11 @@
       </div>
     </div>
     <!-- Content -->
-    <!-- <div class="popup-body" [style.padding]="padding" [ngClass]="classPopupBody ?? ''">
+    <div class="popup-body" [style.padding]="padding" [ngClass]="classPopupBody ?? ''">
       <div class="popup-body-content">
-        <ng-content *ngIf="!isLoading; else loading"></ng-content>
-        <ng-template #loading>
-          <app-loading></app-loading>
-        </ng-template>
+        <ng-content></ng-content>
       </div>
-    </div> -->
+    </div>
   </div>
   <!-- Nền đen -->
   <div *ngIf="backdrop && zIndex!=null" class="popup-backdrop" [style.zIndex]="zIndex - 1"></div>

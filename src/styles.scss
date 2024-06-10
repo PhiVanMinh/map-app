@@ -555,3 +555,11 @@ a {
             color: var(--primary);
         }
     }
+
+    .modal-backdrop {
+        display: none !important;
+      }
+      
+      .modal {
+        background: none !important;
+      }

@@ -1,6 +1,6 @@
 <div class="container">
   <app-left-panel #leftPanel [type]="3" [listLandmarks]="listLandmark" [listLandmarkCategorys]="listLandmarkCategorys" [listLandmarkGroups]="listLandmarkGroups"
-   (emitVehicle)="onChangeSelectedLandmark($event)" setFullHeight></app-left-panel>
+   [map]="map" (emitLandmark)="onChangeSelectedLandmark($event)" (emitRemoveLandmark)="remove($event)" setFullHeight></app-left-panel>
   <div class="map-container">
       <div id="map3"></div>
   </div>

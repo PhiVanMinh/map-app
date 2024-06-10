@@ -1,0 +1,212 @@
+<div bsModal #modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal"
+  aria-hidden="true" style="margin-top: 3%;">
+  <div class="modal-dialog modal-md modal-notify modal-info" style="max-width: 650px;" role="document" (mousedown)="startDrag($event)" [style.left.px]="left" [style.top.px]="top">
+    <div class="modal-content">
+      <div class="modal-header" (mousedown)="dragMouseDown($event)">
+        <h5 *ngIf="employee.userId" class="modal-title" style="color: #056ec9;">{{'Sửa điểm' | translate }}</h5>
+        <h5 *ngIf="!employee.userId" class="modal-title" style="color: #056ec9;">{{'Thêm điểm' | translate }}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="hide()"></button>
+      </div>
+      <div class="modal-body">
+        <form
+            name="form"
+            #f="ngForm"
+            (ngSubmit)="f.form.valid && onSubmit()"
+            novalidate
+            [appMatchPassword]="['password', 'confirmPassword']"
+            [validateBirthday]="['birthDay']"
+          >
+          <div class="mt-0">
+            <div class="tab-content">
+              <div class="tab-pane fade show active py-2" id="form-info" role="tabpanel" aria-labelledby="info-tab">
+                <form #form="ngForm">
+                  <table class="w-100">
+                    <tr>
+                      <td><label class="area-title">{{'Vẽ điểm' | translate}} </label></td>
+                      <td>
+                        <div class="row">
+                          <div class="col">
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="controlLandmark" name="controlLandmark" [(ngModel)]="controlLandmark" />
+                              <label class="custom-control-label ml-1" for="controlLandmark">{{'Điều chỉnh điểm' |
+                                    translate}}</label>
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="custom-control custom-checkbox displayLandmark">
+                              <input type="checkbox" class="custom-control-input" id="displayLandmark" name="displayLandmark" [(ngModel)]="displayLandmark" />
+                              <label class="custom-control-label ml-1" for="displayLandmark">{{'Hiển thị điểm' |
+                                    translate}}</label>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label>{{ 'Kiểu vẽ' | translate}} :</label></td>
+                      <td>
+                        <div class="row">
+                          <div class="col-6">
+                            <!-- <app-combobox [form]="form" required name="drawStyle" [(selectedIds)]="drawStyle" (selectedIdsChange)="changeStyle()"
+                              [placeholder]="LanguageKeys.LandmarkKeys.DrawStyle" [items]="listDrawStyle" [bindValue]="'id'" [bindLabel]="'text'">
+                            </app-combobox> -->
+                            <select 
+                            class="form-control minimal" 
+                            style="max-width: 100%; min-width: fit-content; padding-right: 30px; padding: 0.25rem 0.5rem"
+                            >
+                              <option [ngValue]="1">{{'Đường tròn' | translate}}</option>
+                              <option [ngValue]="2">{{'Đường' | translate}}</option>
+                              <option [ngValue]="3">{{'Đa giác' | translate}}</option>
+                            </select>
+                          </div>
+                          <div class="col-auto align-self-center">
+                            <label class="mb-0">{{ 'Bán kính' | translate}} :</label>
+                          </div>
+                          <div class="col">
+                            <div class="input-group input-group-sm" style="width: 100%;">
+                              <input required numberValidate type="number" class="form-control" name="radiusLandmark"
+                                [(ngModel)]="radiusLandmark" (blur)="updateRadius()">
+                              <div class="input-group-prepend">
+                                <div class="input-group-text" style="border-radius: 0; background-color: gainsboro;">m</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label>{{ 'Màu' | translate}} :</label></td>
+                      <td>
+                        <div class="row align-items-center">
+                          <div class="col d-flex align-items-center">
+                            <input type="color" id="colorLandmark" name="colorLandmark" [(ngModel)]="colorLandmark" (ngModelChange)="changeColor($event)">
+                            <label class="mb-0 ml-1" for="colorLandmark">{{colorLandmark}}</label>
+                          </div>
+                          <div class="col-auto" *ngIf="createLayer && !editLayer">
+                            <button class="btn btn-sm btn-primary" (click)="createDraw()">
+                              <i class="bi bi-pencil-fill pr-1"></i>{{'Bắt đầu vẽ' | translate }}
+                            </button>
+                          </div>
+                          <div class="col-auto" *ngIf="!createLayer && !editLayer">
+                            <button class="btn btn-sm btn-primary" (click)="editDraw()">
+                              <i class="bi bi-edit pr-1"></i>{{ 'Sửa vùng vẽ' | translate }}
+                            </button>
+                          </div>
+                          <div class="col-auto" *ngIf="editLayer">
+                            <button class="btn btn-sm btn-primary" (click)="saveDraw()">
+                              <i class="far fa-save pr-1"></i>{{ 'Save'| translate }}
+                            </button>
+                          </div>
+                          <div class="col-auto" *ngIf="editLayer">
+                            <button class="btn btn-sm btn-outline-primary" (click)="cancelDraw()">
+                              <i class="far fa-window-close pr-1"></i>{{ 'Cancel' | translate }}
+                            </button>
+                          </div>
+                          <div class="col-auto" *ngIf="!createLayer && !editLayer">
+                            <button class="btn btn-sm btn-primary" (click)="clearDraw()">
+                              <i class="fas fa-undo pr-1"></i>{{ 'Vẽ lại' | translate }}
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2"><label class="area-title">{{ 'Thông tin điểm' | translate}}
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label>{{'Nhóm điểm' | translate}} <span class="text-danger font-weight-bold">*</span> :</label>
+                      </td>
+                      <td>
+                        <!-- <app-combobox [form]="form" required [items]="dicCategory|dicToArray" [(selectedIds)]="selectedCategoryId"
+                          (selectedItemsChange)="onLandmarkCategoryChanged($event)" [placeholder]="LanguageKeys.LandmarkKeys.LandmarkCategory" [bindValue]="categoryFields.id"
+                          [bindLabel]="categoryFields.resourceCode">
+                        </app-combobox> -->
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label>{{'Tên điểm' | translate}} <span class="text-danger font-weight-bold">*</span> :</label>
+                      </td>
+                      <td><input required textboxValidate [maxlength]="150" name="landmarkName" type="text" class="form-control"
+                          [placeholder]="'Nhập tên điểm' | translate" [(ngModel)]="nameLandmark" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label>{{ 'Tên riêng' | translate}} :</label>
+                      </td>
+                      <td>
+                        <input name="privateName" type="text" class="form-control" [placeholder]="'Nhập tên riêng' | translate"
+                          [(ngModel)]="privateName" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label>{{'Vị trí' | translate}} <span class="text-danger font-weight-bold">*</span> :</label>
+                      </td>
+                      <td>
+                        <input required name="latLng" type="text" class="form-control" latLngValidate [(ngModel)]="latLng" (ngModelChange)="coorChange($event)"
+                          (focus)="setUnmodifiedLatLng()" (blur)="checkAddress()" [placeholder]="'LatLng' | translate" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <label>{{'Địa chỉ' | translate}} :</label>
+                      </td>
+                      <td>
+                        <span class="text-info w-100"><i (click)="getAddress()" class="fas fa-sync" *ngIf="!address || address == ''"></i>{{address}}</span>
+                      </td>
+                    </tr>
+                    <tr *ngIf="showSpeedInput">
+                      <td class="text-nowrap">
+                        <label>{{ 'Tốc độ cho phép' | translate}}: </label>
+                      </td>
+                      <td>
+                        <div class="input-group input-group-sm w-50">
+                          <input required name="speedAllow" type="number" numberValidate class="form-control" placeholder="km/h" [(ngModel)]="speedAllows">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">km/h</div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="listLandmarkGroups.length">
+                      <td>
+                        <label>{{ 'Nhóm điểm' | translate}}</label>
+                      </td>
+                      <td>
+                        <!-- <app-combobox [form]="form" name="listLandmarkGroups" [items]="listLandmarkGroups" [bindValue]="landmarkGroupFields.id"
+                          [bindLabel]="landmarkGroupFields.name" [virtualScroll]="listLandmarkGroups.length > numberRowEnableVirtualScroll"
+                          [(selectedIds)]="selectedLandmarkGroupIDs" [placeholder]="LanguageKeys.LandmarkKeys.SelectLandmarkGroup" [multiple]="true">
+                          <ng-template comboboxLabelTemplate let-item>{{ item.name + ' ('+item.numberLandmark+') ' }}</ng-template>
+                        </app-combobox> -->
+                      </td>
+                    </tr>
+                  </table>
+                </form>
+              </div>
+              <div class="tab-pane fade py-2" id="setting" role="tabpanel" aria-labelledby="setting-tab">
+                {{ 'Cài đặt' | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="popup-footer p-2" style="float: right;">
+            <div class="row">
+              <div class="col-auto">
+                <button [disabled]="form.invalid" class="btn btn-sm btn-primary" (click)="save()" type="button"><i class="far fa-save"></i>
+                  {{'Save' | translate}}</button>
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-sm btn-light" (click)="onClose()" type="button">{{'Close' |
+                  translate}}</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

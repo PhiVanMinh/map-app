@@ -192,8 +192,8 @@ export class CustomPopupComponent implements OnInit, OnDestroy, OnChanges {
       if (popupBody) {
         const popupBodyMaxHeight = popupMaxHeight - (popupHeader?.offsetHeight ?? 0);
         popupBody.style.maxHeight = popupBodyMaxHeight + 'px';
-        const popupBodyPaddingTop = 100 //ElementHelper.getStyleValue<number>(popupBody, 'padding-top', true, 0);
-        const popupBodyPaddingBottom = 100 //ElementHelper.getStyleValue<number>(popupBody, 'padding-bottom', true, 0);
+        const popupBodyPaddingTop = 1000 //ElementHelper.getStyleValue<number>(popupBody, 'padding-top', true, 0);
+        const popupBodyPaddingBottom = 1000 //ElementHelper.getStyleValue<number>(popupBody, 'padding-bottom', true, 0);
         this.contentMaxHeight = popupBodyMaxHeight - popupBodyPaddingTop - popupBodyPaddingBottom;
       }
 
@@ -294,10 +294,10 @@ export class CustomPopupComponent implements OnInit, OnDestroy, OnChanges {
       if (popupBody) {
         const contentElement = popupBody.firstElementChild as HTMLElement;
         if (contentElement) {
-          const popupBodyPaddingTop = 100; //ElementHelper.getStyleValue<number>(popupBody, 'padding-top', true, 0);
-          const popupBodyPaddingBottom = 100; // ElementHelper.getStyleValue<number>(popupBody, 'padding-bottom', true, 0);
-          const popupBodyPaddingLeft = 100; // ElementHelper.getStyleValue<number>(popupBody, 'padding-left', true, 0);
-          const popupBodyPaddingRight = 100; // ElementHelper.getStyleValue<number>(popupBody, 'padding-right', true, 0);
+          const popupBodyPaddingTop = 1000; //ElementHelper.getStyleValue<number>(popupBody, 'padding-top', true, 0);
+          const popupBodyPaddingBottom = 1000; // ElementHelper.getStyleValue<number>(popupBody, 'padding-bottom', true, 0);
+          const popupBodyPaddingLeft = 1000; // ElementHelper.getStyleValue<number>(popupBody, 'padding-left', true, 0);
+          const popupBodyPaddingRight = 1000; // ElementHelper.getStyleValue<number>(popupBody, 'padding-right', true, 0);
           if ((contentElement.offsetHeight + popupBodyPaddingTop + popupBodyPaddingBottom) > popupBody.offsetHeight || (contentElement.offsetWidth + popupBodyPaddingLeft + popupBodyPaddingRight) > popupBody.offsetWidth) {
             popupBody.style.overflow = this.hideScroll ? 'hidden' : 'auto';
           }
