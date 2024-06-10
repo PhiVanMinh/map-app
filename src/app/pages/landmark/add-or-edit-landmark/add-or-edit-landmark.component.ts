@@ -10,6 +10,7 @@ import { Landmark } from 'src/app/_models/landmark/landmark.model';
 import { User } from 'src/app/_models/user-infomation';
 import { LeafletService } from 'src/app/_services/leaflet.service';
 import * as turf from '@turf/turf';
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({
   selector: 'app-add-or-edit-landmark',
@@ -26,16 +27,17 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
   employee: Employee = new Employee();
   confirmPass!: string;
   password!: string;
-  EmpTypes = [
-    {
-      label: 'Quản lý',
-      value: 1,
-    },
-    {
-      label: 'Nhân viên',
-      value: 2,
-    }
-  ];
+  dropdownSettings: IDropdownSettings = {
+    singleSelection: true,
+    idField: 'id',
+    textField: 'name',
+    selectAllText: 'Chọn tất cả',
+    unSelectAllText: 'Bỏ chọn tất cả',
+    itemsShowLimit: 20,
+    allowSearchFilter: true
+  };
+
+  selectedLandmarkGroupIds!: number;
 
   dragging = false;
   left = 0;
@@ -59,7 +61,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
   speedAllows!: number;
   address!: string;
   listLandmarks: Landmark[] = [];
-  listLandmarkGroups: LandmarkGroup[] = [];
+  @Input() listLandmarkGroups: LandmarkGroup[] = [];
   // landmarkGroupFields = LANDMARK_GROUP_FIELDS;
   selectedLandmarkGroupIDs: number[] = [];
   numberRowEnableVirtualScroll = 50;
@@ -95,6 +97,8 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
   @ViewChild('form') formRef!: NgForm;
 
   mapObject: any;
+  @Input() listLandmarkCategorys: LandmarkCategory[] = [];
+  selectedLandmarkCategoryIds: any;
 
 
   constructor(

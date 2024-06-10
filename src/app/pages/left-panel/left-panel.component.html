@@ -108,7 +108,7 @@
           </div>
         </div>
       </ng-container>
-      
+
       <div *ngIf="type == 1" class="row">
         <ng-multiselect-dropdown
         class="mt-2 p-0"
@@ -236,7 +236,7 @@
             </thead>
 
             <tbody>
-              <tr *ngFor="let item of (routeByFilter ?? listRoutes); let i = index" [attr.data-index]="i"  
+              <tr *ngFor="let item of (routeByFilter ?? listRoutes); let i = index" [attr.data-index]="i"
                 style="vertical-align: middle; border-top: none; border: 1px solid #afafaf;" (click)="selectRoute(item)">
                 <td class="text-center" [ngClass]="{ active: item.id == selectedRoute.id}" style="width: 10px;"><img height="16px" [src]="'/assets/images/vehicle/car/Blue0.png'"/></td>
                 <td class="text-left" [ngClass]="{ active: item.id == selectedRoute.id}"> {{ item.dateTime }}</td>
@@ -251,7 +251,7 @@
     </ng-container>
 
     <ng-container *ngIf="type == 3">
-        <app-virtual-tree [listLandmarks]="landmarkByFilter ?? listLandmarks" [listLandmarkCategorys]="listLandmarkCategorys" (onSelectedChanged)="countSelectedNodes()" 
+        <app-virtual-tree [listLandmarks]="landmarkByFilter ?? listLandmarks" [listLandmarkCategorys]="listLandmarkCategorys" (onSelectedChanged)="countSelectedNodes()"
         (onDataLoaded)="finishCreateNodes()" (clickLandmark)="onChangeSelectedLandmark($event)" (removeLandmark)="delete($event)" (onEditClick)="showModal($event)">
       </app-virtual-tree>
     </ng-container>
@@ -266,4 +266,5 @@
 <ng-template #formInputLandmark></ng-template>
 <confirm-modal #confirmModal (modalAccept)="acceptDelete($event)"></confirm-modal>
 
-<app-add-or-edit-landmark #createOrEditLandmark [currentMap]="map" (modalSave)="modalSave($event)"></app-add-or-edit-landmark>
+<app-add-or-edit-landmark #createOrEditLandmark [currentMap]="map" [listLandmarkGroups]="listLandmarkGroups" [listLandmarkCategorys]="listLandmarkCategorys"
+ (modalSave)="modalSave($event)"></app-add-or-edit-landmark>

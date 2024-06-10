@@ -70,7 +70,7 @@ export class LeafletService implements OnDestroy  {
     minZoom: 5,
     });
 
-    
+
     const tilesBA2 = L.tileLayer('https://map.binhanh.vn/titservice.ashx?typ=ba&lvl={z}&top={y}&left={x}', {
     subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
     attribution: 'Bản đồ Bình Anh',
@@ -84,7 +84,7 @@ export class LeafletService implements OnDestroy  {
       "Vệ tinh Bình Anh": tilesBA1,
       "Bản đồ Bình Anh": tilesBA2
     };
-    
+
     tilesGoogle.addTo(this.map);
     L.control.layers(this.baseMaps).addTo(this.map);
 
@@ -93,6 +93,22 @@ export class LeafletService implements OnDestroy  {
     this.routeLayers.addTo(this.map);
     this.landmarkGroupLayer.addTo(this.map);
 
+    this.map.on('contextmenu', this.showContextMenu.bind(this));
+
+  }
+
+  private showContextMenu(event: L.LeafletMouseEvent): void {
+    const popupContent = `
+      <div>
+        <button onclick="alert('Option 1')">Option 1</button>
+        <button onclick="alert('Option 2')">Option 2</button>
+      </div>
+    `;
+
+    L.popup()
+      .setLatLng(event.latlng)
+      .setContent(popupContent)
+      .openOn(this.map);
   }
 
   updateIconMarker(marker: L.Marker, vehicle: Vehicle, rotationDeg: number ,isCurrent?: boolean){
@@ -176,7 +192,7 @@ export class LeafletService implements OnDestroy  {
   const currentLatRad = currentLatLng.lat * Math.PI / 180;
   const currentLngRad = currentLatLng.lng * Math.PI / 180;
 
-  const earthRadius = 6371; 
+  const earthRadius = 6371;
 
   const randomDirection = Math.random() * 2 * Math.PI;
 
@@ -259,7 +275,7 @@ export class LeafletService implements OnDestroy  {
   private _getIntermediatePoints(lat: number, lng: number, vMarker: L.Marker): L.LatLng[] {
     const startPoint = vMarker.getLatLng();
     const endPoint = new L.LatLng(lat, lng);
-    const numberOfPoints = 15; 
+    const numberOfPoints = 15;
 
     const intermediatePoints = [];
     for (let i = 1; i < numberOfPoints; i++) {
@@ -373,7 +389,7 @@ export class LeafletService implements OnDestroy  {
       return marker;
   }
 
-  
+
   /** Tạo component động */
   createComponent<T>(component: Type<T>, viewContainerRef: ViewContainerRef) {
     viewContainerRef?.clear();

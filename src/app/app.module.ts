@@ -41,7 +41,6 @@ import { VirtualTreeComponent } from './_components/share/virtual-tree/virtual-t
 import { TreeModule } from '@ali-hm/angular-tree-component';
 import { CustomPopupComponent } from './_components/share/custom-popup/custom-popup.component';
 import { AddOrEditLandmarkComponent } from './pages/landmark/add-or-edit-landmark/add-or-edit-landmark.component';
-import { DragulaModule } from 'ng2-dragula';
 
 defineLocale('vi', viLocale);
 

@@ -50,8 +50,8 @@
                             <!-- <app-combobox [form]="form" required name="drawStyle" [(selectedIds)]="drawStyle" (selectedIdsChange)="changeStyle()"
                               [placeholder]="LanguageKeys.LandmarkKeys.DrawStyle" [items]="listDrawStyle" [bindValue]="'id'" [bindLabel]="'text'">
                             </app-combobox> -->
-                            <select 
-                            class="form-control minimal" 
+                            <select
+                            class="form-control minimal"
                             style="max-width: 100%; min-width: fit-content; padding-right: 30px; padding: 0.25rem 0.5rem"
                             >
                               <option [ngValue]="1">{{'Đường tròn' | translate}}</option>
@@ -120,6 +120,14 @@
                         <label>{{'Nhóm điểm' | translate}} <span class="text-danger font-weight-bold">*</span> :</label>
                       </td>
                       <td>
+                        <ng-multiselect-dropdown
+                          class="mt-2 p-0"
+                          [placeholder]="'Chọn loại điểm'"
+                          [settings]="dropdownSettings"
+                          [data]="listLandmarkCategorys"
+                          [(ngModel)]="selectedLandmarkCategoryIds"
+                          >
+                          </ng-multiselect-dropdown>
                         <!-- <app-combobox [form]="form" required [items]="dicCategory|dicToArray" [(selectedIds)]="selectedCategoryId"
                           (selectedItemsChange)="onLandmarkCategoryChanged($event)" [placeholder]="LanguageKeys.LandmarkKeys.LandmarkCategory" [bindValue]="categoryFields.id"
                           [bindLabel]="categoryFields.resourceCode">
@@ -178,6 +186,14 @@
                         <label>{{ 'Nhóm điểm' | translate}}</label>
                       </td>
                       <td>
+                        <ng-multiselect-dropdown
+                          class="mt-2 p-0"
+                          [placeholder]="'Chọn nhóm điểm'"
+                          [settings]="dropdownSettings"
+                          [data]="listLandmarkGroups"
+                          [(ngModel)]="selectedLandmarkGroupIds"
+                          >
+                          </ng-multiselect-dropdown>
                         <!-- <app-combobox [form]="form" name="listLandmarkGroups" [items]="listLandmarkGroups" [bindValue]="landmarkGroupFields.id"
                           [bindLabel]="landmarkGroupFields.name" [virtualScroll]="listLandmarkGroups.length > numberRowEnableVirtualScroll"
                           [(selectedIds)]="selectedLandmarkGroupIDs" [placeholder]="LanguageKeys.LandmarkKeys.SelectLandmarkGroup" [multiple]="true">
