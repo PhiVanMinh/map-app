@@ -1,8 +1,9 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { LandmarkCategory } from 'src/app/_models/landmark/landmark-category';
 import { LandmarkGroup } from 'src/app/_models/landmark/landmark-group';
 import { Landmark } from 'src/app/_models/landmark/landmark.model';
 import { LeafletService } from 'src/app/_services/leaflet.service';
+import { AddOrEditLandmarkComponent } from './add-or-edit-landmark/add-or-edit-landmark.component';
 
 @Component({
   selector: 'app-landmark',
@@ -194,11 +195,12 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
   ];
   // Nhóm điểm
   listLandmarkGroups: LandmarkGroup[] = [
-    { id: 1, name: 'Nhóm điểm 1'}, 
-    { id: 2, name: 'Nhóm điểm 2'}, 
-    { id: 3, name: 'Nhóm điểm 3'}, 
+    { id: 1, name: 'Nhóm điểm 1'},
+    { id: 2, name: 'Nhóm điểm 2'},
+    { id: 3, name: 'Nhóm điểm 3'},
   ];
 
+  @ViewChild('createOrEditLandmark1', { static: true }) createOrEditEmployee!: AddOrEditLandmarkComponent;
 
   constructor() {
     super();
@@ -218,7 +220,7 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
          },
          draggable: true
        }, e)
-     
+
        this.landmarkGroupLayer.addLayer(marker)
      });
   }
@@ -229,9 +231,7 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
   onChangeSelectedLandmark(value: any){
    const vMarker = this.getMarkerById(value.id);
    if(vMarker){
-    if(vMarker){ 
       this.map.setView(vMarker?.getLatLng());
-    }
    }
   }
 
@@ -244,12 +244,41 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
       },
       draggable: true
     }, value)
-  
+
     this.landmarkGroupLayer.addLayer(marker)
   }
 
   remove(value: any){
     const vMarker = this.getMarkerById(value.id);
     this.landmarkGroupLayer.removeLayer(vMarker);
+  }
+
+  reloadList(listData: any){
+    this.listLandmark.forEach(e => {
+      const vMarker = this.getMarkerById(e.id.toString());
+      this.landmarkGroupLayer.removeLayer(vMarker);
+    })
+    this.listLandmark = listData;
+    this.listLandmark.forEach(e => {
+      const marker = this.createMarker(e.latitude, e.longitude, {
+         iconOptions: {
+           iconUrl: e.icon,
+           labelContent: e.name,
+           className: 'custom-marker-icon-landmark'
+         },
+         draggable: true
+       }, e)
+
+       this.landmarkGroupLayer.addLayer(marker)
+     });
+  }
+
+  modalSave(value?: any){
+      value.id = Math.floor(10000 + Math.random() * 90000);
+      this.listLandmark = this.listLandmark.concat(value);
+  }
+
+  override openCreatePointModal(latlng: any){
+    this.createOrEditEmployee?.show(undefined, latlng);
   }
 }

@@ -251,7 +251,7 @@
     </ng-container>
 
     <ng-container *ngIf="type == 3">
-        <app-virtual-tree [listLandmarks]="landmarkByFilter ?? listLandmarks" [listLandmarkCategorys]="listLandmarkCategorys" (onSelectedChanged)="countSelectedNodes()"
+        <app-virtual-tree #tree [listLandmarks]="landmarkByFilter ?? listLandmarks" [listLandmarkCategorys]="listLandmarkCategorys" (onSelectedChanged)="countSelectedNodes()"
         (onDataLoaded)="finishCreateNodes()" (clickLandmark)="onChangeSelectedLandmark($event)" (removeLandmark)="delete($event)" (onEditClick)="showModal($event)">
       </app-virtual-tree>
     </ng-container>

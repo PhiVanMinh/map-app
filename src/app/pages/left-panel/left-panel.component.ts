@@ -110,7 +110,7 @@ export class LeftPanelComponent implements OnInit {
   @Output() emitPlayRoute: EventEmitter<any> = new EventEmitter();
 
 
-  // Điểm 
+  // Điểm
   landmarkName!: string;
   showLandmarkName!: boolean;
   showPolygon!: boolean;
@@ -129,6 +129,7 @@ export class LeftPanelComponent implements OnInit {
   selectedLandmark: any;
 
   @ViewChild('createOrEditLandmark', { static: true }) createOrEditEmployee!: AddOrEditLandmarkComponent;
+  @ViewChild('tree', { static: true }) tree!: VirtualTreeComponent;
 
   constructor(
     private leafletService: LeafletService,
@@ -389,7 +390,7 @@ export class LeftPanelComponent implements OnInit {
       else this.vehiclesByFilter = undefined;
     } else {
 
-    }    
+    }
   }
 
   filterLandmark(value?: string){
@@ -417,7 +418,7 @@ export class LeftPanelComponent implements OnInit {
       else {
         this.landmarkByFilter = undefined;
       }
-    }   
+    }
   }
 
     // #region Handle sự kiện -------------------------------------------------------------------
@@ -457,7 +458,20 @@ export class LeftPanelComponent implements OnInit {
   }
 
   modalSave(value?: any){
+    if(value.id > 0){
+      // this.listLandmarks.forEach(e => {
+      //   if(e.id == value.id){
+      //     e = Object.assign(e, value);
+      //   }
+      // })
 
+      this.listLandmarks = this.listLandmarks.filter(e => e.id != value.id);
+      this.listLandmarks.push(value);
+    } else {
+      value.id = Math.floor(10000 + Math.random() * 90000);
+      this.listLandmarks = this.listLandmarks.concat(value);
+    }
+    this.emitAddOrEditLandmark.emit(this.listLandmarks);
   }
 
   delete(value: any){

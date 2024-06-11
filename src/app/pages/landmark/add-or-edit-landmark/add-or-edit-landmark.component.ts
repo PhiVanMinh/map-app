@@ -195,7 +195,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
     // this.getLandmarkData();
   }
 
-  show(value?: Landmark){
+  show(value?: Landmark, latlng?: L.LatLng){
     if(value) {
       this.editLandmark = value;
       if(value.isManagementByCircle) {
@@ -210,7 +210,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
       this.address = value.address;
       this.colorLandmark = '#' + value.color.toString(16) ;
     } else {
-
+      this.editLandmark = new Landmark();
       this.boundType = 1;
       this.radiusLandmark = 0;
       this.selectedLandmarkCategoryIds = 1;
@@ -221,6 +221,9 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
       this.address = 'Đây là địa chỉ';
       this.colorLandmark = '#2F80ED';
     }
+
+    if(latlng) this.latLng = `${latlng.lat}, ${latlng.lng}`;
+
     this.modal.show();
 
     const that = this;
@@ -599,73 +602,73 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
 
     //   const intColor = MapHelper.hexColorToInt(this.colorLandmark.slice(1));
 
-      const landmark = {
-        lid: this.landmarkid,
-        lname: this.nameLandmark,
-        pname: this.privateName,
-        addr: this.address,
-        rad: this.radiusLandmark,
-        lat: this.pointLatLng.lat,
-        lng: this.pointLatLng.lng,
-        isys: false,
-        ivis: this.displayLandmark ? 1 : 0,
-        ilma: this.controlLandmark ? 1 : 0,
-        icir: true,
-        // colo: intColor,
-        pgon: '', // lng,lat,lng,lat,lng,lat
-        pline: '',
-        desc: this.description,
-        iclo: false,
-        lgids: this.selectedLandmarkGroupIDs.join(','),
-        lcid: this.selectedCategoryId,
-        // cid: common.currentUser.companyId,
-        proid: 0,
-        // langid: common.currentLanguageId,
-        vallow: this.speedAllows
-      };
-      if (this.drawStyle === 1) {
-        // Hình tròn
-        landmark.rad = this.radiusLandmark;
-        landmark.icir = true;
-      }
-      else if (this.drawStyle === 2) {
-        // đường
-        const layer = this.layerDrawLandmark.getLayers()[0] as any;
-        const polylineList: any[] = [];
-        layer.getLatLngs().forEach((p: { lng: any; lat: any; }) => {
-          polylineList.push([p.lng, p.lat]);
-        });
-        landmark.pline = polylineList.join(',');
+      // const landmark = {
+      //   lid: this.landmarkid,
+      //   lname: this.nameLandmark,
+      //   pname: this.privateName,
+      //   addr: this.address,
+      //   rad: this.radiusLandmark,
+      //   lat: this.pointLatLng.lat,
+      //   lng: this.pointLatLng.lng,
+      //   isys: false,
+      //   ivis: this.displayLandmark ? 1 : 0,
+      //   ilma: this.controlLandmark ? 1 : 0,
+      //   icir: true,
+      //   // colo: intColor,
+      //   pgon: '', // lng,lat,lng,lat,lng,lat
+      //   pline: '',
+      //   desc: this.description,
+      //   iclo: false,
+      //   lgids: this.selectedLandmarkGroupIDs.join(','),
+      //   lcid: this.selectedCategoryId,
+      //   // cid: common.currentUser.companyId,
+      //   proid: 0,
+      //   // langid: common.currentLanguageId,
+      //   vallow: this.speedAllows
+      // };
+      // if (this.drawStyle === 1) {
+      //   // Hình tròn
+      //   landmark.rad = this.radiusLandmark;
+      //   landmark.icir = true;
+      // }
+      // else if (this.drawStyle === 2) {
+      //   // đường
+      //   const layer = this.layerDrawLandmark.getLayers()[0] as any;
+      //   const polylineList: any[] = [];
+      //   layer.getLatLngs().forEach((p: { lng: any; lat: any; }) => {
+      //     polylineList.push([p.lng, p.lat]);
+      //   });
+      //   landmark.pline = polylineList.join(',');
 
-        if (this.turfLayer && this.turfLayer.getLayers().length > 0) {
-          const polygon = this.turfLayer.getLayers()[0] as any;
-          const pointList: any[] = [];
-          polygon.getLatLngs().forEach((p: any[]) => {
-            p.forEach((l) => {
-              pointList.push([l.lng, l.lat]);
-            });
-          });
-          landmark.pgon = pointList.join(',');
-        }
-        landmark.icir = false;
-      }
-      else if (this.drawStyle === 3) {
-        // Đa giác
-        landmark.iclo = true;
-        landmark.icir = false;
-        const layer = this.layerDrawLandmark.getLayers()[0] as any;
-        const pointList: any[] = [];
-        layer.getLatLngs().forEach((p: { lng: any; lat: any; }[]) => {
-          p.forEach((l: { lng: any; lat: any; }) => {
-            pointList.push([l.lng, l.lat]);
-          });
-        });
-        landmark.pgon = pointList.join(',');
-      }
-      else {
-        // common.notificationError(LanguageKeys.LandmarkKeys.SelectDrawingStyle);
-        return;
-      }
+      //   if (this.turfLayer && this.turfLayer.getLayers().length > 0) {
+      //     const polygon = this.turfLayer.getLayers()[0] as any;
+      //     const pointList: any[] = [];
+      //     polygon.getLatLngs().forEach((p: any[]) => {
+      //       p.forEach((l) => {
+      //         pointList.push([l.lng, l.lat]);
+      //       });
+      //     });
+      //     landmark.pgon = pointList.join(',');
+      //   }
+      //   landmark.icir = false;
+      // }
+      // else if (this.drawStyle === 3) {
+      //   // Đa giác
+      //   landmark.iclo = true;
+      //   landmark.icir = false;
+      //   const layer = this.layerDrawLandmark.getLayers()[0] as any;
+      //   const pointList: any[] = [];
+      //   layer.getLatLngs().forEach((p: { lng: any; lat: any; }[]) => {
+      //     p.forEach((l: { lng: any; lat: any; }) => {
+      //       pointList.push([l.lng, l.lat]);
+      //     });
+      //   });
+      //   landmark.pgon = pointList.join(',');
+      // }
+      // else {
+      //   // common.notificationError(LanguageKeys.LandmarkKeys.SelectDrawingStyle);
+      //   return;
+      // }
 
       if (this.isCreate) {
         // this.subscriptions.add(
@@ -703,6 +706,42 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
         //   )
         // );
       }
+
+      if(this.editLandmark?.id != 0) {
+        this.editLandmark.radius = this.boundType == 1 ? this.radiusLandmark : 0;
+        this.editLandmark.categoryID = this.selectedLandmarkCategoryIds;
+        this.editLandmark.groupIDs = this.selectedLandmarkGroupIDs;
+        this.editLandmark.name = this.nameLandmark;
+        this.editLandmark.privateName = this.privateName;
+        if(this.latLng && this.latLng?.split(',')?.length == 2){
+          const latlng = this.latLng.split(',');
+          this.editLandmark.latitude = Number(latlng[0]);
+          this.editLandmark.longitude = Number(latlng[1]);
+        }
+        this.editLandmark.address = this.address;
+        this.editLandmark.color = 255;
+        this.editLandmark.icon = this.listLandmarkCategorys.find(e => e.id == this.selectedLandmarkCategoryIds)?.icon ?? '';
+      this.modalSave.emit(this.editLandmark);
+      } else
+      {
+        const newLandmark = new Landmark();
+        newLandmark.radius = this.boundType == 1 ? this.radiusLandmark : 0;
+        newLandmark.categoryID = this.selectedLandmarkCategoryIds;
+        newLandmark.groupIDs = this.selectedLandmarkGroupIDs;
+        newLandmark.name = this.nameLandmark;
+        newLandmark.privateName = this.privateName;
+        if(this.latLng && this.latLng?.split(',')?.length == 2){
+          const latlng = this.latLng.split(',');
+          newLandmark.latitude = Number(latlng[0]);
+          newLandmark.longitude = Number(latlng[1]);
+        }
+        newLandmark.address = this.address;
+        newLandmark.color = 255;
+        newLandmark.icon = this.listLandmarkCategorys.find(e => e.id == this.selectedLandmarkCategoryIds)?.icon ?? '';
+      this.modalSave.emit(newLandmark);
+      }
+
+      this.modal.hide();
     }
 
   createDraw() {

@@ -48,7 +48,7 @@ export class VirtualTreeComponent implements OnInit, OnChanges {
     },
   };
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     // for (const propName in changes) {
     //   if (propName === 'listLandmarks') {
     //     if (!changes['listLandmarks'].firstChange) {
