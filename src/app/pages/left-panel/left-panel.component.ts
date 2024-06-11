@@ -450,7 +450,10 @@ export class LeftPanelComponent implements OnInit {
     // component.instance.currentMap = this.map;
     // if(value) component.instance.editLandmark = value;
 
-    this.createOrEditEmployee?.show(value);
+    const selectedLandmark = this.listLandmarks.find(e => e.id == value?.id);
+    if(selectedLandmark)
+    this.createOrEditEmployee?.show(selectedLandmark);
+    else this.createOrEditEmployee?.show();
   }
 
   modalSave(value?: any){

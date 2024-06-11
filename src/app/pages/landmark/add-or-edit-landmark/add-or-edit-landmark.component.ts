@@ -21,7 +21,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
 
   @ViewChild('modal') public modal!: ModalDirective;
   @Output('modalSave') modalSave = new EventEmitter();
-  @ViewChild('f') courseForm!: NgForm;
+  // @ViewChild('f') courseForm!: NgForm;
 
   form: User = new User();
   employee: Employee = new Employee();
@@ -36,8 +36,6 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
     itemsShowLimit: 20,
     allowSearchFilter: true
   };
-
-  selectedLandmarkGroupIds!: number;
 
   dragging = false;
   left = 0;
@@ -59,7 +57,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
   drawStyle = 1;
   radiusLandmark = 100;
   speedAllows!: number;
-  address!: string;
+  address: string = 'Đây là địa chỉ';
   listLandmarks: Landmark[] = [];
   @Input() listLandmarkGroups: LandmarkGroup[] = [];
   // landmarkGroupFields = LANDMARK_GROUP_FIELDS;
@@ -94,11 +92,12 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
   // categoryFields = LANDMARK_CATEGORY_FIELDS;
 
 
-  @ViewChild('form') formRef!: NgForm;
+  // @ViewChild('form') formRef!: NgForm;
 
   mapObject: any;
   @Input() listLandmarkCategorys: LandmarkCategory[] = [];
   selectedLandmarkCategoryIds: any;
+  boundType = 1;
 
 
   constructor(
@@ -108,7 +107,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
   ) {}
 
   hide() {
-    this.courseForm?.resetForm();
+    // this.courseForm?.resetForm();
     this.modal.hide();
   }
 
@@ -196,11 +195,35 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
     // this.getLandmarkData();
   }
 
-  show(value: any){
+  show(value?: Landmark){
+    if(value) {
+      this.editLandmark = value;
+      if(value.isManagementByCircle) {
+        this.boundType = 1;
+        this.radiusLandmark = value.radius;
+      }
+      this.selectedLandmarkCategoryIds = value.categoryID;
+      this.selectedLandmarkGroupIDs = value.groupIDs;
+      this.nameLandmark = value.name;
+      this.privateName = value.privateName;
+      this.latLng = `${value.latitude}, ${value.longitude}`;
+      this.address = value.address;
+      this.colorLandmark = '#' + value.color.toString(16) ;
+    } else {
+
+      this.boundType = 1;
+      this.radiusLandmark = 0;
+      this.selectedLandmarkCategoryIds = 1;
+      this.selectedLandmarkGroupIDs = [];
+      this.nameLandmark = '';
+      this.privateName = '';
+      this.latLng ='';
+      this.address = 'Đây là địa chỉ';
+      this.colorLandmark = '#2F80ED';
+    }
     this.modal.show();
 
     const that = this;
-          // this.currentMap = mapObject.map;
           if (!this.initEventDraw) {
             // Tạo Drawlayer
             this.layerDrawLandmark = new L.FeatureGroup();

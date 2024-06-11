@@ -118,8 +118,8 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
       companyID: 1,
       languageID: 0,
       systemID: 0,
-      isVisible: true,
-      isLandmarkManagement: true,
+      isVisible: true, // displayLandmark
+      isLandmarkManagement: true, // controlLandmark
       isManagementByCircle: false,
       isSystemLandmark: false,
       isClosed: true,

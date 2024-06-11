@@ -8,6 +8,7 @@ import { isArray } from 'ngx-bootstrap/chronos';
 import { Vehicle } from '../_models/vehicle';
 import * as moment from 'moment';
 import { Landmark } from '../_models/landmark/landmark.model';
+import 'leaflet-contextmenu';
 
 @Injectable({
   providedIn: 'root'
@@ -41,12 +42,28 @@ export class LeafletService implements OnDestroy  {
   }
     ngOnDestroy(): void {
     }
+    
 
   initMap(id: string): void {
     this.map = L.map(id, {
+
       center: [ 21.0227784, 105.8163641],
       zoom: 15,
-      zoomControl: false
+      zoomControl: false,
+      // contextmenu: true,
+      // contextmenuWidth: 140,
+      // contextmenuItems: [
+      //   {
+      //     text: 'Show coordinates',
+      //     callback: this.showCoordinates,
+      //     context: this
+      //   },
+      //   {
+      //     text: 'Center map here',
+      //     callback: this.centerMap,
+      //     context: this
+      //   },
+      // ]
     });
 
     L.control.zoom({
@@ -93,23 +110,50 @@ export class LeafletService implements OnDestroy  {
     this.routeLayers.addTo(this.map);
     this.landmarkGroupLayer.addTo(this.map);
 
-    this.map.on('contextmenu', this.showContextMenu.bind(this));
+    this.map.on('contextmenu', (e) => {
+      this.showContextMenu(e.latlng); // Hiển thị menu chọn tại vị trí chuột
+    });
 
   }
 
-  private showContextMenu(event: L.LeafletMouseEvent): void {
-    const popupContent = `
-      <div>
-        <button onclick="alert('Option 1')">Option 1</button>
-        <button onclick="alert('Option 2')">Option 2</button>
-      </div>
-    `;
+  private showContextMenu(latlng: any): void {
+    const options = [
+      {
+        label: 'Tạo điểm',
+        url: '/assets/images/common/black/location-2.png',
+        action: () => this.openCreatePointModal(latlng)
+      },
+      {
+        label: 'Đo khoảng cách',
+        url: 'assets/images/common/black/meansure.png',
+        action: () => this.measureDistance(latlng)
+      }
+    ];
+    const div = L.DomUtil.create('div', 'custom-context-menu');
+      div.innerHTML = options.map(option => `<div class="context-menu-item">
+        <img class="menu-icon" src=" ${option.url}">
+        <label class="menu-label">${option.label}</label>
+        </div>`).join('');
 
     L.popup()
-      .setLatLng(event.latlng)
-      .setContent(popupContent)
+      .setLatLng(latlng)
+      .setContent(div)
       .openOn(this.map);
+
+      document.querySelectorAll('.menu-label').forEach((item, index) => {
+        item.addEventListener('click', () => {
+          options[index].action();
+          this.map.closePopup();
+        });
+      });
   }
+
+  openCreatePointModal(latlng: any) {
+  }
+
+  measureDistance(latlng: any) {
+  }
+
 
   updateIconMarker(marker: L.Marker, vehicle: Vehicle, rotationDeg: number ,isCurrent?: boolean){
     marker.setIcon(this.createIcon({

@@ -42,13 +42,15 @@
               "src/styles.scss",
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
-              "node_modules/leaflet/dist/leaflet.css"
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "node_modules/alertifyjs/build/alertify.min.js",
               "node_modules/leaflet/dist/leaflet.js",
-              "node_modules/leaflet.browser.print/dist/leaflet.browser.print.min.js"
+              "node_modules/leaflet.browser.print/dist/leaflet.browser.print.min.js",
+              "node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.js"
             ]
           },
           "configurations": {

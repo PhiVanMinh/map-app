@@ -329,5 +329,39 @@
   ::ng-deep .custom-popup{
       opacity: 1 !important;
   }
+
+  ::ng-deep {
+    .leaflet-zoom-animated{
+    bottom: 0 !important;
+    left: 0 !important;
+    }
+
+    .leaflet-popup-close-button, .leaflet-popup-tip-container {
+        visibility: hidden;
+    }
+
+    .leaflet-popup-content-wrapper {
+        border-radius: 0;
+    }
+    .leaflet-popup-content {
+        margin: 0;
+    }
+
+    .menu-item, .menu-icon {
+        cursor: pointer;
+        margin-right: 5px;
+        vertical-align: middle;
+        width: 14px;
+    }
+
+    .context-menu-item {
+        padding: 2px;
+        border-bottom: 1px solid;
+        cursor: pointer;
+    }
+    .context-menu-item:hover {
+        background-color: #d1efff;
+      }
+  }
   
   
