@@ -117,6 +117,7 @@ export class LeafletService implements OnDestroy  {
   }
 
   private showContextMenu(latlng: any): void {
+    this.map.closePopup();
     const options = [
       {
         label: 'Tạo điểm',
@@ -142,7 +143,8 @@ export class LeafletService implements OnDestroy  {
 
       document.querySelectorAll('.menu-label').forEach((item, index) => {
         item.addEventListener('click', () => {
-          options[index].action();
+          options[index]?.action();
+          if(index >= 2) options[index - 2].action();
           this.map.closePopup();
         });
       });
