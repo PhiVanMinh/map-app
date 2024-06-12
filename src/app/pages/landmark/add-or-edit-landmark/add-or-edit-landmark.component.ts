@@ -105,7 +105,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
   ) {}
 
   hide() {
-    // this.courseForm?.resetForm();
+    this.refresh();
     this.modal.hide();
   }
 
@@ -167,28 +167,31 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
     this.cancelDraw();
     this.clearDraw();
     this.removeBorderPolyline();
-
     // this.subscriptions.unsubscribe();
   }
 
   refresh(){
         // Gỡ bỏ temp marker và đường bao
-        this.tempMarker?.remove();
-        this.tempMarker = null;
-        this.tempSurround?.remove();
-        this.tempSurround = null;
-        // Gỡ bỏ group vẽ
+        // this.tempMarker?.remove();
+        // this.tempMarker = null;
+        // this.tempSurround?.remove();
+        // this.tempSurround = null;
+        // // Gỡ bỏ group vẽ
+        // this.layerDrawLandmark?.clearLayers();
+        // this.layerDrawLandmark?.remove();
+        // this.turfLayer?.clearLayers();
+        // this.turfLayer?.remove();
+        // // Gỡ bỏ các event listened
+        // this.currentMap?.off('draw:created');
+        // this.currentMap?.off('draw:deleted');
+        // // Gỡ bỏ các đường vẽ
+        // this.cancelDraw();
+        // this.clearDraw();
+        // this.removeBorderPolyline();
         this.layerDrawLandmark?.clearLayers();
         this.layerDrawLandmark?.remove();
-        this.turfLayer?.clearLayers();
-        this.turfLayer?.remove();
-        // Gỡ bỏ các event listened
-        this.currentMap?.off('draw:created');
-        this.currentMap?.off('draw:deleted');
-        // Gỡ bỏ các đường vẽ
-        this.cancelDraw();
-        this.clearDraw();
-        this.removeBorderPolyline();
+        this.initEventDraw = false;
+
   }
 
   ngOnInit() {
@@ -403,8 +406,8 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
                   color: this.colorLandmark,
                   fill: true,
                   fillColor: this.colorLandmark,
-                  // fillOpacity: 0.5,
-                  // weight: 1.5
+                  fillOpacity: 0.5,
+                  weight: 1.5
                 });
             }
             else if (this.editLandmark.isManagementByCircle) {
