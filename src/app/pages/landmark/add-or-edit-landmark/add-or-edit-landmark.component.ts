@@ -188,6 +188,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
         // this.cancelDraw();
         // this.clearDraw();
         // this.removeBorderPolyline();
+
         this.layerDrawLandmark?.clearLayers();
         this.layerDrawLandmark?.remove();
         this.initEventDraw = false;
@@ -244,7 +245,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
       eType: this.isCreate ? 'contextmenu' : 'update-landmark',
     }
     this.initDraw(mapObject);
-    
+
     // this.obsSv.isFormLandmarkInputShowing.next(true);
   }
 
@@ -330,7 +331,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
             }
           );
           this.layerDrawLandmark.addLayer(tempCir);
-          // this.editDrawHandler._enableLayerEdit(tempCir);
+          this.editDrawHandler._enableLayerEdit(tempCir);
           this.createLayerBusy = true;
         }
         if (mapObject?.eType && mapObject?.eType === 'update-landmark') {
@@ -590,49 +591,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
       //   // langid: common.currentLanguageId,
       //   vallow: this.speedAllows
       // };
-      // if (this.drawStyle === 1) {
-      //   // Hình tròn
-      //   landmark.rad = this.radiusLandmark;
-      //   landmark.icir = true;
-      // }
-      // else if (this.drawStyle === 2) {
-      //   // đường
-      //   const layer = this.layerDrawLandmark.getLayers()[0] as any;
-      //   const polylineList: any[] = [];
-      //   layer.getLatLngs().forEach((p: { lng: any; lat: any; }) => {
-      //     polylineList.push([p.lng, p.lat]);
-      //   });
-      //   landmark.pline = polylineList.join(',');
 
-      //   if (this.turfLayer && this.turfLayer.getLayers().length > 0) {
-      //     const polygon = this.turfLayer.getLayers()[0] as any;
-      //     const pointList: any[] = [];
-      //     polygon.getLatLngs().forEach((p: any[]) => {
-      //       p.forEach((l) => {
-      //         pointList.push([l.lng, l.lat]);
-      //       });
-      //     });
-      //     landmark.pgon = pointList.join(',');
-      //   }
-      //   landmark.icir = false;
-      // }
-      // else if (this.drawStyle === 3) {
-      //   // Đa giác
-      //   landmark.iclo = true;
-      //   landmark.icir = false;
-      //   const layer = this.layerDrawLandmark.getLayers()[0] as any;
-      //   const pointList: any[] = [];
-      //   layer.getLatLngs().forEach((p: { lng: any; lat: any; }[]) => {
-      //     p.forEach((l: { lng: any; lat: any; }) => {
-      //       pointList.push([l.lng, l.lat]);
-      //     });
-      //   });
-      //   landmark.pgon = pointList.join(',');
-      // }
-      // else {
-      //   // common.notificationError(LanguageKeys.LandmarkKeys.SelectDrawingStyle);
-      //   return;
-      // }
 
       if (this.isCreate) {
         // this.subscriptions.add(
@@ -672,7 +631,6 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
       }
 
       if(this.editLandmark?.id && this.editLandmark?.id > 0) {
-        this.editLandmark.radius = this.drawStyle == 1 ? this.radiusLandmark : 0;
         this.editLandmark.categoryID = this.selectedLandmarkCategoryIds;
         this.editLandmark.groupIDs = this.selectedLandmarkGroupIDs;
         this.editLandmark.name = this.nameLandmark;
@@ -685,6 +643,49 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
         this.editLandmark.address = this.address;
         this.editLandmark.color = 255;
         this.editLandmark.icon = this.listLandmarkCategorys.find(e => e.id == this.selectedLandmarkCategoryIds)?.icon ?? '';
+        if (this.drawStyle === 1) {
+          // Hình tròn
+          this.editLandmark.radius = this.radiusLandmark;
+          this.editLandmark.isManagementByCircle = true;
+        }
+        else if (this.drawStyle === 2) {
+          // đường
+          const layer = this.layerDrawLandmark.getLayers()[0] as any;
+          const polylineList: any[] = [];
+          layer.getLatLngs().forEach((p: { lng: any; lat: any; }) => {
+            polylineList.push([p.lng, p.lat]);
+          });
+          this.editLandmark.polyline = polylineList.join(',');
+
+          if (this.turfLayer && this.turfLayer.getLayers().length > 0) {
+            const polygon = this.turfLayer.getLayers()[0] as any;
+            const pointList: any[] = [];
+            polygon.getLatLngs().forEach((p: any[]) => {
+              p.forEach((l) => {
+                pointList.push([l.lng, l.lat]);
+              });
+            });
+            this.editLandmark.polygon = pointList.join(',');
+          }
+          this.editLandmark.isManagementByCircle = false;
+        }
+        else if (this.drawStyle === 3) {
+          // Đa giác
+          this.editLandmark.isClosed = true;
+          this.editLandmark.isManagementByCircle = false;
+          const layer = this.layerDrawLandmark.getLayers()[0] as any;
+          const pointList: any[] = [];
+          layer.getLatLngs().forEach((p: { lng: any; lat: any; }[]) => {
+            p.forEach((l: { lng: any; lat: any; }) => {
+              pointList.push([l.lng, l.lat]);
+            });
+          });
+          this.editLandmark.polygon = pointList.join(',');
+        }
+        else {
+          this.toastr.warning('Vui lòng chọn kiểu vẽ');
+          return;
+        }
       this.modalSave.emit(this.editLandmark);
       } else
       {
@@ -702,10 +703,55 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
         newLandmark.address = this.address;
         newLandmark.color = 255;
         newLandmark.icon = this.listLandmarkCategorys.find(e => e.id == this.selectedLandmarkCategoryIds)?.icon ?? '';
+
+        if (this.drawStyle === 1) {
+          // Hình tròn
+          newLandmark.radius = this.radiusLandmark;
+          newLandmark.isManagementByCircle = true;
+        }
+        else if (this.drawStyle === 2) {
+          // đường
+          const layer = this.layerDrawLandmark.getLayers()[0] as any;
+          const polylineList: any[] = [];
+          layer.getLatLngs().forEach((p: { lng: any; lat: any; }) => {
+            polylineList.push([p.lng, p.lat]);
+          });
+          newLandmark.polyline = polylineList.join(',');
+
+          if (this.turfLayer && this.turfLayer.getLayers().length > 0) {
+            const polygon = this.turfLayer.getLayers()[0] as any;
+            const pointList: any[] = [];
+            polygon.getLatLngs().forEach((p: any[]) => {
+              p.forEach((l) => {
+                pointList.push([l.lng, l.lat]);
+              });
+            });
+            newLandmark.polygon = pointList.join(',');
+          }
+          newLandmark.isManagementByCircle = false;
+        }
+        else if (this.drawStyle === 3) {
+          // Đa giác
+          newLandmark.isClosed = true;
+          newLandmark.isManagementByCircle = false;
+          const layer = this.layerDrawLandmark.getLayers()[0] as any;
+          const pointList: any[] = [];
+          layer.getLatLngs().forEach((p: { lng: any; lat: any; }[]) => {
+            p.forEach((l: { lng: any; lat: any; }) => {
+              pointList.push([l.lng, l.lat]);
+            });
+          });
+          newLandmark.polygon = pointList.join(',');
+        }
+        else {
+          this.toastr.warning('Vui lòng chọn kiểu vẽ');
+          return;
+        }
+        this.currentMap?.removeLayer(this.tempMarker);
       this.modalSave.emit(newLandmark);
       }
 
-      this.modal.hide();
+     this.hide();
     }
 
   createDraw() {

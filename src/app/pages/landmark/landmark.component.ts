@@ -5,6 +5,7 @@ import { Landmark } from 'src/app/_models/landmark/landmark.model';
 import { LeafletService } from 'src/app/_services/leaflet.service';
 import { AddOrEditLandmarkComponent } from './add-or-edit-landmark/add-or-edit-landmark.component';
 import { LeftPanelComponent } from '../left-panel/left-panel.component';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-landmark',
@@ -203,6 +204,7 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
 
   @ViewChild('createOrEditLandmark1', { static: true }) createOrEditEmployee!: AddOrEditLandmarkComponent;
   @ViewChild('leftPanel', { static: true }) leftPanel!: LeftPanelComponent;
+  layerLandmark!: L.FeatureGroup;
 
   constructor() {
     super();
@@ -225,6 +227,7 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
 
        this.landmarkGroupLayer.addLayer(marker)
      });
+
   }
 
   ngOnInit() {
@@ -293,7 +296,7 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
            },
            draggable: true
          }, e)
-  
+
          this.landmarkGroupLayer.addLayer(marker)
        });
   }
@@ -301,5 +304,124 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
   override openCreatePointModal(latlng: any){
     this.createOrEditEmployee?.show(undefined, latlng);
     this.leftPanel.createOrEditEmployee.hide();
+  }
+
+  onChangeCheckBox(data: any){
+    if(data.showLandmarkName){
+      this.listLandmark.forEach(e => {
+        const vMarker = this.getMarkerById(e.id.toString());
+        this.landmarkGroupLayer.removeLayer(vMarker);
+      })
+      this.listLandmark.forEach(e => {
+        const marker = this.createMarker(e.latitude, e.longitude, {
+           iconOptions: {
+             iconUrl: e.icon,
+             labelContent: e.name,
+             className: 'custom-marker-icon-landmark'
+           },
+           draggable: true
+         }, e)
+
+         this.landmarkGroupLayer.addLayer(marker)
+       });
+    } else {
+      this.listLandmark.forEach(e => {
+        const vMarker = this.getMarkerById(e.id.toString());
+        this.landmarkGroupLayer.removeLayer(vMarker);
+      })
+      this.listLandmark.forEach(e => {
+        const marker = this.createMarker(e.latitude, e.longitude, {
+           iconOptions: {
+             iconUrl: e.icon,
+             className: 'custom-marker-icon-landmark'
+           },
+           draggable: true
+         }, e)
+
+         this.landmarkGroupLayer.addLayer(marker)
+       });
+    }
+
+    if(data.showPolygon){
+      this.layerLandmark?.clearLayers();
+      this.layerLandmark?.remove();
+      this.layerLandmark = new L.FeatureGroup();
+      this.map?.addLayer(this.layerLandmark);
+
+      this.listLandmark.forEach(e => {
+        if (e.isManagementByCircle) {
+          const tempSurround = this.createCircle(
+            e.latitude,
+            e.longitude,
+            {
+              radius: e.radius, fill: true, fillColor:  '#2F80ED', fillOpacity: 0.5, color: '#2F80ED', weight: 1.5
+            }
+          );
+          this.layerLandmark.addLayer(tempSurround);
+        }
+        else {
+          if (e.isClosed) {
+            if (e.polygon) {
+              const arrTemp = e.polygon.split(',');
+              const listPoint: any[] = [];
+              for (let index = 0; index < arrTemp.length; index++) {
+                listPoint.push({
+                  lng: Number.parseFloat(arrTemp[index]),
+                  lat: Number.parseFloat(arrTemp[index + 1]),
+                });
+                index++;
+              }
+              const tempSurround = this.createPolygon(
+                listPoint,
+                {
+                  fill: true, fillColor: '#2F80ED', fillOpacity:0.5, color: '#2F80ED', weight: 1.5
+                }
+              );
+              this.layerLandmark.addLayer(tempSurround);
+            }
+          }
+          else {
+            if (e.polyline && e.polyline) {
+              // Vẽ Line
+              const arrTemp = e.polyline.split(',');
+              const listPoint: L.LatLngLiteral[] = [];
+              for (let index = 0; index < arrTemp.length; index++) {
+                listPoint.push({
+                  lng: Number.parseFloat(arrTemp[index]),
+                  lat: Number.parseFloat(arrTemp[index + 1]),
+                });
+                index++;
+              }
+              const tempSurround = this.createPolyline(
+                listPoint,
+                { color: '#2F80ED', weight: 1.5 }
+              );
+
+              this.layerLandmark.addLayer(tempSurround);
+
+                const arrTemp2 = e.polygon.split(',');
+                const listPoint2: any[] = [];
+                for (let index = 0; index < arrTemp2.length; index++) {
+                  listPoint2.push({
+                    lng: Number.parseFloat(arrTemp2[index]),
+                    lat: Number.parseFloat(arrTemp2[index + 1]),
+                  });
+                  index++;
+                }
+                const tempSurround2 = this.createPolygon(
+                  listPoint2,
+                  {
+                    fill: true, fillColor: '#2F80ED', fillOpacity:0.5, color: '#2F80ED', weight: 1.5
+                  }
+                );
+                this.layerLandmark.addLayer(tempSurround2);
+            }
+          }
+        }
+      })
+    } else {
+      this.layerLandmark?.clearLayers();
+      this.layerLandmark?.remove();
+    }
   }
 }

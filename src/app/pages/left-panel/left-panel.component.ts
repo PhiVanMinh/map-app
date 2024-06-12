@@ -112,7 +112,7 @@ export class LeftPanelComponent implements OnInit {
 
   // Điểm
   landmarkName!: string;
-  showLandmarkName!: boolean;
+  showLandmarkName: boolean = true;
   showPolygon!: boolean;
   @Input() listLandmarks: Landmark[] = [];
   @Input() listLandmarkCategorys: LandmarkCategory[] = [];
@@ -126,6 +126,7 @@ export class LeftPanelComponent implements OnInit {
   @Output() emitLandmark: EventEmitter<any> = new EventEmitter();
   @Output() emitAddOrEditLandmark: EventEmitter<any> = new EventEmitter();
   @Output() emitRemoveLandmark: EventEmitter<any> = new EventEmitter();
+  @Output() emitChangeCheckBox: EventEmitter<any> = new EventEmitter();
   selectedLandmark: any;
 
   @ViewChild('createOrEditLandmark', { static: true }) createOrEditEmployee!: AddOrEditLandmarkComponent;
@@ -455,7 +456,7 @@ export class LeftPanelComponent implements OnInit {
     if(selectedLandmark)
     this.createOrEditEmployee?.show(selectedLandmark);
     else this.createOrEditEmployee?.show();
-    
+
   }
 
   modalSave(value?: any){
@@ -486,5 +487,10 @@ export class LeftPanelComponent implements OnInit {
     if( this.landmarkByFilter) this.landmarkByFilter = this.landmarkByFilter.filter(e => e.id != this.selectedLandmark.id);
 
     this.emitRemoveLandmark.emit(this.selectedLandmark);
+  }
+
+  changeCheckbox(){
+    const dataChange = {showLandmarkName: this.showLandmarkName, showPolygon: this.showPolygon}
+    this.emitChangeCheckBox.emit(dataChange);
   }
 }

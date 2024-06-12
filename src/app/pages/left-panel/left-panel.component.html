@@ -99,11 +99,11 @@
 
         <div class="row mt-2">
           <div class="col-6 pl-0 check-box-label">
-            <input class="check-box" type="checkbox" name="showLandmarkName" [(ngModel)]="showLandmarkName">
+            <input class="check-box" type="checkbox" name="showLandmarkName" [(ngModel)]="showLandmarkName" (ngModelChange)="changeCheckbox()">
             <label class="ml-1">{{'Hiển thị tên điểm' | translate}}</label>
           </div>
           <div class="col-6 pl-0 check-box-label">
-            <input class="check-box" type="checkbox" name="showPolygon" [(ngModel)]="showPolygon">
+            <input class="check-box" type="checkbox" name="showPolygon" [(ngModel)]="showPolygon" (ngModelChange)="changeCheckbox()">
             <label class="ml-1">{{'Hiển thị vùng bao' | translate}}</label>
           </div>
         </div>
