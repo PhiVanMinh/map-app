@@ -60,3 +60,15 @@
   .modal-header{
     padding: 3px 12px;
   }
+
+  .modal-backdrop {
+    display: none;
+  }
+  
+  .modal {
+    pointer-events: none;
+  }
+  
+  .modal-dialog {
+    pointer-events: auto;
+  }

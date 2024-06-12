@@ -1,5 +1,5 @@
 <div bsModal #modal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditModal"
-  aria-hidden="true" style="margin-top: 3%;">
+  aria-hidden="true" style="margin-top: 3%;" data-backdrop="static">
   <div class="modal-dialog modal-md modal-notify modal-info" style="max-width: 650px;" role="document" (mousedown)="startDrag($event)" [style.left.px]="left" [style.top.px]="top">
     <div class="modal-content">
       <div class="modal-header" (mousedown)="dragMouseDown($event)">
@@ -45,8 +45,9 @@
                             <select
                             class="form-control minimal"
                             name="boundType"
-                            [(ngModel)]="boundType"
+                            [(ngModel)]="drawStyle"
                             [ngModelOptions]="{standalone: true}"
+                            (ngModelChange)="changeStyle()"
                             style="max-width: 100%; min-width: fit-content; padding-right: 30px; padding: 0.25rem 0.5rem"
                             >
                               <option [ngValue]="1">{{'Đường tròn' | translate}}</option>

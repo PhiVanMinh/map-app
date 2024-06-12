@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild, HostListener, ElementRef, Input, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import * as L from 'leaflet';
-import { ModalDirective } from 'ngx-bootstrap/modal';
+import { ModalDirective, ModalOptions } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { Employee } from 'src/app/_models/employee';
 import { LandmarkCategory } from 'src/app/_models/landmark/landmark-category';
@@ -97,8 +97,6 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
   mapObject: any;
   @Input() listLandmarkCategorys: LandmarkCategory[] = [];
   selectedLandmarkCategoryIds: any;
-  boundType = 1;
-
 
   constructor(
     private leafletSv: LeafletService,
@@ -110,24 +108,6 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
     // this.courseForm?.resetForm();
     this.modal.hide();
   }
-
-  // show(selectedUser?: Employee) {
-  //   this.courseForm?.resetForm();
-  //   setTimeout(() => {
-  //     this.employee = selectedUser ?? new Employee();
-  //     this.form.fullName = this.employee.empName;
-  //     this.form.userName = this.employee.userName;
-  //     this.form.email = this.employee.email;
-  //     this.form.password = this.employee.password;
-  //     this.form.birthDay = this.employee.birthDay;
-  //     this.form.gender = this.employee.gender;
-  //     this.form.phoneNumber = this.employee.phoneNumber;
-  //     this.form.confirmPassword = this.employee.password;
-  //     this.form.role = this.employee.role?.toString() ?? '2';
-
-  //     this.modal.show();
-  //   });
-  // }
 
   startDrag(event: MouseEvent) {
     this.lastX = event.clientX;
@@ -191,15 +171,37 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
     // this.subscriptions.unsubscribe();
   }
 
+  refresh(){
+        // Gỡ bỏ temp marker và đường bao
+        this.tempMarker?.remove();
+        this.tempMarker = null;
+        this.tempSurround?.remove();
+        this.tempSurround = null;
+        // Gỡ bỏ group vẽ
+        this.layerDrawLandmark?.clearLayers();
+        this.layerDrawLandmark?.remove();
+        this.turfLayer?.clearLayers();
+        this.turfLayer?.remove();
+        // Gỡ bỏ các event listened
+        this.currentMap?.off('draw:created');
+        this.currentMap?.off('draw:deleted');
+        // Gỡ bỏ các đường vẽ
+        this.cancelDraw();
+        this.clearDraw();
+        this.removeBorderPolyline();
+  }
+
   ngOnInit() {
     // this.getLandmarkData();
   }
 
   show(value?: Landmark, latlng?: L.LatLng){
+    this.refresh();
     if(value) {
+      this.isCreate = false;
       this.editLandmark = value;
       if(value.isManagementByCircle) {
-        this.boundType = 1;
+        this.drawStyle = 1;
         this.radiusLandmark = value.radius;
       }
       this.selectedLandmarkCategoryIds = value.categoryID;
@@ -210,9 +212,10 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
       this.address = value.address;
       this.colorLandmark = '#' + value.color.toString(16) ;
     } else {
+      this.isCreate = true;
       this.editLandmark = new Landmark();
-      this.boundType = 1;
-      this.radiusLandmark = 0;
+      this.drawStyle = 1;
+      this.radiusLandmark = 100;
       this.selectedLandmarkCategoryIds = 1;
       this.selectedLandmarkGroupIDs = [];
       this.nameLandmark = '';
@@ -224,8 +227,25 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
 
     if(latlng) this.latLng = `${latlng.lat}, ${latlng.lng}`;
 
+    const config: ModalOptions = {
+      backdrop: 'static',
+      keyboard: false
+    };
+
+    this.modal.config = config;
     this.modal.show();
 
+    const mapObject = {
+      zoom: this.currentMap.getZoom(),
+      center: latlng,
+      eType: this.isCreate ? 'contextmenu' : 'update-landmark',
+    }
+    this.initDraw(mapObject);
+    
+    // this.obsSv.isFormLandmarkInputShowing.next(true);
+  }
+
+  initDraw(mapObject?: any){
     const that = this;
           if (!this.initEventDraw) {
             // Tạo Drawlayer
@@ -246,9 +266,9 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
             this.initEventDraw = true;
           }
         // Loại sự kiện (thêm mới, update)
-        if (this.mapObject?.eType && this.mapObject?.eType === 'contextmenu' && !this.createLayerBusy) {
-          const lat = this.roundToDecimal(this.mapObject?.center.lat);
-          const lng = this.roundToDecimal(this.mapObject?.center.lng);
+        if (mapObject?.eType && mapObject?.eType === 'contextmenu') {
+          const lat = this.roundToDecimal(mapObject?.center.lat);
+          const lng = this.roundToDecimal(mapObject?.center.lng);
           this.latLng = `${lat}, ${lng}`;
           this.address = '';
           this.pointLatLng = new L.LatLng(lat, lng);
@@ -295,8 +315,8 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
           );
 
           const tempCir = this.leafletSv.createCircle(
-            this.mapObject?.center.lat,
-            this.mapObject?.center.lng,
+            mapObject?.center.lat,
+            mapObject?.center.lng,
             {
               radius: this.radiusLandmark,
               color: this.colorLandmark,
@@ -310,7 +330,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
           // this.editDrawHandler._enableLayerEdit(tempCir);
           this.createLayerBusy = true;
         }
-        if (this.mapObject?.eType && this.mapObject?.eType === 'update-landmark' && !this.createLayerBusy) {
+        if (mapObject?.eType && mapObject?.eType === 'update-landmark') {
           if (this.editLandmark) {
             this.isCreate = false;
             this.landmarkid = this.editLandmark.id;
@@ -326,7 +346,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
             this.nameLandmark = this.editLandmark.name;
             // this.colorLandmark = MapHelper.intToHexColor(this.editLandmark.color);
             this.pointLatLng = new L.LatLng(lat, lng);
-            this.drawStyle = this.mapObject?.changeStyleToCircle || this.editLandmark.isManagementByCircle ? 1 : this.editLandmark.isClosed ? 3 : 2;
+            this.drawStyle = mapObject?.changeStyleToCircle || this.editLandmark.isManagementByCircle ? 1 : this.editLandmark.isClosed ? 3 : 2;
             this.radiusLandmark = this.editLandmark.radius;
             this.speedAllows = this.editLandmark.highwayVelocityAllow;
             this.editLayer = true;
@@ -340,7 +360,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
             );
 
             this.tempMarker = this.createTempMarker(
-              this.mapObject?.changeStyleToCircle ? this.mapObject?.center : this.pointLatLng,
+              mapObject?.changeStyleToCircle ? mapObject?.center : this.pointLatLng,
               this.nameLandmark,
               this.editLandmark.icon
             );
@@ -374,10 +394,10 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
             });
             this.currentMap?.addLayer(this.tempMarker);
 
-            if (this.mapObject?.changeStyleToCircle) {
+            if (mapObject?.changeStyleToCircle) {
               this.tempSurround = this.leafletSv.createCircle(
-                this.mapObject?.center.lat,
-                this.mapObject?.center.lng,
+                mapObject?.center.lat,
+                mapObject?.center.lng,
                 {
                   radius: this.radiusLandmark,
                   color: this.colorLandmark,
@@ -442,7 +462,6 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
           }
         }
 
-    // this.obsSv.isFormLandmarkInputShowing.next(true);
   }
 
   onLandmarkCategoryChanged(selectedCategory: LandmarkCategory) {
@@ -491,71 +510,13 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
     const temp = this.leafletSv.createMarker(latlng.lat, latlng.lng, {
       iconOptions: {
         iconUrl: lIcon,
-        labelContent: label
+        labelContent: label,
+        className: 'custom-marker-icon-landmark'
       },
       draggable: true
     }, this.editLandmark ? this.editLandmark : new Landmark());
     return temp;
   }
-
-  // async getLandmarkData() {
-  //   // Lấy danh sách Loại điểm
-  //   const listCategory = await this.landmarkSv.getListLandmarkCategory().asPromise();
-  //   this.dicCategory = Dictionary.create(listCategory, x => x.id);
-
-  //   // Lấy danh sách Nhóm điểm
-  //   const list = await this.landmarkSv.getListLandmarkGroupByUser().asPromise();
-  //   this.listLandmarkGroups = list ?? [];
-
-  //   //#region Loại bỏ những nhóm điểm không thỏa mãn, fix case điểm do người dùng tạo, goto admin gán nhóm điểm cho điểm vừa tạo,
-  //   // do user kh đc qly nhóm điểm vừa gán nên combobox kh hiển thị được nhóm điểm
-  //   if (this.listLandmarkGroups?.length > 0) {
-  //     const groupIdValid = [];
-  //     const dicLandmarkGroup = Dictionary.create(this.listLandmarkGroups, c => c.id);
-  //     if (this.editLandmark?.groupIDs?.length > 0) {
-  //       this.editLandmark.groupIDs.forEach(itm => {
-  //         if (dicLandmarkGroup.has(itm)) {
-  //           groupIdValid.push(itm);
-  //         }
-  //       })
-  //     }
-  //     this.editLandmark.groupIDs = groupIdValid;
-  //     this.selectedLandmarkGroupIDs = groupIdValid;
-  //   }
-  //   //#endregion
-
-  //   // Lấy danh sách điểm
-  //   const listLandmark = await this.landmarkSv.getListLandmarkByUser().asPromise();
-  //   this.listLandmarks = listLandmark ?? [];
-
-  //   // Đếm số điểm thuộc nhóm
-  //   this.listLandmarkGroups.forEach((group) => {
-  //     group.numberLandmark = this.listLandmarks.filter((l) => l.groupIDs.includes(group.id)).length;
-  //   });
-
-  //   // Đếm số điểm không có nhóm
-  //   if (common.isAdmin && this.listLandmarkGroups.length) {
-  //     const countNullLandmark = this.listLandmarks.filter((l) => l.groupIDs.includes(0)).length;
-  //     if (countNullLandmark > 0) {
-  //       // Nếu đã có nhóm Chưa gán điểm thì xóa đi
-  //       const nullGroupIndex = this.listLandmarkGroups.findIndex((g) => g.id === 0);
-  //       if (nullGroupIndex >= 0) {
-  //         this.listLandmarkGroups.splice(nullGroupIndex, 1);
-  //       }
-  //       // Thêm nhóm Chưa gán điểm vào đầu danh sách
-  //       const nullGroup: LandmarkGroup = {
-  //         id: 0,
-  //         companyID: common.currentUser.companyId,
-  //         isTranslate: true,
-  //         languageID: common.currentLanguageId,
-  //         name: common.getTranslate(LanguageKeys.LandmarkKeys.NotInAnyGroup),
-  //         numberLandmark: countNullLandmark,
-  //       };
-  //       this.listLandmarkGroups.unshift(nullGroup);
-  //       this.listLandmarkGroups = this.listLandmarkGroups.slice();
-  //     }
-  //   }
-  // }
 
   async getAddress() {
     // this.address = common.getTranslate(LanguageKeys.CommonKeys.Loading);
@@ -707,8 +668,8 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
         // );
       }
 
-      if(this.editLandmark?.id != 0) {
-        this.editLandmark.radius = this.boundType == 1 ? this.radiusLandmark : 0;
+      if(this.editLandmark?.id && this.editLandmark?.id > 0) {
+        this.editLandmark.radius = this.drawStyle == 1 ? this.radiusLandmark : 0;
         this.editLandmark.categoryID = this.selectedLandmarkCategoryIds;
         this.editLandmark.groupIDs = this.selectedLandmarkGroupIDs;
         this.editLandmark.name = this.nameLandmark;
@@ -725,7 +686,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
       } else
       {
         const newLandmark = new Landmark();
-        newLandmark.radius = this.boundType == 1 ? this.radiusLandmark : 0;
+        newLandmark.radius = this.drawStyle == 1 ? this.radiusLandmark : 0;
         newLandmark.categoryID = this.selectedLandmarkCategoryIds;
         newLandmark.groupIDs = this.selectedLandmarkGroupIDs;
         newLandmark.name = this.nameLandmark;
@@ -879,6 +840,7 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
     }
     // Nếu là đường tròn và đã có radius thì vẽ luôn vùng bao
     if (this.drawStyle === 1 && this.radiusLandmark && this.tempMarker) {
+
       this.createLayerBusy = false;
       // this.obsSv.mapInitInfo.next({
       //   map: this.currentMap,
@@ -887,6 +849,14 @@ export class AddOrEditLandmarkComponent implements OnInit, OnDestroy  {
       //   eType: this.isCreate ? 'contextmenu' : 'update-landmark',
       //   changeStyleToCircle: true
       // });
+
+      const mapObject = {
+        zoom: this.currentMap.getZoom(),
+        center: this.tempMarker.getLatLng(),
+        eType: this.isCreate ? 'contextmenu' : 'update-landmark',
+        changeStyleToCircle: true
+      }
+      this.initDraw(mapObject);
     }
   }
 

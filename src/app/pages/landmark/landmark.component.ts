@@ -4,6 +4,7 @@ import { LandmarkGroup } from 'src/app/_models/landmark/landmark-group';
 import { Landmark } from 'src/app/_models/landmark/landmark.model';
 import { LeafletService } from 'src/app/_services/leaflet.service';
 import { AddOrEditLandmarkComponent } from './add-or-edit-landmark/add-or-edit-landmark.component';
+import { LeftPanelComponent } from '../left-panel/left-panel.component';
 
 @Component({
   selector: 'app-landmark',
@@ -201,6 +202,7 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
   ];
 
   @ViewChild('createOrEditLandmark1', { static: true }) createOrEditEmployee!: AddOrEditLandmarkComponent;
+  @ViewChild('leftPanel', { static: true }) leftPanel!: LeftPanelComponent;
 
   constructor() {
     super();
@@ -229,6 +231,7 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
   }
 
   onChangeSelectedLandmark(value: any){
+    this.createOrEditEmployee.hide();
    const vMarker = this.getMarkerById(value.id);
    if(vMarker){
       this.map.setView(vMarker?.getLatLng());
@@ -274,11 +277,29 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
   }
 
   modalSave(value?: any){
+    this.listLandmark.forEach(e => {
+      const vMarker = this.getMarkerById(e.id.toString());
+      this.landmarkGroupLayer.removeLayer(vMarker);
+    })
       value.id = Math.floor(10000 + Math.random() * 90000);
       this.listLandmark = this.listLandmark.concat(value);
+
+      this.listLandmark.forEach(e => {
+        const marker = this.createMarker(e.latitude, e.longitude, {
+           iconOptions: {
+             iconUrl: e.icon,
+             labelContent: e.name,
+             className: 'custom-marker-icon-landmark'
+           },
+           draggable: true
+         }, e)
+  
+         this.landmarkGroupLayer.addLayer(marker)
+       });
   }
 
   override openCreatePointModal(latlng: any){
     this.createOrEditEmployee?.show(undefined, latlng);
+    this.leftPanel.createOrEditEmployee.hide();
   }
 }

@@ -455,6 +455,7 @@ export class LeftPanelComponent implements OnInit {
     if(selectedLandmark)
     this.createOrEditEmployee?.show(selectedLandmark);
     else this.createOrEditEmployee?.show();
+    
   }
 
   modalSave(value?: any){
