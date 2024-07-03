@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { LandmarkCategory } from 'src/app/_models/landmark/landmark-category';
 import { LandmarkGroup } from 'src/app/_models/landmark/landmark-group';
 import { Landmark } from 'src/app/_models/landmark/landmark.model';
-import { LeafletService } from 'src/app/_services/leaflet.service';
+import { LeafletService, extendLeaflet } from 'src/app/_services/leaflet.service';
 import { AddOrEditLandmarkComponent } from './add-or-edit-landmark/add-or-edit-landmark.component';
 import { LeftPanelComponent } from '../left-panel/left-panel.component';
 import * as L from 'leaflet';
@@ -227,7 +227,8 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
 
        this.landmarkGroupLayer.addLayer(marker)
      });
-
+    // Mở rộng leaflet
+    extendLeaflet();
   }
 
   ngOnInit() {

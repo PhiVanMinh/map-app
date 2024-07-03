@@ -443,3 +443,31 @@ export class LeafletService implements OnDestroy  {
   }
 }
 
+export function extendLeaflet() {
+    // Tính tâm polygon - Hỗ trợ cluster
+    // L.Polygon.addInitHook(function () {
+    //     this._latlng = this._bounds.getCenter();
+    // });
+    L.Polygon.include({
+        getLatLng() {
+            return this._latlng;
+        },
+        setLatLng() { }
+    });
+    L.Edit.Circle = L.Edit.Circle.extend({
+        _resize(latlng: any) {
+            const moveLatLng = this._moveMarker.getLatLng();
+            let radius;
+            if (L.GeometryUtil.isVersion07x()) {
+                radius = moveLatLng.distanceTo(latlng);
+            }
+            else {
+                radius = this._map.distance(moveLatLng, latlng);
+            }
+            // **** This fixes the circle resizing ****
+            this._shape?.setRadius(radius);
+            this._map?.fire(L.Draw.Event.EDITRESIZE, { layer: this._shape });
+        },
+    });
+}
+
