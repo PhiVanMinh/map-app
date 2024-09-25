@@ -32,5 +32,6 @@ export class Landmark {
   direction?: number;
 
   landmarkInRoute?: string;
+  colorString?: string;
 }
 

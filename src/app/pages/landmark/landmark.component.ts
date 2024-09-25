@@ -191,15 +191,15 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
     }
   ];
   listLandmarkCategorys: LandmarkCategory[] = [
-    { id: 1, name: 'Bãi đỗ', icon: 'assets/images/utility/landmark-management/point/baido.png', resourceCode: ''},
-    { id: 2, name: 'Điểm trạm', icon: 'assets/images/utility/landmark-management/point/91.png', resourceCode: ''},
-    { id: 3, name: 'Điểm khác', icon: 'assets/images/utility/landmark-management/point/diem_khac.png', resourceCode: ''},
+    { id: 1, name: 'Bãi đỗ', icon: 'assets/images/utility/landmark-management/point/baido.png', resourceCode: '' },
+    { id: 2, name: 'Điểm trạm', icon: 'assets/images/utility/landmark-management/point/91.png', resourceCode: '' },
+    { id: 3, name: 'Điểm khác', icon: 'assets/images/utility/landmark-management/point/diem_khac.png', resourceCode: '' },
   ];
   // Nhóm điểm
   listLandmarkGroups: LandmarkGroup[] = [
-    { id: 1, name: 'Nhóm điểm 1'},
-    { id: 2, name: 'Nhóm điểm 2'},
-    { id: 3, name: 'Nhóm điểm 3'},
+    { id: 1, name: 'Nhóm điểm 1' },
+    { id: 2, name: 'Nhóm điểm 2' },
+    { id: 3, name: 'Nhóm điểm 3' },
   ];
 
   @ViewChild('createOrEditLandmark1', { static: true }) createOrEditEmployee!: AddOrEditLandmarkComponent;
@@ -208,25 +208,25 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
 
   constructor() {
     super();
-   }
+  }
 
-   ngAfterViewInit(): void {
+  ngAfterViewInit(): void {
     // Xóa MAP cũ nếu có
     this.map?.remove();
     this.initMap('map3');
 
     this.listLandmark.forEach(e => {
       const marker = this.createMarker(e.latitude, e.longitude, {
-         iconOptions: {
-           iconUrl: e.icon,
-           labelContent: e.name,
-           className: 'custom-marker-icon-landmark'
-         },
-         draggable: true
-       }, e)
+        iconOptions: {
+          iconUrl: e.icon,
+          labelContent: e.name,
+          className: 'custom-marker-icon-landmark'
+        },
+        draggable: true
+      }, e)
 
-       this.landmarkGroupLayer.addLayer(marker)
-     });
+      this.landmarkGroupLayer.addLayer(marker)
+    });
     // Mở rộng leaflet
     extendLeaflet();
   }
@@ -234,15 +234,15 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
   ngOnInit() {
   }
 
-  onChangeSelectedLandmark(value: any){
+  onChangeSelectedLandmark(value: any) {
     this.createOrEditEmployee.hide();
-   const vMarker = this.getMarkerById(value.id);
-   if(vMarker){
+    const vMarker = this.getMarkerById(value.id);
+    if (vMarker) {
       this.map.setView(vMarker?.getLatLng());
-   }
+    }
   }
 
-  add(value: any){
+  add(value: any) {
     const marker = this.createMarker(value.latitude, value.longitude, {
       iconOptions: {
         iconUrl: value.icon,
@@ -255,12 +255,12 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
     this.landmarkGroupLayer.addLayer(marker)
   }
 
-  remove(value: any){
+  remove(value: any) {
     const vMarker = this.getMarkerById(value.id);
     this.landmarkGroupLayer.removeLayer(vMarker);
   }
 
-  reloadList(listData: any){
+  reloadList(listData: any) {
     this.listLandmark.forEach(e => {
       const vMarker = this.getMarkerById(e.id.toString());
       this.landmarkGroupLayer.removeLayer(vMarker);
@@ -268,63 +268,82 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
     this.listLandmark = listData;
     this.listLandmark.forEach(e => {
       const marker = this.createMarker(e.latitude, e.longitude, {
-         iconOptions: {
-           iconUrl: e.icon,
-           labelContent: e.name,
-           className: 'custom-marker-icon-landmark'
-         },
-         draggable: true
-       }, e)
+        iconOptions: {
+          iconUrl: e.icon,
+          labelContent: e.name,
+          className: 'custom-marker-icon-landmark'
+        },
+        draggable: true
+      }, e)
 
-       this.landmarkGroupLayer.addLayer(marker)
-     });
+      if (e.polyline) {
+        const arrTemp = e.polyline.split(',');
+        const listPoint: L.LatLngLiteral[] = [];
+        for (let index = 0; index < arrTemp.length; index++) {
+          listPoint.push({
+            lng: Number.parseFloat(arrTemp[index]),
+            lat: Number.parseFloat(arrTemp[index + 1]),
+          });
+          index++;
+        }
+        const tempSurround = this.createPolyline(
+          listPoint,
+          { color: e.colorString ?? '#2F80ED', weight: 1.5 }
+        );
+        this.landmarkGroupLayer.addLayer(tempSurround);
+      }
+
+      this.landmarkGroupLayer.addLayer(marker)
+    });
   }
 
-  modalSave(value?: any){
+  modalSave(value?: Landmark) {
     this.listLandmark.forEach(e => {
       const vMarker = this.getMarkerById(e.id.toString());
       this.landmarkGroupLayer.removeLayer(vMarker);
     })
+    if (value != null) {
       value.id = Math.floor(10000 + Math.random() * 90000);
       this.listLandmark = this.listLandmark.concat(value);
+    }
 
-      this.listLandmark.forEach(e => {
-        const marker = this.createMarker(e.latitude, e.longitude, {
-           iconOptions: {
-             iconUrl: e.icon,
-             labelContent: e.name,
-             className: 'custom-marker-icon-landmark'
-           },
-           draggable: true
-         }, e)
+    this.listLandmark.forEach(e => {
+      const marker = this.createMarker(e.latitude, e.longitude, {
+        iconOptions: {
+          iconUrl: e.icon,
+          labelContent: e.name,
+          className: 'custom-marker-icon-landmark'
+        },
+        draggable: true
+      }, e)
 
-         this.landmarkGroupLayer.addLayer(marker)
-       });
+      this.landmarkGroupLayer.addLayer(marker);
+    });
   }
 
-  override openCreatePointModal(latlng: any){
+  override openCreatePointModal(latlng: any) {
     this.createOrEditEmployee?.show(undefined, latlng);
     this.leftPanel.createOrEditEmployee.hide();
   }
 
-  onChangeCheckBox(data: any){
-    if(data.showLandmarkName){
+  onChangeCheckBox(data: any) {
+    if (data.showLandmarkName) {
       this.listLandmark.forEach(e => {
         const vMarker = this.getMarkerById(e.id.toString());
         this.landmarkGroupLayer.removeLayer(vMarker);
       })
       this.listLandmark.forEach(e => {
         const marker = this.createMarker(e.latitude, e.longitude, {
-           iconOptions: {
-             iconUrl: e.icon,
-             labelContent: e.name,
-             className: 'custom-marker-icon-landmark'
-           },
-           draggable: true
-         }, e)
+          iconOptions: {
+            iconUrl: e.icon,
+            labelContent: e.name,
+            className: 'custom-marker-icon-landmark'
+          },
+          draggable: true
+        }, e)
 
-         this.landmarkGroupLayer.addLayer(marker)
-       });
+        this.landmarkGroupLayer.addLayer(marker)
+      });
     } else {
       this.listLandmark.forEach(e => {
         const vMarker = this.getMarkerById(e.id.toString());
@@ -332,18 +351,18 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
       })
       this.listLandmark.forEach(e => {
         const marker = this.createMarker(e.latitude, e.longitude, {
-           iconOptions: {
-             iconUrl: e.icon,
-             className: 'custom-marker-icon-landmark'
-           },
-           draggable: true
-         }, e)
+          iconOptions: {
+            iconUrl: e.icon,
+            className: 'custom-marker-icon-landmark'
+          },
+          draggable: true
+        }, e)
 
-         this.landmarkGroupLayer.addLayer(marker)
-       });
+        this.landmarkGroupLayer.addLayer(marker)
+      });
     }
 
-    if(data.showPolygon){
+    if (data.showPolygon) {
       this.layerLandmark?.clearLayers();
       this.layerLandmark?.remove();
       this.layerLandmark = new L.FeatureGroup();
@@ -355,7 +374,7 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
             e.latitude,
             e.longitude,
             {
-              radius: e.radius, fill: true, fillColor:  '#2F80ED', fillOpacity: 0.5, color: '#2F80ED', weight: 1.5
+              radius: e.radius, fill: true, fillColor: '#2F80ED', fillOpacity: 0.5, color: '#2F80ED', weight: 1.5
             }
           );
           this.layerLandmark.addLayer(tempSurround);
@@ -375,7 +394,7 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
               const tempSurround = this.createPolygon(
                 listPoint,
                 {
-                  fill: true, fillColor: '#2F80ED', fillOpacity:0.5, color: '#2F80ED', weight: 1.5
+                  fill: true, fillColor: '#2F80ED', fillOpacity: 0.5, color: '#2F80ED', weight: 1.5
                 }
               );
               this.layerLandmark.addLayer(tempSurround);
@@ -400,22 +419,22 @@ export class LandmarkComponent extends LeafletService implements AfterViewInit {
 
               this.layerLandmark.addLayer(tempSurround);
 
-                const arrTemp2 = e.polygon.split(',');
-                const listPoint2: any[] = [];
-                for (let index = 0; index < arrTemp2.length; index++) {
-                  listPoint2.push({
-                    lng: Number.parseFloat(arrTemp2[index]),
-                    lat: Number.parseFloat(arrTemp2[index + 1]),
-                  });
-                  index++;
+              const arrTemp2 = e.polygon.split(',');
+              const listPoint2: any[] = [];
+              for (let index = 0; index < arrTemp2.length; index++) {
+                listPoint2.push({
+                  lng: Number.parseFloat(arrTemp2[index]),
+                  lat: Number.parseFloat(arrTemp2[index + 1]),
+                });
+                index++;
+              }
+              const tempSurround2 = this.createPolygon(
+                listPoint2,
+                {
+                  fill: true, fillColor: '#2F80ED', fillOpacity: 0.5, color: '#2F80ED', weight: 1.5
                 }
-                const tempSurround2 = this.createPolygon(
-                  listPoint2,
-                  {
-                    fill: true, fillColor: '#2F80ED', fillOpacity:0.5, color: '#2F80ED', weight: 1.5
-                  }
-                );
-                this.layerLandmark.addLayer(tempSurround2);
+              );
+              this.layerLandmark.addLayer(tempSurround2);
             }
           }
         }
